@@ -26,7 +26,7 @@
 }
 
 .search-input {
-    width: 100%;
+    width: 90%;
     padding: 12px 15px;
     border-radius: 25px;
     border: none;
@@ -177,13 +177,36 @@
 .votes {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     font-size: 14px;
+    gap: 5px;
+    width: 200px;
     color: var(--color-text-tertiary);
 }
 
-.vote-icon {
-    margin-right: 5px;
+.symbols {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between symbols */
+    font-size: 14px;
+}
+
+.symbol {
     font-size: 16px;
+    display: inline-flex;
+    transition: transform 0.2s ease-in-out;
+}
+
+.star {
+    font-size: 22px !important;
+}
+
+.symbol:hover {
+    transform: scale(1.3);
+}
+
+.symbol.selected {
+    color: var(--color-primary-600);
 }
 
 .pagination {

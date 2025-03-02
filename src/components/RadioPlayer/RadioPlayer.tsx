@@ -75,6 +75,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     // Handle source URL changes
     useEffect(() => {
         if (audioElementRef.current) {
+
+            window.localStorage.setItem('lastStation', JSON.stringify({ sourceUrl, stationName }))
             const wasPlaying = !audioElementRef.current.paused;
 
             // Update source
@@ -94,6 +96,11 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             gainNodeRef.current.gain.value = volume / 100;
         }
     }, [volume]);
+
+    useEffect(()=>{
+        const savedVolume = window.localStorage.getItem('volume')
+        if(savedVolume)setVolume(parseInt(savedVolume))
+    }, [])
 
     // Visualizer function
     const drawVisualizer = () => {
@@ -169,14 +176,15 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     // Handle volume change
     const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setVolume(parseInt(e.target.value));
+        window.localStorage.setItem('volume', e.target.value);
     };
 
     return (
         <div className="radio-player">
             <div className="station-header">
                 <h2 className="station-name">{stationName}</h2>
-                <div className={`status-indicator ${isPlaying ? 'online' : 'offline'}`}>
-                    {isPlaying ? 'ON AIR' : 'OFFLINE'}
+                <div className={`status-indicator ${isPlaying ? 'online' : 'paused'}`}>
+                    {isPlaying ? 'ON AIR' : 'PAUSED'}
                 </div>
             </div>
 

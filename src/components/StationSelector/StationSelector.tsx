@@ -28,11 +28,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [filteredStations, setFilteredStations] = useState<RadioStation[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [favoriteStations, setFavoriteStations] = useState<string[]>([])
 
     // Filter states
     const [countries, setCountries] = useState<string[]>([]);
     const [languages, setLanguages] = useState<string[]>([]);
     const [tags, setTags] = useState<string[]>([]);
+    const [favorites, setFavorites] = useState<boolean>(true);
 
     // Selected filters
     const [selectedCountry, setSelectedCountry] = useState(initialCountry);
@@ -46,6 +48,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const stationsPerPage = 10;
+
+
+    useEffect(() => {
+        console.log('loading favorites...')
+        const savedStations = window.localStorage.getItem('favorite_stations')
+        if(savedStations) setFavoriteStations(savedStations.split(','))
+    }, [])
 
     // Fetch countries, languages, and tags on mount
     useEffect(() => {
@@ -85,6 +94,41 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         fetchMetadata();
     }, []);
 
+    useEffect(()=> {
+        const fetchStations = async ()=> {
+            let url = 'https://de1.api.radio-browser.info/json/stations/byuuid?'
+
+            const params = new URLSearchParams({ uuids: favoriteStations.join(',')})
+
+            try {
+                const response = await fetch(`${url}${params.toString()}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+                // Filter out stations with invalid URLs
+                const validStations = data.filter((station: RadioStation) =>
+                    station.url &&
+                    station.url.trim() !== '' &&
+                    (station.url.startsWith('http://') || station.url.startsWith('https://'))
+                );
+
+                setStations(validStations);
+                setFilteredStations(validStations);
+                setCurrentPage(1);
+            } catch (err) {
+                setError('Failed to load stations. Please try again later.');
+                setStations([]);
+                setFilteredStations([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchStations()
+    }, [favorites]);
     // Fetch stations based on filters
     useEffect(() => {
         const fetchStations = async () => {
@@ -151,6 +195,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     useEffect(() => {
         if (searchTerm === '') {
             setFilteredStations(stations);
+            console.debug('[station selector] removed search term filter.')
         } else {
             const filtered = stations.filter(station =>
                 station.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -174,9 +219,35 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         onStationSelect(station);
     };
 
+    const handleFavoriteClick= (event: React.MouseEvent<HTMLSpanElement>, uuid: string)=>{
+        event.preventDefault()
+        const index = favoriteStations.indexOf(uuid)
+        if (index > -1) favoriteStations.splice(index, 1)
+        else favoriteStations.push(uuid)
+
+        setFavoriteStations([...favoriteStations]);
+        window.localStorage.setItem('favorite_stations', favoriteStations.join(','));
+    }
+
+    const handleVote = async (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
+        event.preventDefault()
+
+        let url = `https://de1.api.radio-browser.info/json/vote/${uuid}`;
+
+        try {
+            const response = await fetch(url)
+            if (!response.ok) {
+                throw new Error(`Error sending vote: ${error}`);
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     return (
+        <>
         <div className="station-selector">
-            <h2>Radio Station Explorer</h2>
+            <h2>Explore</h2>
 
     <div className="search-bar">
     <input
@@ -248,53 +319,58 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         <>
             <div className="stations-list">
             {currentStations.map(station => (
-                    <div
-                        key={station.stationuuid}
-                className="station-item"
-                onClick={() => handleStationSelect(station)}
-    >
-        <div className="station-logo">
-            {station.favicon ? (
-                        <img
-                            src={station.favicon}
-                    alt={`${station.name} logo`}
-        onError={(e) => {
-        (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
-    }}
-        />
-    ) : (
-        <div className="default-logo">📻</div>
-    )}
-        </div>
-
-        <div className="station-info">
-    <h3 className="station-name">{station.name}</h3>
-        <div className="station-details">
-        <span>{station.country}</span>
-        {station.language && <span> • {station.language}</span>}
-            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
-            </div>
-                {station.tags && (
-                    <div className="station-tags">
-                        {station.tags.split(',').slice(0, 3).map(tag => (
-                                <span key={tag} className="tag">{tag.trim()}</span>
-                ))}
+                <div
+                    key={station.stationuuid}
+                    className="station-item"
+                    onClick={() => handleStationSelect(station)}
+                >
+                    <div className="station-logo">
+                        {station.favicon ? (
+                            <img
+                                src={station.favicon}
+                                alt={`${station.name} logo`}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
+                                }}
+                            />
+                        ) : (
+                            <div className="default-logo">📻</div>
+                        )}
                     </div>
-                )}
-                </div>
 
-                <div className="station-stats">
-            <div className="votes">
-            <span className="vote-icon">👍</span> {station.votes}
-            </div>
-            </div>
-            </div>
+                    <div className="station-info">
+                        <h3 className="station-name">{station.name}</h3>
+                        <div className="station-details">
+                            <span>{station.country}</span>
+                            {station.language && <span> • {station.language}</span>}
+                            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
+                        </div>
+                        {station.tags && (
+                            <div className="station-tags">
+                                {station.tags.split(',').slice(0, 3).map(tag => (
+                                    <span key={tag} className="tag">{tag.trim()}</span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="symbols">
+                        <span onClick={(event)=> {
+                            event.stopPropagation()
+                            handleFavoriteClick(event, station.stationuuid)
+                        }} className={`symbol star ${(favoriteStations.includes(station.stationuuid)? 'selected' : '')}`} >★</span>
+                        <span><span onClick={(event)=>{
+                            event.stopPropagation()
+                            handleVote(event, station.stationuuid).then()
+                        }} className="symbol">👍</span> {station.votes}</span>
+                    </div>
+                </div>
             ))}
             </div>
 
             {totalPages > 1 && (
                 <div className="pagination">
-                <button
+                    <button
                     onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className="page-button"
@@ -318,6 +394,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             </>
         )}
         </div>
+        </>
     );
     };
 

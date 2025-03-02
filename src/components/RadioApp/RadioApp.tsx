@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
 import StationSelector from '../StationSelector/StationSelector.tsx';
 import './RadioApp.css';
-import {ThemeContext, ThemeProvider} from "../Theme/ThemeContext.tsx";
+import {ThemeProvider} from "../Theme/ThemeContext.tsx";
 import ThemeToggle from "../Theme/ThemeToggle.tsx";
 
 interface RadioStation {
@@ -36,8 +36,6 @@ const RadioApp: React.FC = () => {
             </header>
 
             <div className="app-content">
-                <StationSelector onStationSelect={handleStationSelect} />
-
                 {selectedStation ? (
                     <RadioPlayer
                         sourceUrl={selectedStation.url}
@@ -52,6 +50,8 @@ const RadioApp: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                <StationSelector onStationSelect={handleStationSelect} />
             </div>
         </div>
         </ThemeProvider>
