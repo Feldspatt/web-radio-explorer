@@ -10,13 +10,12 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(80);
     const audioContextRef = useRef<AudioContext | null>(null);
-    // const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
-    // const gainNodeRef = useRef<GainNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number | null>(null);
 
     const audioRef= useRef<HTMLAudioElement>(null)
+    const safeAudioRef = useRef<HTMLAudioElement>(null)
 
     useEffect(() => {
         // if(audioRef.current){
@@ -28,6 +27,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     // Initialize Web Audio API
     useEffect(() => {
         const initializeAudio = () => {
+
+            // audio unsafe (with analyser)
             if(audioRef.current === null) return
 
             // Create audio context
@@ -36,12 +37,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             audioContextRef.current = audioContext;
 
             // Create source node
-            // const sourceNode = audioContext.createMediaElementSource(audioRef.current);
-            // sourceNodeRef.current = sourceNode;
-
-            // Create gain node (for volume control)
-            // const gainNode = audioContext.createGain();
-            // gainNodeRef.current = gainNode;
+            const sourceNode = audioContext.createMediaElementSource(audioRef.current)
 
             // Create analyzer node (for visualization)
             const analyser = audioContext.createAnalyser();
@@ -49,18 +45,16 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             analyserRef.current = analyser;
 
             // Connect the nodes
-            // sourceNode.connect(gainNode);
-            // gainNode.connect(analyser);
+            sourceNode.connect(analyser);
             analyser.connect(audioContext.destination);
 
             // Set initial volume
-            // gainNode.gain.value = volume / 100;
             audioRef.current.volume = volume/100;
 
             return () => {
                 // Cleanup
                 if (audioContext.state !== 'closed') {
-                    analyser.disconnect();
+                    // analyser.disconnect();
                 }
             };
         };
@@ -181,7 +175,13 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     return (
         <div className="radio-player">
-            <audio controls ref={audioRef}/>
+            <audio
+                ref={audioRef}
+                crossOrigin="anonymous"
+            />
+            <audio
+                ref={safeAudioRef}
+            />
 
             <div className="station-header">
                 <h2 className="station-name">{stationName}</h2>
