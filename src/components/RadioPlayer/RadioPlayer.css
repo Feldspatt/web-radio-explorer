@@ -1,5 +1,9 @@
 @import '../../style/variables.css';
 
+audio {
+    /*display: none;*/
+}
+
 .radio-player {
     width: 100%;
     max-width: 600px;

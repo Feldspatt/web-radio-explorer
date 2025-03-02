@@ -10,21 +10,25 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(80);
     const audioContextRef = useRef<AudioContext | null>(null);
-    const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
-    const gainNodeRef = useRef<GainNode | null>(null);
+    // const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+    // const gainNodeRef = useRef<GainNode | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
-    const audioElementRef = useRef<HTMLAudioElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number | null>(null);
+
+    const audioRef= useRef<HTMLAudioElement>(null)
+
+    useEffect(() => {
+        // if(audioRef.current){
+        //     audioRef.current.src = sourceUrl;
+        //     audioRef.current.play().then()
+        // }
+    }, [sourceUrl]);
 
     // Initialize Web Audio API
     useEffect(() => {
         const initializeAudio = () => {
-            // Create audio element (but won't add to DOM)
-            const audioElement = new Audio();
-            audioElement.crossOrigin = "anonymous";
-            audioElement.src = sourceUrl;
-            audioElementRef.current = audioElement;
+            if(audioRef.current === null) return
 
             // Create audio context
             const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
@@ -32,12 +36,12 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             audioContextRef.current = audioContext;
 
             // Create source node
-            const sourceNode = audioContext.createMediaElementSource(audioElement);
-            sourceNodeRef.current = sourceNode;
+            // const sourceNode = audioContext.createMediaElementSource(audioRef.current);
+            // sourceNodeRef.current = sourceNode;
 
             // Create gain node (for volume control)
-            const gainNode = audioContext.createGain();
-            gainNodeRef.current = gainNode;
+            // const gainNode = audioContext.createGain();
+            // gainNodeRef.current = gainNode;
 
             // Create analyzer node (for visualization)
             const analyser = audioContext.createAnalyser();
@@ -45,20 +49,18 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             analyserRef.current = analyser;
 
             // Connect the nodes
-            sourceNode.connect(gainNode);
-            gainNode.connect(analyser);
+            // sourceNode.connect(gainNode);
+            // gainNode.connect(analyser);
             analyser.connect(audioContext.destination);
 
             // Set initial volume
-            gainNode.gain.value = volume / 100;
+            // gainNode.gain.value = volume / 100;
+            audioRef.current.volume = volume/100;
 
             return () => {
                 // Cleanup
                 if (audioContext.state !== 'closed') {
-                    sourceNode.disconnect();
-                    gainNode.disconnect();
                     analyser.disconnect();
-                    audioContext.close();
                 }
             };
         };
@@ -74,27 +76,25 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     // Handle source URL changes
     useEffect(() => {
-        if (audioElementRef.current) {
+        if (audioRef.current) {
 
             window.localStorage.setItem('lastStation', JSON.stringify({ sourceUrl, stationName }))
-            const wasPlaying = !audioElementRef.current.paused;
+            const wasPlaying = !audioRef.current.paused;
 
             // Update source
-            audioElementRef.current.src = sourceUrl;
+            audioRef.current.src = sourceUrl;
 
             // If it was playing, reload and continue playing
             if (wasPlaying) {
-                audioElementRef.current.load();
-                audioElementRef.current.play().catch(e => console.error("Error playing after URL change:", e));
+                audioRef.current.load();
+                audioRef.current.play().catch(e => console.error("Error playing after URL change:", e));
             }
         }
     }, [sourceUrl]);
 
     // Handle volume changes
     useEffect(() => {
-        if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = volume / 100;
-        }
+        if(audioRef.current) audioRef.current.volume = volume / 100;
     }, [volume]);
 
     useEffect(()=>{
@@ -144,10 +144,10 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     // Toggle play/pause
     const togglePlayPause = () => {
-        if (!audioElementRef.current || !audioContextRef.current) return;
+        if (!audioRef.current || !audioContextRef.current) return;
 
         const audioContext = audioContextRef.current;
-        const audioElement = audioElementRef.current;
+        const audioElement = audioRef.current;
 
         // If audio context is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
@@ -181,6 +181,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     return (
         <div className="radio-player">
+            <audio controls ref={audioRef}/>
+
             <div className="station-header">
                 <h2 className="station-name">{stationName}</h2>
                 <div className={`status-indicator ${isPlaying ? 'online' : 'paused'}`}>
