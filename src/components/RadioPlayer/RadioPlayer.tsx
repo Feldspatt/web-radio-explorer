@@ -13,16 +13,10 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     const analyserRef = useRef<AnalyserNode | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameRef = useRef<number | null>(null);
+    const [isSafeMode, setIsSafeMode] = useState(false)
 
     const audioRef= useRef<HTMLAudioElement>(null)
-    const safeAudioRef = useRef<HTMLAudioElement>(null)
-
-    useEffect(() => {
-        // if(audioRef.current){
-        //     audioRef.current.src = sourceUrl;
-        //     audioRef.current.play().then()
-        // }
-    }, [sourceUrl]);
+    const safeAudioRef= useRef<HTMLAudioElement>(null)
 
     // Initialize Web Audio API
     useEffect(() => {
@@ -54,7 +48,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             return () => {
                 // Cleanup
                 if (audioContext.state !== 'closed') {
-                    // analyser.disconnect();
+                    analyser.disconnect();
                 }
             };
         };
@@ -70,25 +64,37 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     // Handle source URL changes
     useEffect(() => {
-        if (audioRef.current) {
+        setIsSafeMode(false)
+        if (audioRef.current && safeAudioRef.current) {
 
             window.localStorage.setItem('lastStation', JSON.stringify({ sourceUrl, stationName }))
-            const wasPlaying = !audioRef.current.paused;
+            const wasPlaying = !audioRef.current.paused || !safeAudioRef.current.paused;
 
             // Update source
-            audioRef.current.src = sourceUrl;
+            audioRef.current.src = sourceUrl
+            safeAudioRef.current.src = sourceUrl
 
             // If it was playing, reload and continue playing
             if (wasPlaying) {
                 audioRef.current.load();
-                audioRef.current.play().catch(e => console.error("Error playing after URL change:", e));
+                audioRef.current.play().catch(e => {
+                    console.error("Error playing audio with unsafe player:", e)
+                    setIsSafeMode(true)
+                    if(safeAudioRef.current) {
+                        safeAudioRef.current.load()
+                        safeAudioRef.current.play().catch((error)=> {
+                            console.error("Error playing audio with safe player:", error);
+                        })
+                    }
+                });
             }
         }
     }, [sourceUrl]);
 
     // Handle volume changes
     useEffect(() => {
-        if(audioRef.current) audioRef.current.volume = volume / 100;
+        if(audioRef.current) audioRef.current.volume = volume / 100
+        if(safeAudioRef.current) safeAudioRef.current.volume = volume / 100;
     }, [volume]);
 
     useEffect(()=>{
@@ -138,10 +144,11 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
 
     // Toggle play/pause
     const togglePlayPause = () => {
-        if (!audioRef.current || !audioContextRef.current) return;
+        if (!audioRef.current || !safeAudioRef.current || !audioContextRef.current) return;
 
         const audioContext = audioContextRef.current;
-        const audioElement = audioRef.current;
+        const audioElement = !isSafeMode? audioRef.current : safeAudioRef.current
+
 
         // If audio context is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
@@ -179,6 +186,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
                 ref={audioRef}
                 crossOrigin="anonymous"
             />
+
             <audio
                 ref={safeAudioRef}
             />
