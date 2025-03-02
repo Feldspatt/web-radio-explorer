@@ -1,0 +1,70 @@
+.radio-app {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.app-header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #4299e1;
+}
+
+.app-header p {
+    font-size: 16px;
+    color: #718096;
+}
+
+.app-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.no-station-selected {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #1e2024, #2d3748);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+    align-self: center;
+}
+
+.empty-state {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.empty-state .icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.empty-state h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #f7fafc;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #a0aec0;
+}
+
+@media (max-width: 768px) {
+    .radio-app {
+        padding: 15px;
+    }
+
+    .app-header h1 {
+        font-size: 28px;
+    }
+}

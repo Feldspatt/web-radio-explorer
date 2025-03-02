@@ -1,13 +1,12 @@
 import './App.css'
-import RadioPlayer from "./components/RadioPlayer/RadioPlayer.tsx";
+import RadioApp from './components/RadioApp/RadioApp.tsx';
 
 function App() {
-
-  return (
-    <>
-      <RadioPlayer sourceUrl={'https://icecast.walmradio.com:8443/classic'}/>
-    </>
-  )
+    return (
+        <div className="App">
+            <RadioApp />
+        </div>
+    );
 }
 
 export default App
