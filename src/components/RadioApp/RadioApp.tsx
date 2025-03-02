@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
 import StationSelector from '../StationSelector/StationSelector.tsx';
 import './RadioApp.css';
+import {ThemeContext, ThemeProvider} from "../Theme/ThemeContext.tsx";
+import ThemeToggle from "../Theme/ThemeToggle.tsx";
 
 interface RadioStation {
     stationuuid: string;
@@ -25,7 +27,9 @@ const RadioApp: React.FC = () => {
     };
 
     return (
+        <ThemeProvider>
         <div className="radio-app">
+            <ThemeToggle/>
             <header className="app-header">
                 <h1>Web Radio Explorer</h1>
                 <p>Discover and listen to radio stations from around the world</p>
@@ -50,6 +54,7 @@ const RadioApp: React.FC = () => {
                 )}
             </div>
         </div>
+        </ThemeProvider>
     );
 };
 

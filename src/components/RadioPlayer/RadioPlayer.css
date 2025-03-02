@@ -1,12 +1,15 @@
+@import '../../style/variables.css';
+
 .radio-player {
     width: 100%;
     max-width: 600px;
     padding: 20px;
     border-radius: 10px;
-    background: linear-gradient(145deg, #1e2024, #2d3748);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-    color: white;
+    background: linear-gradient(145deg, var(--color-bg-panel-gradient-start), var(--color-bg-panel-gradient-end));
+    box-shadow: 0 10px 15px var(--color-shadow);
+    color: var(--color-text-primary);
     font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
 }
 
 .station-header {
@@ -15,15 +18,15 @@
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .station-name {
     margin: 0;
     font-size: 22px;
     font-weight: 600;
-    color: #f7fafc;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: var(--color-text-primary);
+    text-shadow: 0 2px 4px var(--color-shadow);
 }
 
 .status-indicator {
@@ -36,12 +39,12 @@
 }
 
 .status-indicator.online {
-    background-color: #38a169;
+    background-color: var(--color-success);
     animation: pulse 2s infinite;
 }
 
 .status-indicator.offline {
-    background-color: #e53e3e;
+    background-color: var(--color-error);
 }
 
 @keyframes pulse {
@@ -67,8 +70,8 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: linear-gradient(145deg, #3182ce, #2c5282);
-    color: white;
+    background: var(--color-button-bg);
+    color: var(--color-text-inverse);
     border: none;
     font-size: 18px;
     cursor: pointer;
@@ -76,16 +79,16 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 6px var(--color-shadow);
 }
 
 .play-pause-button:hover {
     transform: scale(1.05);
-    background: linear-gradient(145deg, #4299e1, #3182ce);
+    background: var(--color-button-bg-hover);
 }
 
 .play-pause-button.playing {
-    background: linear-gradient(145deg, #e53e3e, #c53030);
+    background: var(--color-button-playing);
 }
 
 .volume-control {
@@ -103,7 +106,7 @@
     flex: 1;
     height: 6px;
     -webkit-appearance: none;
-    background: linear-gradient(to right, #3182ce, #4299e1);
+    background: linear-gradient(to right, var(--color-primary-700), var(--color-primary-500));
     border-radius: 3px;
     outline: none;
 }
@@ -113,9 +116,9 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: white;
+    background: var(--color-text-inverse);
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--color-shadow);
     transition: all 0.2s ease;
 }
 
@@ -127,9 +130,9 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: white;
+    background: var(--color-text-inverse);
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--color-shadow);
     border: none;
     transition: all 0.2s ease;
 }
@@ -148,7 +151,7 @@
 .visualizer-container {
     width: 100%;
     height: 100px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--color-bg-item);
     border-radius: 5px;
     overflow: hidden;
 }
