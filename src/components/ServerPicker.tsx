@@ -6,7 +6,7 @@ interface RadioBrowserServerSelectorProps {
 }
 
 const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSelectorProps) => {
-    const [servers, setServers] = useState<Server[]>([]);
+    const [servers, setServers] = useState<Omit<Server,'stations'>[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [checkedServers, setCheckedServers] = useState<Set<string>>(new Set());
@@ -46,7 +46,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
         }
     };
 
-    const selectRandomServer = async (serverList: Server[]) => {
+    const selectRandomServer = async (serverList: Omit<Server, 'stations'>[]) => {
         // Filter out servers we've already checked and failed
         const availableServers = serverList.filter(server => !checkedServers.has(server.name));
 
@@ -54,7 +54,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
             // If we've tried all servers, reset and try again
             setCheckedServers(new Set());
             setErrorMessage("All servers unavailable. Retrying with full list.");
-            selectRandomServer(serverList);
+            await selectRandomServer(serverList);
             return;
         }
 
@@ -65,17 +65,20 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
         console.debug('randomly selected server:', randomServer.name);
         // Test if the server is operational
         try {
-            const isOperational = await testServerConnection(randomServer);
+            const response = await fetch(paths.getServerStats(randomServer.name));
 
-            if (isOperational) {
+            if (!response.ok) throw new Error(`Failed to fetch servers: ${response.status}`)
+
+            const stats = await response.json()
+            if(stats.status !== 'OK') throw new Error(`Server is not ok: ${stats.status}`);
+
                 // Call the callback with the selected server
                 if (onServerSelected) {
-                    onServerSelected(randomServer);
+                    onServerSelected({...randomServer, stations: stats.stations - stats.stations_broken });
                 }
                 setIsLoading(false)
                 console.log(`${randomServer.name} is operational`);
                 return
-            }
         } catch (err) {
             // Mark this server as checked/failed
             const newCheckedServers = new Set(checkedServers);
@@ -86,18 +89,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
             console.error(`Server ${randomServer.name} failed:`, err);
             selectRandomServer(serverList);
         }
-    };
-
-    const testServerConnection = async (server: Server): Promise<boolean> => {
-        try {
-            // Test the server by fetching stats or a small amount of data
-            const response = await fetch(paths.getServerStats(server.name));
-            return response.ok && (await response.json()).status === 'OK';
-        } catch (err) {
-            console.error(`Error testing connection to ${server.name}:`, err);
-            return false;
-        }
-    };
+    }
 
     if (errorMessage && !isLoading) {
         return (

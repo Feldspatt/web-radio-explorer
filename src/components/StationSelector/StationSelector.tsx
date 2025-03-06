@@ -5,14 +5,13 @@ import {paths} from "../../services/path.service.ts";
 
 interface StationSelectorProps {
     onStationSelect: (station: RadioStation) => void;
-    initialCountry?: string;
+    stationCount: number;
+    stationsPerPage: number;
 }
 
 const StationSelector: React.FC<StationSelectorProps> = ({
-                                                             onStationSelect,
-                                                             initialCountry = 'all'
+                                                             onStationSelect, stationCount, stationsPerPage
                                                          }) => {
-    const [stations, setStations] = useState<RadioStation[]>([]);
     const [filteredStations, setFilteredStations] = useState<RadioStation[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -21,11 +20,11 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Filter states
     const [countries, setCountries] = useState<string[]>([]);
     const [languages, setLanguages] = useState<string[]>([]);
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<{name: string, stationCount: number}[]>([]);
     const [favorites] = useState<boolean>(true);
 
     // Selected filters
-    const [selectedCountry, setSelectedCountry] = useState(initialCountry);
+    const [selectedCountry, setSelectedCountry] = useState('all');
     const [selectedLanguage, setSelectedLanguage] = useState('all');
     const [selectedTag, setSelectedTag] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
@@ -35,8 +34,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const stationsPerPage = 10;
-
 
     useEffect(() => {
         console.log('loading favorites...')
@@ -73,11 +70,11 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
                 // Fetch tags
                 const tagsData = await tagsResponse.json();
-                const tagNames = tagsData
-                    .filter((item: any) => item.name && item.stationcount > 5)
+                const tags = tagsData
+                    .filter((item: any) => item.name && item.stationcount > 10)
                     .map((item: any) => item.name)
-                    .sort();
-                setTags(['all', ...tagNames])
+                    .sort((a, b)=> a.name.localeCompare(b.name));
+                setTags(['all', ...tags])
             } catch (err) {
                 console.error('Failed to load filter options. Please try again later. ' + err)
                 setError('Failed to load filter options. Please try again later.')
@@ -104,12 +101,10 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                     (station.url.startsWith('http://') || station.url.startsWith('https://'))
                 );
 
-                setStations(validStations);
                 setFilteredStations(validStations);
                 setCurrentPage(1);
             } catch (err) {
                 setError('Failed to load stations. Please try again later.');
-                setStations([]);
                 setFilteredStations([]);
             } finally {
                 setLoading(false);
@@ -118,13 +113,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
         fetchStations()
     }, [favorites]);
-    // Fetch stations based on filters
+
+    // Fetch stations based on filters and pagination
     useEffect(() => {
         const fetchStations = async () => {
             setLoading(true);
             setError(null);
 
-            let url = 'https://de1.api.radio-browser.info/json/stations/search?';
+            // Calculate offset based on current page
+            const offset = (currentPage - 1) * stationsPerPage;
 
             // Add filters to URL
             const params = new URLSearchParams();
@@ -148,29 +145,32 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             // Sort by popularity by default
             params.append('order', sortBy);
             params.append('reverse', 'true');
-            params.append('limit', '100'); // Get a decent number of stations
+            params.append('hidebroken', 'true');
+            params.append('offset', offset.toString());
+            params.append('limit', stationsPerPage.toString());
 
             try {
-                const response = await fetch(`${url}${params.toString()}`);
+                const response = await fetch(paths.getStationSearch(params));
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
 
                 const data = await response.json();
 
+                // Assuming the API now returns an object with stations and total
+                // If the API returns an array directly, adjust accordingly
+                const stationsData = Array.isArray(data) ? data : data.stations;
+
                 // Filter out stations with invalid URLs
-                const validStations = data.filter((station: RadioStation) =>
+                const validStations = stationsData.filter((station: RadioStation) =>
                     station.url &&
                     station.url.trim() !== '' &&
                     (station.url.startsWith('http://') || station.url.startsWith('https://'))
                 );
 
-                setStations(validStations);
                 setFilteredStations(validStations);
-                setCurrentPage(1);
             } catch (err) {
                 setError('Failed to load stations. Please try again later.');
-                setStations([]);
                 setFilteredStations([]);
             } finally {
                 setLoading(false);
@@ -178,27 +178,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         };
 
         fetchStations();
-    }, [selectedCountry, selectedLanguage, selectedTag, sortBy]);
+    }, [selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm]);
 
-    // Handle search
+    // Handle search - reset to first page when search term changes
     useEffect(() => {
-        if (searchTerm === '') {
-            setFilteredStations(stations);
-            console.debug('[station selector] removed search term filter.')
-        } else {
-            const filtered = stations.filter(station =>
-                station.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredStations(filtered);
-        }
         setCurrentPage(1);
-    }, [searchTerm, stations]);
+    }, [searchTerm, selectedCountry, selectedLanguage, selectedTag]);
 
-    // Calculate pagination
-    const indexOfLastStation = currentPage * stationsPerPage;
-    const indexOfFirstStation = indexOfLastStation - stationsPerPage;
-    const currentStations = filteredStations.slice(indexOfFirstStation, indexOfLastStation);
-    const totalPages = Math.ceil(filteredStations.length / stationsPerPage);
+    // Calculate total pages based on total stations
+    const totalPages = Math.ceil(stationCount / stationsPerPage);
 
     // Pagination controls
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -235,156 +223,156 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     return (
         <>
-        <div className="station-selector">
-            <h2>Explore</h2>
+            <div className="station-selector">
+                <h2>Explore</h2>
 
-    <div className="search-bar">
-    <input
-        type="text"
-    placeholder="Search stations..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    className="search-input"
-        />
-        </div>
+                <div className="search-bar">
+                    <input
+                        type="text"
+                        placeholder="Search stations..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                </div>
 
-        <div className="filters">
-    <div className="filter-group">
-        <label>Country:</label>
-    <select
-    value={selectedCountry}
-    onChange={(e) => setSelectedCountry(e.target.value)}
->
-    {countries.map(country => (
-        <option key={country} value={country}>{country}</option>
-    ))}
-    </select>
-    </div>
-
-    <div className="filter-group">
-        <label>Language:</label>
-    <select
-    value={selectedLanguage}
-    onChange={(e) => setSelectedLanguage(e.target.value)}
->
-    {languages.map(language => (
-        <option key={language} value={language}>{language}</option>
-    ))}
-    </select>
-    </div>
-
-    <div className="filter-group">
-        <label>Genre:</label>
-    <select
-    value={selectedTag}
-    onChange={(e) => setSelectedTag(e.target.value)}
->
-    {tags.map(tag => (
-        <option key={tag} value={tag}>{tag}</option>
-    ))}
-    </select>
-    </div>
-
-    <div className="filter-group">
-        <label>Sort by:</label>
-    <select
-    value={sortBy}
-    onChange={(e) => setSortBy(e.target.value as 'name' | 'votes' | 'clickcount')}
->
-    <option value="votes">Popularity</option>
-        <option value="name">Name</option>
-        <option value="clickcount">Listeners</option>
-        </select>
-        </div>
-        </div>
-
-    {loading ? (
-        <div className="loading">Loading stations...</div>
-    ) : error ? (
-        <div className="error">{error}</div>
-    ) : filteredStations.length === 0 ? (
-        <div className="no-results">No stations found. Try different filters.</div>
-    ) : (
-        <>
-            <div className="stations-list">
-            {currentStations.map(station => (
-                <div
-                    key={station.stationuuid}
-                    className="station-item"
-                    onClick={() => handleStationSelect(station)}
-                >
-                    <div className="station-logo">
-                        {station.favicon ? (
-                            <img
-                                src={station.favicon}
-                                alt={`${station.name} logo`}
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
-                                }}
-                            />
-                        ) : (
-                            <div className="default-logo">📻</div>
-                        )}
+                <div className="filters">
+                    <div className="filter-group">
+                        <label>Country:</label>
+                        <select
+                            value={selectedCountry}
+                            onChange={(e) => setSelectedCountry(e.target.value)}
+                        >
+                            {countries.map(country => (
+                                <option key={country} value={country}>{country}</option>
+                            ))}
+                        </select>
                     </div>
 
-                    <div className="station-info">
-                        <h3 className="station-name">{station.name}</h3>
-                        <div className="station-details">
-                            <span>{station.country}</span>
-                            {station.language && <span> • {station.language}</span>}
-                            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
-                        </div>
-                        {station.tags && (
-                            <div className="station-tags">
-                                {station.tags.split(',').slice(0, 3).map(tag => (
-                                    <span key={tag} className="tag">{tag.trim()}</span>
-                                ))}
-                            </div>
-                        )}
+                    <div className="filter-group">
+                        <label>Language:</label>
+                        <select
+                            value={selectedLanguage}
+                            onChange={(e) => setSelectedLanguage(e.target.value)}
+                        >
+                            {languages.map(language => (
+                                <option key={language} value={language}>{language}</option>
+                            ))}
+                        </select>
                     </div>
 
-                    <div className="symbols">
+                    <div className="filter-group">
+                        <label>Genre:</label>
+                        <select
+                            value={selectedTag}
+                            onChange={(e) => setSelectedTag(e.target.value)}
+                        >
+                            {tags.map(tag => (
+                                <option key={tag} value={tag}>{tag}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="filter-group">
+                        <label>Sort by:</label>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as 'name' | 'votes' | 'clickcount')}
+                        >
+                            <option value="votes">Popularity</option>
+                            <option value="name">Name</option>
+                            <option value="clickcount">Listeners</option>
+                        </select>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div className="loading">Loading stations...</div>
+                ) : error ? (
+                    <div className="error">{error}</div>
+                ) : filteredStations.length === 0 ? (
+                    <div className="no-results">No stations found. Try different filters.</div>
+                ) : (
+                    <>
+                        <div className="stations-list">
+                            {filteredStations.map(station => (
+                                <div
+                                    key={station.stationuuid}
+                                    className="station-item"
+                                    onClick={() => handleStationSelect(station)}
+                                >
+                                    <div className="station-logo">
+                                        {station.favicon ? (
+                                            <img
+                                                src={station.favicon}
+                                                alt={`${station.name} logo`}
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="default-logo">📻</div>
+                                        )}
+                                    </div>
+
+                                    <div className="station-info">
+                                        <h3 className="station-name">{station.name}</h3>
+                                        <div className="station-details">
+                                            <span>{station.country}</span>
+                                            {station.language && <span> • {station.language}</span>}
+                                            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
+                                        </div>
+                                        {station.tags && (
+                                            <div className="station-tags">
+                                                {station.tags.split(',').slice(0, 3).map(tag => (
+                                                    <span key={tag} className="tag">{tag.trim()}</span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="symbols">
                         <span onClick={(event)=> {
                             event.stopPropagation()
                             handleFavoriteClick(event, station.stationuuid)
                         }} className={`symbol star ${(favoriteStations.includes(station.stationuuid)? 'selected' : '')}`} >★</span>
-                        <span><span onClick={(event)=>{
-                            event.stopPropagation()
-                            handleVote(event, station.stationuuid).then()
-                        }} className="symbol">👍</span> {station.votes}</span>
-                    </div>
-                </div>
-            ))}
-            </div>
+                                        <span><span onClick={(event)=>{
+                                            event.stopPropagation()
+                                            handleVote(event, station.stationuuid).then()
+                                        }} className="symbol">👍</span> {station.votes}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
-            {totalPages > 1 && (
-                <div className="pagination">
-                    <button
-                    onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="page-button"
-                    >
-                    &laquo; Prev
-            </button>
+                        {totalPages > 1 && (
+                            <div className="pagination">
+                                <button
+                                    onClick={() => paginate(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="page-button"
+                                >
+                                    &laquo; Prev
+                                </button>
 
-            <span className="page-info">
+                                <span className="page-info">
                 Page {currentPage} of {totalPages}
                 </span>
 
-                <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="page-button"
-                    >
-                    Next &raquo;
-                </button>
-                </div>
-            )}
-            </>
-        )}
-        </div>
+                                <button
+                                    onClick={() => paginate(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="page-button"
+                                >
+                                    Next &raquo;
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
         </>
     );
-    };
+};
 
-        export default StationSelector;
+export default StationSelector;

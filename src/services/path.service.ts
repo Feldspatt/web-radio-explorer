@@ -10,6 +10,7 @@ export const paths = {
     getLanguages: () => radioServerUrl + '/languages',
     getTags: () => radioServerUrl + '/tags',
     getVote: (uuid: string) => radioServerUrl + `/vote/${uuid}`,
+    getStationSearch: (params: URLSearchParams)=> radioServerUrl + `/stations/search?${params.toString()}`,
     getByUUID: (uuidArray: string[]) => radioServerUrl + `/stations/byuuid?uuids=${uuidArray.join(',')}`,
 }
 

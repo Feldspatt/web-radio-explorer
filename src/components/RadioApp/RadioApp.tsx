@@ -57,7 +57,7 @@ const RadioApp: React.FC = () => {
                         </div>
                     </div>
                 )}
-                <StationSelector onStationSelect={(station)=>setSelectedStation(station)} />
+                <StationSelector  stationsPerPage={20} stationCount={selectedServer.stations} onStationSelect={(station)=>setSelectedStation(station)} />
             </div>
         </div>
                 </>
