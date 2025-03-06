@@ -79,6 +79,12 @@
     cursor: pointer;
 }
 
+/* For Webkit browsers (Chrome, Safari) */
+.filter-group select option {
+    background: var(--color-bg-panel-gradient-end);
+    color: var(--color-text-primary);
+}
+
 .filter-group select:focus {
     border-color: var(--color-primary-500);
 }
