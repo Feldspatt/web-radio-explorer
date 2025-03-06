@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
+import {paths} from "../../path.service.ts";
 
 interface RadioStation {
     stationuuid: string;
@@ -61,7 +62,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         const fetchMetadata = async () => {
             try {
                 // Fetch countries
-                const countriesResponse = await fetch('https://de1.api.radio-browser.info/json/countries');
+                const countriesResponse = await fetch(paths.getCountries());
                 const countriesData = await countriesResponse.json();
                 const countryNames = countriesData
                     .filter((item: any) => item.name && item.stationcount > 5)
@@ -70,7 +71,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 setCountries(['all', ...countryNames]);
 
                 // Fetch languages
-                const languagesResponse = await fetch('https://de1.api.radio-browser.info/json/languages');
+                const languagesResponse = await fetch(paths.getLanguages());
                 const languagesData = await languagesResponse.json();
                 const languageNames = languagesData
                     .filter((item: any) => item.name && item.stationcount > 5)
@@ -79,7 +80,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 setLanguages(['all', ...languageNames]);
 
                 // Fetch tags
-                const tagsResponse = await fetch('https://de1.api.radio-browser.info/json/tags');
+                const tagsResponse = await fetch(paths.getTags());
                 const tagsData = await tagsResponse.json();
                 const tagNames = tagsData
                     .filter((item: any) => item.name && item.stationcount > 5)
@@ -96,12 +97,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     useEffect(()=> {
         const fetchStations = async ()=> {
-            let url = 'https://de1.api.radio-browser.info/json/stations/byuuid?'
-
-            const params = new URLSearchParams({ uuids: favoriteStations.join(',')})
-
             try {
-                const response = await fetch(`${url}${params.toString()}`);
+                const response = await fetch(paths.getByUUID(favoriteStations));
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -232,7 +229,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const handleVote = async (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
         event.preventDefault()
 
-        let url = `https://de1.api.radio-browser.info/json/vote/${uuid}`;
+        let url = paths.getVote(uuid);
 
         try {
             const response = await fetch(url)

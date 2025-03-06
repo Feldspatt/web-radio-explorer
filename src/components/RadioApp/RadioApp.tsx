@@ -5,7 +5,7 @@ import './RadioApp.css';
 import {ThemeProvider} from "../Theme/ThemeContext.tsx";
 import ThemeToggle from "../Theme/ThemeToggle.tsx";
 
-interface RadioStation {
+type RadioStation = {
     stationuuid: string;
     name: string;
     url: string;
