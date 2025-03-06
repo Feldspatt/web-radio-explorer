@@ -2,19 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
 import {paths} from "../../path.service.ts";
 
-interface RadioStation {
-    stationuuid: string;
-    name: string;
-    url: string;
-    favicon: string;
-    tags: string;
-    country: string;
-    language: string;
-    codec: string;
-    bitrate: number;
-    votes: number;
-    clickcount: number;
-}
 
 interface StationSelectorProps {
     onStationSelect: (station: RadioStation) => void;
@@ -35,7 +22,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [countries, setCountries] = useState<string[]>([]);
     const [languages, setLanguages] = useState<string[]>([]);
     const [tags, setTags] = useState<string[]>([]);
-    const [favorites, setFavorites] = useState<boolean>(true);
+    const [favorites] = useState<boolean>(true);
 
     // Selected filters
     const [selectedCountry, setSelectedCountry] = useState(initialCountry);

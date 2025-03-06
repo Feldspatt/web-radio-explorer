@@ -38,8 +38,7 @@ const RadioApp: React.FC = () => {
             <div className="app-content">
                 {selectedStation ? (
                     <RadioPlayer
-                        sourceUrl={selectedStation.url}
-                        stationName={selectedStation.name}
+                        station={selectedStation}
                     />
                 ) : (
                     <div className="no-station-selected">

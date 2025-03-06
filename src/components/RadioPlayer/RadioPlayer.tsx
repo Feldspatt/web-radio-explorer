@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './RadioPlayer.css';
 
-interface RadioPlayerProps {
-    sourceUrl: string;
-    stationName?: string; // Added station name as an optional prop
+type RadioPlayerProps = {
+    station: Pick<RadioStation, 'url' | 'name' | 'favicon'>
 }
 
-const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web Radio" }) => {
+const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(80);
     const audioContextRef = useRef<AudioContext | null>(null);
@@ -18,42 +17,34 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
     const audioRef= useRef<HTMLAudioElement>(null)
     const safeAudioRef= useRef<HTMLAudioElement>(null)
 
-    // Initialize Web Audio API
     useEffect(() => {
-        const initializeAudio = () => {
+        if (audioRef.current === null) return;
 
-            // audio unsafe (with analyser)
-            if(audioRef.current === null) return
-
-            // Create audio context
+        if (!audioContextRef.current) {
             const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-            const audioContext = new AudioContext();
-            audioContextRef.current = audioContext;
+            audioContextRef.current = new AudioContext();
+        }
 
-            // Create source node
-            const sourceNode = audioContext.createMediaElementSource(audioRef.current)
+        let sourceNode;
+        if (!audioRef.current.srcObject) {
+            try {
+                sourceNode = audioContextRef.current.createMediaElementSource(audioRef.current);
 
-            // Create analyzer node (for visualization)
-            const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-            analyserRef.current = analyser;
+                const analyser = audioContextRef.current.createAnalyser();
+                analyser.fftSize = 256;
+                analyserRef.current = analyser;
 
-            // Connect the nodes
-            sourceNode.connect(analyser);
-            analyser.connect(audioContext.destination);
+                sourceNode.connect(analyser);
+                analyser.connect(audioContextRef.current.destination);
+            } catch (error) {
+                console.error("Error setting up audio nodes:", error);
+                return;
+            }
+        }
 
-            // Set initial volume
+        if (audioRef.current) {
             audioRef.current.volume = volume/100;
-
-            return () => {
-                // Cleanup
-                if (audioContext.state !== 'closed') {
-                    analyser.disconnect();
-                }
-            };
-        };
-
-        initializeAudio();
+        }
 
         return () => {
             if (animationFrameRef.current) {
@@ -62,19 +53,16 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
         };
     }, []);
 
-    // Handle source URL changes
     useEffect(() => {
         setIsSafeMode(false)
         if (audioRef.current && safeAudioRef.current) {
 
-            window.localStorage.setItem('lastStation', JSON.stringify({ sourceUrl, stationName }))
+            window.localStorage.setItem('lastStation', JSON.stringify(station))
             const wasPlaying = !audioRef.current.paused || !safeAudioRef.current.paused;
 
-            // Update source
-            audioRef.current.src = sourceUrl
-            safeAudioRef.current.src = sourceUrl
+            audioRef.current.src = station.url
+            safeAudioRef.current.src = station.url
 
-            // If it was playing, reload and continue playing
             if (wasPlaying) {
                 audioRef.current.load();
                 audioRef.current.play().catch(e => {
@@ -89,7 +77,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
                 });
             }
         }
-    }, [sourceUrl]);
+    }, [station.url]);
 
     // Handle volume changes
     useEffect(() => {
@@ -192,10 +180,25 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ sourceUrl, stationName = "Web
             />
 
             <div className="station-header">
-                <h2 className="station-name">{stationName}</h2>
+                <span className={"inline"}>
+                    <div className="station-logo">
+                        {station.favicon ? (
+                            <img
+                                src={station.favicon}
+                                alt={`${station.name} logo`}
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
+                                }}
+                            />
+                        ) : (
+                            <div className="default-logo">📻</div>
+                        )}
+                    </div>
+                    <h2 className="station-name">{station.name}</h2>
+                </span>
                 <div className={`status-indicator ${isPlaying ? 'online' : 'paused'}`}>
-                    {isPlaying ? 'ON AIR' : 'PAUSED'}
-                </div>
+                        {isPlaying ? 'ON AIR' : 'PAUSED'}
+                    </div>
             </div>
 
             <div className="controls">

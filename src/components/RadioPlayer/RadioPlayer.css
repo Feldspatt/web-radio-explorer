@@ -25,6 +25,12 @@ audio {
     border-bottom: 1px solid var(--color-border);
 }
 
+
+.station-header > span {
+    display: flex;
+    align-items: center;
+}
+
 .station-name {
     margin: 0;
     font-size: 22px;
