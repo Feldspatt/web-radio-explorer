@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
-import {paths} from "../../path.service.ts";
+import {paths} from "../../services/path.service.ts";
 
 
 interface StationSelectorProps {
@@ -48,38 +48,43 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     useEffect(() => {
         const fetchMetadata = async () => {
             try {
+
+                const [ countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
+                    fetch(paths.getCountries()),
+                    fetch(paths.getLanguages()),
+                    fetch(paths.getTags()),
+                ])
+
                 // Fetch countries
-                const countriesResponse = await fetch(paths.getCountries());
                 const countriesData = await countriesResponse.json();
                 const countryNames = countriesData
                     .filter((item: any) => item.name && item.stationcount > 5)
                     .map((item: any) => item.name)
                     .sort();
-                setCountries(['all', ...countryNames]);
+                setCountries(['all', ...countryNames])
 
                 // Fetch languages
-                const languagesResponse = await fetch(paths.getLanguages());
                 const languagesData = await languagesResponse.json();
                 const languageNames = languagesData
                     .filter((item: any) => item.name && item.stationcount > 5)
                     .map((item: any) => item.name)
                     .sort();
-                setLanguages(['all', ...languageNames]);
+                setLanguages(['all', ...languageNames])
 
                 // Fetch tags
-                const tagsResponse = await fetch(paths.getTags());
                 const tagsData = await tagsResponse.json();
                 const tagNames = tagsData
                     .filter((item: any) => item.name && item.stationcount > 5)
                     .map((item: any) => item.name)
                     .sort();
-                setTags(['all', ...tagNames]);
+                setTags(['all', ...tagNames])
             } catch (err) {
-                setError('Failed to load filter options. Please try again later.');
+                console.error('Failed to load filter options. Please try again later. ' + err)
+                setError('Failed to load filter options. Please try again later.')
             }
         };
 
-        fetchMetadata();
+        fetchMetadata().then()
     }, []);
 
     useEffect(()=> {

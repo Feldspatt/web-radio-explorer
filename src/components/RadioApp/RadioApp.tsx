@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
 import StationSelector from '../StationSelector/StationSelector.tsx';
 import './RadioApp.css';
 import {ThemeProvider} from "../Theme/ThemeContext.tsx";
 import ThemeToggle from "../Theme/ThemeToggle.tsx";
+import ServerPicker from "../ServerPicker.tsx";
+import {paths} from "../../services/path.service.ts";
 
 type RadioStation = {
     stationuuid: string;
@@ -20,14 +22,20 @@ type RadioStation = {
 }
 
 const RadioApp: React.FC = () => {
-    const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null);
+    const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
+    const [selectedServer, setSelectedServer] = useState<Server | null>(null)
 
-    const handleStationSelect = (station: RadioStation) => {
-        setSelectedStation(station);
-    };
+    useEffect(() => {
+        if(selectedServer) {
+            paths.setServer(selectedServer.name)
+            console.log('Selected server', selectedServer.name)
+        }
+    }, [selectedServer])
 
     return (
         <ThemeProvider>
+            {!selectedServer ?  <ServerPicker onServerSelected={(server)=>setSelectedServer(server)}></ServerPicker>:
+                <>
         <div className="radio-app">
             <ThemeToggle/>
             <header className="app-header">
@@ -49,11 +57,12 @@ const RadioApp: React.FC = () => {
                         </div>
                     </div>
                 )}
-
-                <StationSelector onStationSelect={handleStationSelect} />
+                <StationSelector onStationSelect={(station)=>setSelectedStation(station)} />
             </div>
         </div>
-        </ThemeProvider>
+                </>
+            }
+                </ThemeProvider>
     );
 };
 
