@@ -6,23 +6,13 @@ import {ThemeProvider} from "../Theme/ThemeContext.tsx";
 import ThemeToggle from "../Theme/ThemeToggle.tsx";
 import ServerPicker from "../ServerPicker.tsx";
 import {paths} from "../../services/path.service.ts";
-
-type RadioStation = {
-    stationuuid: string;
-    name: string;
-    url: string;
-    favicon: string;
-    tags: string;
-    country: string;
-    language: string;
-    codec: string;
-    bitrate: number;
-    votes: number;
-    clickcount: number;
-}
+import StationList from "../StationList/StationList.tsx";
 
 const RadioApp: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
+    const [stations, setStations] = useState<RadioStation[]>([])
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [selectedServer, setSelectedServer] = useState<Server | null>(null)
 
     useEffect(() => {
@@ -31,6 +21,12 @@ const RadioApp: React.FC = () => {
             console.log('Selected server', selectedServer.name)
         }
     }, [selectedServer])
+
+    const onStationsUpdate = (stations: RadioStation[], totalPages: number, currentOage: number) => {
+        setStations(stations)
+        setCurrentPage(currentOage)
+        setTotalPages(totalPages)
+    }
 
     return (
         <ThemeProvider>
@@ -57,7 +53,17 @@ const RadioApp: React.FC = () => {
                         </div>
                     </div>
                 )}
-                <StationSelector  stationsPerPage={20} stationCount={selectedServer.stations} onStationSelect={(station)=>setSelectedStation(station)} />
+                <StationSelector
+                    stationsPerPage={20}
+                    stationCount={selectedServer.stations}
+                    onStationsUpdate={onStationsUpdate}
+                />
+                <StationList
+                    stations={stations}
+                    favoriteStations={[]}
+                    onStationSelect={(station)=>setSelectedStation(station)}
+                    onToggleFavorite={()=>{}}
+                />
             </div>
         </div>
                 </>

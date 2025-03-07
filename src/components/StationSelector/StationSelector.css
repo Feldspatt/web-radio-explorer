@@ -108,14 +108,6 @@
     background-color: #e0e0e0;
 }
 
-.loading, .error, .no-results {
-    padding: 30px;
-    text-align: center;
-    background-color: var(--color-bg-item);
-    border-radius: 8px;
-    margin: 20px 0;
-}
-
 .error {
     color: var(--color-error);
 }

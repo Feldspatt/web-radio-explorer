@@ -7,11 +7,6 @@ audio {
 .radio-player {
     width: 100%;
     max-width: 600px;
-    padding: 20px;
-    border-radius: 10px;
-    background: linear-gradient(145deg, var(--color-bg-panel-gradient-start), var(--color-bg-panel-gradient-end));
-    box-shadow: 0 10px 15px var(--color-shadow);
-    color: var(--color-text-primary);
     font-family: 'Arial', sans-serif;
     transition: all 0.3s ease;
 }
@@ -55,6 +50,11 @@ audio {
 
 .status-indicator.paused {
     background-color: var(--color-error);
+}
+
+.status-indicator.loading {
+    background-color: #f9a825; /* yellow/orange for loading */
+    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {

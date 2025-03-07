@@ -7,7 +7,9 @@ type RadioPlayerProps = {
 
 const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps) => {
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [volume, setVolume] = useState(80);
+    const [playbackError, setPlaybackError] = useState(false);
     const audioContextRef = useRef<AudioContext | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -54,41 +56,113 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
     }, []);
 
     useEffect(() => {
-        setIsSafeMode(false)
+        setIsSafeMode(false);
+        setIsLoading(true);
+        setPlaybackError(false); // Reset error state when station changes
+
+        // We'll attempt to play automatically when station changes regardless of previous state
+        setIsPlaying(true);
+
         if (audioRef.current && safeAudioRef.current) {
+            window.localStorage.setItem('lastStation', JSON.stringify(station));
 
-            window.localStorage.setItem('lastStation', JSON.stringify(station))
-            const wasPlaying = !audioRef.current.paused || !safeAudioRef.current.paused;
+            audioRef.current.src = station.url;
+            safeAudioRef.current.src = station.url;
 
-            audioRef.current.src = station.url
-            safeAudioRef.current.src = station.url
+            // Always load the audio
+            audioRef.current.load();
+            safeAudioRef.current.load();
 
-            if (wasPlaying) {
-                audioRef.current.load();
-                audioRef.current.play().catch(e => {
-                    console.error("Error playing audio with unsafe player:", e)
-                    setIsSafeMode(true)
-                    if(safeAudioRef.current) {
-                        safeAudioRef.current.load()
-                        safeAudioRef.current.play().catch((error)=> {
-                            console.error("Error playing audio with safe player:", error);
-                        })
-                    }
-                });
-            }
+            // Always try to play when station changes
+            audioRef.current.play().catch(e => {
+                console.error("Error playing audio with unsafe player:", e);
+                setIsSafeMode(true);
+                if(safeAudioRef.current) {
+                    safeAudioRef.current.play().catch((error)=> {
+                        console.error("Error playing audio with safe player:", error);
+                        setIsPlaying(false);
+                        setIsLoading(false);
+                        // Only set error state if both players fail
+                        setPlaybackError(true);
+                    });
+                }
+            });
+        } else {
+            setIsLoading(false);
         }
     }, [station.url]);
 
+    useEffect(() => {
+        if (!audioRef.current || !safeAudioRef.current) return;
+
+        const handleCanPlay = () => {
+            setIsLoading(false);
+            setPlaybackError(false); // Clear error state when stream can play
+            if (isPlaying) {
+                const currentPlayer = !isSafeMode ? audioRef.current : safeAudioRef.current;
+                currentPlayer?.play().catch(e => {
+                    console.error(`Error auto-playing after can play event in ${isSafeMode ? 'safe' : 'normal'} mode:`, e);
+                    // Only set error if both players fail
+                    if (isSafeMode) {
+                        setPlaybackError(true);
+                    } else {
+                        setIsSafeMode(true);
+                        safeAudioRef.current?.play().catch(safeError => {
+                            console.error("Safe mode playback failed too:", safeError);
+                            setPlaybackError(true);
+                        });
+                    }
+                });
+            }
+        };
+
+        const handlePrimaryError = (e: Event) => {
+            console.error("Primary audio error event:", e);
+            // Don't set error state yet, try safe mode first
+            if (!isSafeMode && safeAudioRef.current) {
+                setIsSafeMode(true);
+                safeAudioRef.current.play().catch(safeError => {
+                    console.error("Safe mode playback also failed:", safeError);
+                    setIsPlaying(false);
+                    setIsLoading(false);
+                    setPlaybackError(true); // Only set error if both fail
+                });
+            }
+        };
+
+        const handleSafeError = (e: Event) => {
+            console.error("Safe audio error event:", e);
+            // Only set error state if we're already in safe mode
+            if (isSafeMode) {
+                setIsPlaying(false);
+                setIsLoading(false);
+                setPlaybackError(true);
+            }
+        };
+
+        audioRef.current.addEventListener('canplay', handleCanPlay);
+        audioRef.current.addEventListener('error', handlePrimaryError);
+        safeAudioRef.current.addEventListener('canplay', handleCanPlay);
+        safeAudioRef.current.addEventListener('error', handleSafeError);
+
+        return () => {
+            audioRef.current?.removeEventListener('canplay', handleCanPlay);
+            audioRef.current?.removeEventListener('error', handlePrimaryError);
+            safeAudioRef.current?.removeEventListener('canplay', handleCanPlay);
+            safeAudioRef.current?.removeEventListener('error', handleSafeError);
+        };
+    }, [isPlaying, isSafeMode]);
+
     // Handle volume changes
     useEffect(() => {
-        if(audioRef.current) audioRef.current.volume = volume / 100
+        if(audioRef.current) audioRef.current.volume = volume / 100;
         if(safeAudioRef.current) safeAudioRef.current.volume = volume / 100;
     }, [volume]);
 
     useEffect(()=>{
-        const savedVolume = window.localStorage.getItem('volume')
-        if(savedVolume)setVolume(parseInt(savedVolume))
-    }, [])
+        const savedVolume = window.localStorage.getItem('volume');
+        if(savedVolume) setVolume(parseInt(savedVolume));
+    }, []);
 
     // Visualizer function
     const drawVisualizer = () => {
@@ -135,16 +209,23 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         if (!audioRef.current || !safeAudioRef.current || !audioContextRef.current) return;
 
         const audioContext = audioContextRef.current;
-        const audioElement = !isSafeMode? audioRef.current : safeAudioRef.current
+        const audioElement = !isSafeMode ? audioRef.current : safeAudioRef.current;
 
+        // Reset error state when attempting to play
+        setPlaybackError(false);
 
         // If audio context is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
             audioContext.resume();
         }
 
+        setIsLoading(true); // Add loading state when toggling
+
         if (isPlaying) {
             audioElement.pause();
+            setIsPlaying(false);
+            setIsLoading(false);
+
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
                 animationFrameRef.current = null;
@@ -152,14 +233,32 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         } else {
             audioElement.play()
                 .then(() => {
+                    setIsPlaying(true);
+                    setIsLoading(false);
                     drawVisualizer();
                 })
                 .catch(error => {
                     console.error("Error playing audio:", error);
+
+                    // Try safe mode if normal playback fails
+                    if (!isSafeMode && safeAudioRef.current) {
+                        setIsSafeMode(true);
+                        safeAudioRef.current.play()
+                            .then(() => {
+                                setIsPlaying(true);
+                                setIsLoading(false);
+                            })
+                            .catch(safeError => {
+                                console.error("Safe mode playback failed too:", safeError);
+                                setIsLoading(false);
+                                setPlaybackError(true); // Only set error if both players fail
+                            });
+                    } else {
+                        setIsLoading(false);
+                        setPlaybackError(true); // Set error if safe mode already failed
+                    }
                 });
         }
-
-        setIsPlaying(!isPlaying);
     };
 
     // Handle volume change
@@ -168,8 +267,44 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         window.localStorage.setItem('volume', e.target.value);
     };
 
+    // Try to connect again when in error state
+    const retryConnection = () => {
+        if (!audioRef.current || !safeAudioRef.current) return;
+
+        setPlaybackError(false);
+        setIsLoading(true);
+        setIsSafeMode(false); // Reset to primary audio first
+
+        // Reload the audio and try playing again
+        audioRef.current.load();
+        safeAudioRef.current.load();
+
+        audioRef.current.play()
+            .then(() => {
+                setIsPlaying(true);
+                setIsLoading(false);
+                drawVisualizer();
+            })
+            .catch(error => {
+                console.error("Error during retry with primary audio:", error);
+                // Try safe mode if primary fails
+                setIsSafeMode(true);
+                safeAudioRef.current.play()
+                    .then(() => {
+                        setIsPlaying(true);
+                        setIsLoading(false);
+                    })
+                    .catch(safeError => {
+                        console.error("Safe mode playback also failed during retry:", safeError);
+                        setIsLoading(false);
+                        setIsPlaying(false);
+                        setPlaybackError(true);
+                    });
+            });
+    };
+
     return (
-        <div className="radio-player">
+        <div className="radio-player card">
             <audio
                 ref={audioRef}
                 crossOrigin="anonymous"
@@ -196,18 +331,27 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                     </div>
                     <h2 className="station-name">{station.name}</h2>
                 </span>
-                <div className={`status-indicator ${isPlaying ? 'online' : 'paused'}`}>
-                        {isPlaying ? 'ON AIR' : 'PAUSED'}
-                    </div>
+                <div className={`status-indicator ${isLoading ? 'loading' : playbackError ? 'error' : isPlaying ? 'online' : 'paused'}`}>
+                    {isLoading ? 'LOADING...' : playbackError ? 'UNAVAILABLE' : isPlaying ? 'ON AIR' : 'PAUSED'}
+                </div>
             </div>
 
             <div className="controls">
-                <button
-                    className={`play-pause-button ${isPlaying ? 'playing' : ''}`}
-                    onClick={togglePlayPause}
-                >
-                    {isPlaying ? '❚❚' : '▶'}
-                </button>
+                {playbackError ? (
+                    <button
+                        className="retry-button"
+                        onClick={retryConnection}
+                    >
+                        🔄 Retry
+                    </button>
+                ) : (
+                    <button
+                        className={`play-pause-button ${isPlaying ? 'playing' : ''}`}
+                        onClick={togglePlayPause}
+                    >
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                )}
 
                 <div className="volume-control">
                     <span className="volume-icon">🔊</span>

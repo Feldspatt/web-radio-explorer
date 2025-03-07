@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
-import {paths} from "../../services/path.service.ts";
-
-interface FilterOption {
-    name: string;
-    stationCount: number;
-}
+import { paths } from "../../services/path.service.ts";
 
 interface StationSelectorProps {
-    onStationSelect: (station: RadioStation) => void;
     stationCount: number;
     stationsPerPage: number;
+    onStationsUpdate: (stations: RadioStation[], totalPages: number, currentPage: number) => void;
 }
 
 const StationSelector: React.FC<StationSelectorProps> = ({
-                                                             onStationSelect, stationCount, stationsPerPage
+                                                             stationCount, stationsPerPage, onStationsUpdate
                                                          }) => {
     const [filteredStations, setFilteredStations] = useState<RadioStation[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [favoriteStations, setFavoriteStations] = useState<string[]>([]);
     const [totalFilteredStations, setTotalFilteredStations] = useState(stationCount);
 
     // Filter states with station counts
@@ -44,11 +38,11 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Search term
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Update parent component with filtered stations
     useEffect(() => {
-        console.log('loading favorites...');
-        const savedStations = window.localStorage.getItem('favorite_stations');
-        if(savedStations) setFavoriteStations(savedStations.split(','));
-    }, []);
+        const totalPages = Math.ceil(totalFilteredStations / stationsPerPage);
+        onStationsUpdate(filteredStations, totalPages, currentPage);
+    }, [filteredStations, totalFilteredStations, stationsPerPage, currentPage, onStationsUpdate]);
 
     // Fetch countries, languages, and tags on mount
     useEffect(() => {
@@ -101,45 +95,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         fetchMetadata().then();
     }, [stationCount]);
 
-    useEffect(() => {
-        // When using favorites filter
-        if (activeFilter === 'favorite' && favoriteStations.length > 0) {
-            const fetchStations = async () => {
-                setLoading(true);
-                try {
-                    const response = await fetch(paths.getByUUID(favoriteStations));
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-
-                    const data = await response.json();
-
-                    // Filter out stations with invalid URLs
-                    const validStations = data.filter((station: RadioStation) =>
-                        station.url &&
-                        station.url.trim() !== '' &&
-                        (station.url.startsWith('http://') || station.url.startsWith('https://'))
-                    );
-
-                    setFilteredStations(validStations);
-                    setTotalFilteredStations(validStations.length);
-                    setCurrentPage(1);
-                } catch (err) {
-                    setError('Failed to load stations. Please try again later.');
-                    setFilteredStations([]);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchStations();
-        }
-    }, [activeFilter, favoriteStations]);
-
     // Fetch stations based on the active filter and pagination
     useEffect(() => {
-        if (activeFilter === 'favorite' && favoriteStations.length > 0) return; // Skip this effect for favorites
-
         const fetchStations = async () => {
             setLoading(true);
             setError(null);
@@ -163,7 +120,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
             // Sort by popularity by default
             params.append('order', sortBy);
-            params.append('reverse', 'true');
+
+            // Set reverse parameter based on sort type
+            // For name, we want alphabetical order (A-Z), so reverse should be false
+            // For votes and clickcount, we want highest first, so reverse should be true
+            const shouldReverse = sortBy !== 'name';
+            params.append('reverse', shouldReverse.toString());
+
             params.append('hidebroken', 'true');
             params.append('offset', offset.toString());
             params.append('limit', stationsPerPage.toString());
@@ -202,7 +165,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         };
 
         fetchStations();
-    }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm, favoriteStations]);
+    }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm]);
 
     // Reset to first page when filter changes
     useEffect(() => {
@@ -277,232 +240,116 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         }
     };
 
-    // Handle favorites filter
-    const handleFavoritesClick = () => {
-        // Reset other filters
-        setSelectedCountry('all');
-        setSelectedLanguage('all');
-        setSelectedTag('all');
-        setSearchTerm('');
-
-        if (activeFilter === 'favorite') {
-            setActiveFilter(null);
-            setTotalFilteredStations(stationCount);
-        } else {
-            setActiveFilter('favorite');
-            setTotalFilteredStations(favoriteStations.length);
-        }
-    };
-
-    // Calculate total pages based on filtered stations count
-    const totalPages = Math.ceil(totalFilteredStations / stationsPerPage);
-
     // Pagination controls
     const paginate = (pageNumber: number) => {
         if(pageNumber >= 1) setCurrentPage(pageNumber);
     }
 
-    // Handle station selection
-    const handleStationSelect = (station: RadioStation) => {
-        onStationSelect(station);
-    };
-
-    const handleFavoriteClick = (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
-        event.preventDefault();
-        const index = favoriteStations.indexOf(uuid);
-        let updatedFavorites = [...favoriteStations];
-
-        if (index > -1) {
-            updatedFavorites.splice(index, 1);
-        } else {
-            updatedFavorites.push(uuid);
-        }
-
-        setFavoriteStations(updatedFavorites);
-        window.localStorage.setItem('favorite_stations', updatedFavorites.join(','));
-    };
-
-    const handleVote = async (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
-        event.preventDefault();
-        let url = paths.getVote(uuid);
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Error sending vote: ${error}`);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
     return (
-        <>
-            <div className="station-selector">
-                <h2>Explore</h2>
+        <div className="station-selector card">
+            <h2>Explore</h2>
 
-                <div className="search-bar">
-                    <input
-                        type="text"
-                        placeholder="Search stations..."
-                        value={searchTerm}
-                        onChange={(e) => handleSearch(e.target.value)}
-                        className={`search-input ${activeFilter === 'search' ? 'active-filter' : ''}`}
-                    />
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search stations..."
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className={`search-input ${activeFilter === 'search' ? 'active-filter' : ''}`}
+                />
+            </div>
+
+            <div className="filters">
+                <div className="filter-group">
+                    <label>Country:</label>
+                    <select
+                        value={selectedCountry}
+                        onChange={(e) => handleCountryChange(e.target.value)}
+                        className={activeFilter === 'country' ? 'active-filter' : ''}
+                    >
+                        <option value="all">All</option>
+                        {countries.filter(country => country.name !== 'all').map(country => (
+                            <option key={country.name} value={country.name}>
+                                {country.name} ({country.stationCount})
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-                <div className="filters">
-                    <div className="filter-group">
-                        <label>Country:</label>
-                        <select
-                            value={selectedCountry}
-                            onChange={(e) => handleCountryChange(e.target.value)}
-                            className={activeFilter === 'country' ? 'active-filter' : ''}
-                        >
-                            {countries.map(country => (
-                                <option key={country.name} value={country.name}>
-                                    {country.name} ({country.stationCount})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="filter-group">
+                    <label>Language:</label>
+                    <select
+                        value={selectedLanguage}
+                        onChange={(e) => handleLanguageChange(e.target.value)}
+                        className={activeFilter === 'language' ? 'active-filter' : ''}
+                    >
+                        <option value="all">All</option>
+                        {languages.filter(language => language.name !== 'all').map(language => (
+                            <option key={language.name} value={language.name}>
+                                {language.name} ({language.stationCount})
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                    <div className="filter-group">
-                        <label>Language:</label>
-                        <select
-                            value={selectedLanguage}
-                            onChange={(e) => handleLanguageChange(e.target.value)}
-                            className={activeFilter === 'language' ? 'active-filter' : ''}
-                        >
-                            {languages.map(language => (
-                                <option key={language.name} value={language.name}>
-                                    {language.name} ({language.stationCount})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="filter-group">
+                    <label>Genre:</label>
+                    <select
+                        value={selectedTag}
+                        onChange={(e) => handleTagChange(e.target.value)}
+                        className={activeFilter === 'tag' ? 'active-filter' : ''}
+                    >
+                        <option value="all">All</option>
+                        {tags.filter(tag => tag.name !== 'all').map(tag => (
+                            <option key={tag.name} value={tag.name}>
+                                {tag.name} ({tag.stationCount})
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                    <div className="filter-group">
-                        <label>Genre:</label>
-                        <select
-                            value={selectedTag}
-                            onChange={(e) => handleTagChange(e.target.value)}
-                            className={activeFilter === 'tag' ? 'active-filter' : ''}
-                        >
-                            {tags.map(tag => (
-                                <option key={tag.name} value={tag.name}>
-                                    {tag.name} ({tag.stationCount})
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="filter-group">
+                    <label>Sort by:</label>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as 'name' | 'votes' | 'clickcount')}
+                    >
+                        <option value="votes">Popularity</option>
+                        <option value="name">Name</option>
+                        <option value="clickcount">Listeners</option>
+                    </select>
+                </div>
+            </div>
 
-                    <div className="filter-group">
-                        <label>Sort by:</label>
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as 'name' | 'votes' | 'clickcount')}
-                        >
-                            <option value="votes">Popularity</option>
-                            <option value="name">Name</option>
-                            <option value="clickcount">Listeners</option>
-                        </select>
-                    </div>
+            {/* Status indicators */}
+            {loading && <div className="loading">Loading stations...</div>}
+            {error && <div className="error">{error}</div>}
+
+            {/* Pagination controls */}
+            {!loading && !error && filteredStations.length > 0 && (
+                <div className="pagination">
+                    <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="page-button"
+                    >
+                        &laquo; Prev
+                    </button>
+
+                    <span className="page-info">
+                        Page <input type="number" onChange={(ev) => paginate(parseInt(ev.target.value))} value={currentPage}/> of {Math.ceil(totalFilteredStations / stationsPerPage)}
+                    </span>
 
                     <button
-                        onClick={handleFavoritesClick}
-                        className={`favorites-button ${activeFilter === 'favorite' ? 'active-filter' : ''}`}
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === Math.ceil(totalFilteredStations / stationsPerPage)}
+                        className="page-button"
                     >
-                        My Favorites
+                        Next &raquo;
                     </button>
                 </div>
-
-                {loading ? (
-                    <div className="loading">Loading stations...</div>
-                ) : error ? (
-                    <div className="error">{error}</div>
-                ) : filteredStations.length === 0 ? (
-                    <div className="no-results">No stations found. Try different filters.</div>
-                ) : (
-                    <>
-                        <div className="stations-list">
-                            {filteredStations.map(station => (
-                                <div
-                                    key={station.stationuuid}
-                                    className="station-item"
-                                    onClick={() => handleStationSelect(station)}
-                                >
-                                    <div className="station-logo">
-                                        {station.favicon ? (
-                                            <img
-                                                src={station.favicon}
-                                                alt={`${station.name} logo`}
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
-                                                }}
-                                            />
-                                        ) : (
-                                            <div className="default-logo">📻</div>
-                                        )}
-                                    </div>
-
-                                    <div className="station-info">
-                                        <h3 className="station-name">{station.name}</h3>
-                                        <div className="station-details">
-                                            <span>{station.country}</span>
-                                            {station.language && <span> • {station.language}</span>}
-                                            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
-                                        </div>
-                                        {station.tags && (
-                                            <div className="station-tags">
-                                                {station.tags.split(',').slice(0, 3).map(tag => (
-                                                    <span key={tag} className="tag">{tag.trim()}</span>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="symbols">
-                                        <span onClick={(event) => {
-                                            event.stopPropagation();
-                                            handleFavoriteClick(event, station.stationuuid);
-                                        }} className={`symbol star ${(favoriteStations.includes(station.stationuuid) ? 'selected' : '')}`}>★</span>
-                                        <span><span onClick={(event) => {
-                                            event.stopPropagation();
-                                            handleVote(event, station.stationuuid).then();
-                                        }} className="symbol">👍</span> {station.votes}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {totalPages > 1 && (
-                            <div className="pagination">
-                                <button
-                                    onClick={() => paginate(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="page-button"
-                                >
-                                    &laquo; Prev
-                                </button>
-
-                                <span className="page-info">
-                                    Page <input type={"number"} onChange={(ev)=> paginate(parseInt(ev.target.value))} value={currentPage}/> of {totalPages}
-                                </span>
-
-                                <button
-                                    onClick={() => paginate(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className="page-button"
-                                >
-                                    Next &raquo;
-                                </button>
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
-        </>
+            )}
+        </div>
     );
 };
 
