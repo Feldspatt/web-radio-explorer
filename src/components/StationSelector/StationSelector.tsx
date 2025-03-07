@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
 import {paths} from "../../services/path.service.ts";
 
+interface FilterOption {
+    name: string;
+    stationCount: number;
+}
 
 interface StationSelectorProps {
     onStationSelect: (station: RadioStation) => void;
@@ -15,19 +19,21 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [filteredStations, setFilteredStations] = useState<RadioStation[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [favoriteStations, setFavoriteStations] = useState<string[]>([])
+    const [favoriteStations, setFavoriteStations] = useState<string[]>([]);
+    const [totalFilteredStations, setTotalFilteredStations] = useState(stationCount);
 
-    // Filter states
-    const [countries, setCountries] = useState<string[]>([]);
-    const [languages, setLanguages] = useState<string[]>([]);
-    const [tags, setTags] = useState<{name: string, stationCount: number}[]>([]);
-    const [favorites] = useState<boolean>(true);
+    // Filter states with station counts
+    const [countries, setCountries] = useState<FilterOption[]>([]);
+    const [languages, setLanguages] = useState<FilterOption[]>([]);
+    const [tags, setTags] = useState<FilterOption[]>([]);
 
-    // Selected filters
-    const [selectedCountry, setSelectedCountry] = useState('all');
-    const [selectedLanguage, setSelectedLanguage] = useState('all');
-    const [selectedTag, setSelectedTag] = useState('all');
-    const [searchTerm, setSearchTerm] = useState('');
+    // Active filter
+    const [activeFilter, setActiveFilter] = useState<'country' | 'language' | 'tag' | 'search' | 'favorite' | null>(null);
+
+    // Filter values
+    const [selectedCountry, setSelectedCountry] = useState<string>('all');
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
+    const [selectedTag, setSelectedTag] = useState<string>('all');
 
     // Sort options
     const [sortBy, setSortBy] = useState<'name' | 'votes' | 'clickcount'>('votes');
@@ -35,87 +41,105 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Search term
+    const [searchTerm, setSearchTerm] = useState('');
+
     useEffect(() => {
-        console.log('loading favorites...')
-        const savedStations = window.localStorage.getItem('favorite_stations')
-        if(savedStations) setFavoriteStations(savedStations.split(','))
-    }, [])
+        console.log('loading favorites...');
+        const savedStations = window.localStorage.getItem('favorite_stations');
+        if(savedStations) setFavoriteStations(savedStations.split(','));
+    }, []);
 
     // Fetch countries, languages, and tags on mount
     useEffect(() => {
         const fetchMetadata = async () => {
             try {
-
-                const [ countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
+                const [countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
                     fetch(paths.getCountries()),
                     fetch(paths.getLanguages()),
                     fetch(paths.getTags()),
-                ])
+                ]);
 
                 // Fetch countries
                 const countriesData = await countriesResponse.json();
-                const countryNames = countriesData
+                const countryOptions = countriesData
                     .filter((item: any) => item.name && item.stationcount > 5)
-                    .map((item: any) => item.name)
-                    .sort();
-                setCountries(['all', ...countryNames])
+                    .map((item: any) => ({
+                        name: item.name,
+                        stationCount: item.stationcount
+                    }))
+                    .sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name));
+                setCountries([{ name: 'all', stationCount: stationCount }, ...countryOptions]);
 
                 // Fetch languages
                 const languagesData = await languagesResponse.json();
-                const languageNames = languagesData
+                const languageOptions = languagesData
                     .filter((item: any) => item.name && item.stationcount > 5)
-                    .map((item: any) => item.name)
-                    .sort();
-                setLanguages(['all', ...languageNames])
+                    .map((item: any) => ({
+                        name: item.name,
+                        stationCount: item.stationcount
+                    }))
+                    .sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name));
+                setLanguages([{ name: 'all', stationCount: stationCount }, ...languageOptions]);
 
                 // Fetch tags
                 const tagsData = await tagsResponse.json();
-                const tags = tagsData
+                const tagOptions = tagsData
                     .filter((item: any) => item.name && item.stationcount > 10)
-                    .map((item: any) => item.name)
-                    .sort((a, b)=> a.name.localeCompare(b.name));
-                setTags(['all', ...tags])
+                    .map((item: any) => ({
+                        name: item.name,
+                        stationCount: item.stationcount
+                    }))
+                    .sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name));
+                setTags([{ name: 'all', stationCount: stationCount }, ...tagOptions]);
             } catch (err) {
-                console.error('Failed to load filter options. Please try again later. ' + err)
-                setError('Failed to load filter options. Please try again later.')
+                console.error('Failed to load filter options. Please try again later. ' + err);
+                setError('Failed to load filter options. Please try again later.');
             }
         };
 
-        fetchMetadata().then()
-    }, []);
+        fetchMetadata().then();
+    }, [stationCount]);
 
-    useEffect(()=> {
-        const fetchStations = async ()=> {
-            try {
-                const response = await fetch(paths.getByUUID(favoriteStations));
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-
-                // Filter out stations with invalid URLs
-                const validStations = data.filter((station: RadioStation) =>
-                    station.url &&
-                    station.url.trim() !== '' &&
-                    (station.url.startsWith('http://') || station.url.startsWith('https://'))
-                );
-
-                setFilteredStations(validStations);
-                setCurrentPage(1);
-            } catch (err) {
-                setError('Failed to load stations. Please try again later.');
-                setFilteredStations([]);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchStations()
-    }, [favorites]);
-
-    // Fetch stations based on filters and pagination
     useEffect(() => {
+        // When using favorites filter
+        if (activeFilter === 'favorite' && favoriteStations.length > 0) {
+            const fetchStations = async () => {
+                setLoading(true);
+                try {
+                    const response = await fetch(paths.getByUUID(favoriteStations));
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+
+                    // Filter out stations with invalid URLs
+                    const validStations = data.filter((station: RadioStation) =>
+                        station.url &&
+                        station.url.trim() !== '' &&
+                        (station.url.startsWith('http://') || station.url.startsWith('https://'))
+                    );
+
+                    setFilteredStations(validStations);
+                    setTotalFilteredStations(validStations.length);
+                    setCurrentPage(1);
+                } catch (err) {
+                    setError('Failed to load stations. Please try again later.');
+                    setFilteredStations([]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchStations();
+        }
+    }, [activeFilter, favoriteStations]);
+
+    // Fetch stations based on the active filter and pagination
+    useEffect(() => {
+        if (activeFilter === 'favorite' && favoriteStations.length > 0) return; // Skip this effect for favorites
+
         const fetchStations = async () => {
             setLoading(true);
             setError(null);
@@ -126,19 +150,14 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             // Add filters to URL
             const params = new URLSearchParams();
 
-            if (selectedCountry !== 'all') {
+            // Apply the active filter
+            if (activeFilter === 'country' && selectedCountry !== 'all') {
                 params.append('country', selectedCountry);
-            }
-
-            if (selectedLanguage !== 'all') {
+            } else if (activeFilter === 'language' && selectedLanguage !== 'all') {
                 params.append('language', selectedLanguage);
-            }
-
-            if (selectedTag !== 'all') {
+            } else if (activeFilter === 'tag' && selectedTag !== 'all') {
                 params.append('tag', selectedTag);
-            }
-
-            if (searchTerm) {
+            } else if (activeFilter === 'search' && searchTerm) {
                 params.append('name', searchTerm);
             }
 
@@ -157,9 +176,14 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
                 const data = await response.json();
 
+                // Check if the API returns the total stations count
+                if (data.hasOwnProperty('totalStationCount')) {
+                    setTotalFilteredStations(data.totalStationCount);
+                }
+
                 // Assuming the API now returns an object with stations and total
                 // If the API returns an array directly, adjust accordingly
-                const stationsData = Array.isArray(data) ? data : data.stations;
+                const stationsData = Array.isArray(data) ? data : (data.stations || data);
 
                 // Filter out stations with invalid URLs
                 const validStations = stationsData.filter((station: RadioStation) =>
@@ -178,48 +202,139 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         };
 
         fetchStations();
-    }, [selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm]);
+    }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm, favoriteStations]);
 
-    // Handle search - reset to first page when search term changes
+    // Reset to first page when filter changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm, selectedCountry, selectedLanguage, selectedTag]);
+    }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, searchTerm]);
 
-    // Calculate total pages based on total stations
-    const totalPages = Math.ceil(stationCount / stationsPerPage);
+    // Apply country filter
+    const handleCountryChange = (value: string) => {
+        // Reset other filters
+        setSelectedLanguage('all');
+        setSelectedTag('all');
+        setSearchTerm('');
+
+        setSelectedCountry(value);
+        setActiveFilter(value === 'all' ? null : 'country');
+
+        // Find the selected country's station count
+        const selectedCountryOption = countries.find(country => country.name === value);
+        if (selectedCountryOption) {
+            setTotalFilteredStations(selectedCountryOption.stationCount);
+        }
+    };
+
+    // Apply language filter
+    const handleLanguageChange = (value: string) => {
+        // Reset other filters
+        setSelectedCountry('all');
+        setSelectedTag('all');
+        setSearchTerm('');
+
+        setSelectedLanguage(value);
+        setActiveFilter(value === 'all' ? null : 'language');
+
+        // Find the selected language's station count
+        const selectedLanguageOption = languages.find(language => language.name === value);
+        if (selectedLanguageOption) {
+            setTotalFilteredStations(selectedLanguageOption.stationCount);
+        }
+    };
+
+    // Apply tag filter
+    const handleTagChange = (value: string) => {
+        // Reset other filters
+        setSelectedCountry('all');
+        setSelectedLanguage('all');
+        setSearchTerm('');
+
+        setSelectedTag(value);
+        setActiveFilter(value === 'all' ? null : 'tag');
+
+        // Find the selected tag's station count
+        const selectedTagOption = tags.find(tag => tag.name === value);
+        if (selectedTagOption) {
+            setTotalFilteredStations(selectedTagOption.stationCount);
+        }
+    };
+
+    // Apply search filter
+    const handleSearch = (term: string) => {
+        setSearchTerm(term);
+
+        if (term) {
+            // Reset other filters
+            setSelectedCountry('all');
+            setSelectedLanguage('all');
+            setSelectedTag('all');
+
+            setActiveFilter('search');
+        } else {
+            setActiveFilter(null);
+            setTotalFilteredStations(stationCount);
+        }
+    };
+
+    // Handle favorites filter
+    const handleFavoritesClick = () => {
+        // Reset other filters
+        setSelectedCountry('all');
+        setSelectedLanguage('all');
+        setSelectedTag('all');
+        setSearchTerm('');
+
+        if (activeFilter === 'favorite') {
+            setActiveFilter(null);
+            setTotalFilteredStations(stationCount);
+        } else {
+            setActiveFilter('favorite');
+            setTotalFilteredStations(favoriteStations.length);
+        }
+    };
+
+    // Calculate total pages based on filtered stations count
+    const totalPages = Math.ceil(totalFilteredStations / stationsPerPage);
 
     // Pagination controls
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+    const paginate = (pageNumber: number) => {
+        if(pageNumber >= 1) setCurrentPage(pageNumber);
+    }
 
     // Handle station selection
     const handleStationSelect = (station: RadioStation) => {
         onStationSelect(station);
     };
 
-    const handleFavoriteClick= (event: React.MouseEvent<HTMLSpanElement>, uuid: string)=>{
-        event.preventDefault()
-        const index = favoriteStations.indexOf(uuid)
-        if (index > -1) favoriteStations.splice(index, 1)
-        else favoriteStations.push(uuid)
+    const handleFavoriteClick = (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
+        event.preventDefault();
+        const index = favoriteStations.indexOf(uuid);
+        let updatedFavorites = [...favoriteStations];
 
-        setFavoriteStations([...favoriteStations]);
-        window.localStorage.setItem('favorite_stations', favoriteStations.join(','));
-    }
+        if (index > -1) {
+            updatedFavorites.splice(index, 1);
+        } else {
+            updatedFavorites.push(uuid);
+        }
+
+        setFavoriteStations(updatedFavorites);
+        window.localStorage.setItem('favorite_stations', updatedFavorites.join(','));
+    };
 
     const handleVote = async (event: React.MouseEvent<HTMLSpanElement>, uuid: string) => {
-        event.preventDefault()
-
+        event.preventDefault();
         let url = paths.getVote(uuid);
 
         try {
-            const response = await fetch(url)
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Error sending vote: ${error}`);
             }
         } catch (err) {
-            console.error(err)
+            console.error(err);
         }
-    }
+    };
 
     return (
         <>
@@ -231,8 +346,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                         type="text"
                         placeholder="Search stations..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
+                        onChange={(e) => handleSearch(e.target.value)}
+                        className={`search-input ${activeFilter === 'search' ? 'active-filter' : ''}`}
                     />
                 </div>
 
@@ -241,10 +356,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                         <label>Country:</label>
                         <select
                             value={selectedCountry}
-                            onChange={(e) => setSelectedCountry(e.target.value)}
+                            onChange={(e) => handleCountryChange(e.target.value)}
+                            className={activeFilter === 'country' ? 'active-filter' : ''}
                         >
                             {countries.map(country => (
-                                <option key={country} value={country}>{country}</option>
+                                <option key={country.name} value={country.name}>
+                                    {country.name} ({country.stationCount})
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -253,10 +371,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                         <label>Language:</label>
                         <select
                             value={selectedLanguage}
-                            onChange={(e) => setSelectedLanguage(e.target.value)}
+                            onChange={(e) => handleLanguageChange(e.target.value)}
+                            className={activeFilter === 'language' ? 'active-filter' : ''}
                         >
                             {languages.map(language => (
-                                <option key={language} value={language}>{language}</option>
+                                <option key={language.name} value={language.name}>
+                                    {language.name} ({language.stationCount})
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -265,10 +386,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                         <label>Genre:</label>
                         <select
                             value={selectedTag}
-                            onChange={(e) => setSelectedTag(e.target.value)}
+                            onChange={(e) => handleTagChange(e.target.value)}
+                            className={activeFilter === 'tag' ? 'active-filter' : ''}
                         >
                             {tags.map(tag => (
-                                <option key={tag} value={tag}>{tag}</option>
+                                <option key={tag.name} value={tag.name}>
+                                    {tag.name} ({tag.stationCount})
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -284,6 +408,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                             <option value="clickcount">Listeners</option>
                         </select>
                     </div>
+
+                    <button
+                        onClick={handleFavoritesClick}
+                        className={`favorites-button ${activeFilter === 'favorite' ? 'active-filter' : ''}`}
+                    >
+                        My Favorites
+                    </button>
                 </div>
 
                 {loading ? (
@@ -332,13 +463,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                                     </div>
 
                                     <div className="symbols">
-                        <span onClick={(event)=> {
-                            event.stopPropagation()
-                            handleFavoriteClick(event, station.stationuuid)
-                        }} className={`symbol star ${(favoriteStations.includes(station.stationuuid)? 'selected' : '')}`} >★</span>
-                                        <span><span onClick={(event)=>{
-                                            event.stopPropagation()
-                                            handleVote(event, station.stationuuid).then()
+                                        <span onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleFavoriteClick(event, station.stationuuid);
+                                        }} className={`symbol star ${(favoriteStations.includes(station.stationuuid) ? 'selected' : '')}`}>★</span>
+                                        <span><span onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleVote(event, station.stationuuid).then();
                                         }} className="symbol">👍</span> {station.votes}</span>
                                     </div>
                                 </div>
@@ -356,8 +487,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                                 </button>
 
                                 <span className="page-info">
-                Page {currentPage} of {totalPages}
-                </span>
+                                    Page <input type={"number"} onChange={(ev)=> paginate(parseInt(ev.target.value))} value={currentPage}/> of {totalPages}
+                                </span>
 
                                 <button
                                     onClick={() => paginate(currentPage + 1)}
