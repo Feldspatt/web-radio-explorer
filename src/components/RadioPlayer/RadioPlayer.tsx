@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './RadioPlayer.css';
 
 type RadioPlayerProps = {
-    station: Pick<RadioStation, 'url' | 'name' | 'favicon'>
+    station: Pick<RadioStation, 'url' | 'name' | 'favicon'> | null
 }
 
 const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps) => {
@@ -56,12 +56,16 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
     }, []);
 
     useEffect(() => {
+        if(station === null) return
+
         setIsSafeMode(false);
         setIsLoading(true);
         setPlaybackError(false); // Reset error state when station changes
 
+
         // We'll attempt to play automatically when station changes regardless of previous state
         setIsPlaying(true);
+
 
         if (audioRef.current && safeAudioRef.current) {
             window.localStorage.setItem('lastStation', JSON.stringify(station));
@@ -90,7 +94,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         } else {
             setIsLoading(false);
         }
-    }, [station.url]);
+    }, [station]);
 
     useEffect(() => {
         if (!audioRef.current || !safeAudioRef.current) return;
@@ -206,6 +210,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
 
     // Toggle play/pause
     const togglePlayPause = () => {
+        console.info("toggled play pause");
         if (!audioRef.current || !safeAudioRef.current || !audioContextRef.current) return;
 
         const audioContext = audioContextRef.current;
@@ -316,6 +321,14 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 ref={safeAudioRef}
             />
 
+            {!station ? (
+                <div className="empty-state">
+                    <div className="icon">📻</div>
+                    <h2>Select a station to start listening</h2>
+                    <p>Browse and filter stations from the list above</p>
+                </div>): (<>
+
+
             <div className="station-header">
                 <span className={"inline"}>
                     <div className="station-logo">
@@ -372,6 +385,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
             <div className="visualizer-container">
                 <canvas ref={canvasRef} className="visualizer" />
             </div>
+                </>)}
         </div>
     );
 };

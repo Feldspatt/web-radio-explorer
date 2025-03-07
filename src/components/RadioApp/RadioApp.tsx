@@ -31,19 +31,8 @@ const RadioApp: React.FC = () => {
                 <p>Discover and listen to radio stations from around the world</p>
             </header>
 
-                {selectedStation ? (
-                    <RadioPlayer
-                        station={selectedStation}
-                    />
-                ) : (
-                    <div className="no-station-selected">
-                        <div className="empty-state">
-                            <div className="icon">📻</div>
-                            <h2>Select a station to start listening</h2>
-                            <p>Browse and filter stations from the list above</p>
-                        </div>
-                    </div>
-                )}
+            <RadioPlayer station={selectedStation}/>
+
                 <StationList
                     stations={stations}
                     favoriteStations={[]}

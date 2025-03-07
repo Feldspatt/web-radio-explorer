@@ -247,7 +247,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     return (
         <div className="station-selector card">
-            <button>Explore</button>/<button>Favorites</button>
+            <h2>Explore</h2>/<h2>Favorites</h2>/<h2>Last listened</h2>
 
             <div className="search-bar">
                 <input
@@ -321,12 +321,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 </div>
             </div>
 
-            {/* Status indicators */}
-            {loading && <div className="loading">Loading stations...</div>}
-            {error && <div className="error">{error}</div>}
-
-            {/* Pagination controls */}
-            {!loading && !error && filteredStations.length > 0 && (
+            {filteredStations.length > 0 && (
                 <div className="pagination">
                     <button
                         onClick={() => paginate(currentPage - 1)}
