@@ -287,6 +287,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
             })
             .catch(error => {
                 console.error("Error during retry with primary audio:", error);
+                if(!safeAudioRef.current) return
+
                 // Try safe mode if primary fails
                 setIsSafeMode(true);
                 safeAudioRef.current.play()

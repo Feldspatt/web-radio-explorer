@@ -1,6 +1,7 @@
 import React from 'react';
 import FavoriteButton from "../FavoriteButton/FavoriteButton.tsx";
 import VoteButton from "../VoteButton/VoteButton.tsx";
+import './StationList.css'
 
 interface StationListProps {
     stations: RadioStation[];

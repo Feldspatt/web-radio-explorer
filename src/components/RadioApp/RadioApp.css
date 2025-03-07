@@ -6,17 +6,22 @@ body {
 
 .radio-app {
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto min-content 1fr;
+    justify-items: center;
+    gap: 2em;
     margin: 0;
     padding: 20px;
     font-family: 'Arial', sans-serif;
     color: var(--color-text-primary);
     transition: all 0.3s ease;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 .app-header {
+    grid-column: span 2;
     text-align: center;
     margin-bottom: 30px;
 }
@@ -34,10 +39,11 @@ body {
 
 .app-content {
     width: 100%;
-    display: flex;
+    display: grid;
     gap: 20px;
-    justify-content: space-evenly;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-auto-flow: column;
 }
 
 .station-selector {

@@ -11,8 +11,6 @@ import StationList from "../StationList/StationList.tsx";
 const RadioApp: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
     const [stations, setStations] = useState<RadioStation[]>([])
-    const [totalPages, setTotalPages] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
     const [selectedServer, setSelectedServer] = useState<Server | null>(null)
 
     useEffect(() => {
@@ -21,12 +19,6 @@ const RadioApp: React.FC = () => {
             console.log('Selected server', selectedServer.name)
         }
     }, [selectedServer])
-
-    const onStationsUpdate = (stations: RadioStation[], totalPages: number, currentOage: number) => {
-        setStations(stations)
-        setCurrentPage(currentOage)
-        setTotalPages(totalPages)
-    }
 
     return (
         <ThemeProvider>
@@ -39,7 +31,6 @@ const RadioApp: React.FC = () => {
                 <p>Discover and listen to radio stations from around the world</p>
             </header>
 
-            <div className="app-content">
                 {selectedStation ? (
                     <RadioPlayer
                         station={selectedStation}
@@ -53,18 +44,17 @@ const RadioApp: React.FC = () => {
                         </div>
                     </div>
                 )}
-                <StationSelector
-                    stationsPerPage={20}
-                    stationCount={selectedServer.stations}
-                    onStationsUpdate={onStationsUpdate}
-                />
                 <StationList
                     stations={stations}
                     favoriteStations={[]}
                     onStationSelect={(station)=>setSelectedStation(station)}
                     onToggleFavorite={()=>{}}
                 />
-            </div>
+            <StationSelector
+                stationsPerPage={20}
+                stationCount={selectedServer.stations}
+                onStationsUpdate={(stations)=>setStations(stations)}
+            />
         </div>
                 </>
             }

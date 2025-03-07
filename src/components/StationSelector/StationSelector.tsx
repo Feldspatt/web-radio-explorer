@@ -5,7 +5,7 @@ import { paths } from "../../services/path.service.ts";
 interface StationSelectorProps {
     stationCount: number;
     stationsPerPage: number;
-    onStationsUpdate: (stations: RadioStation[], totalPages: number, currentPage: number) => void;
+    onStationsUpdate: (stations: RadioStation[]) => void;
 }
 
 const StationSelector: React.FC<StationSelectorProps> = ({
@@ -40,9 +40,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     // Update parent component with filtered stations
     useEffect(() => {
-        const totalPages = Math.ceil(totalFilteredStations / stationsPerPage);
-        onStationsUpdate(filteredStations, totalPages, currentPage);
-    }, [filteredStations, totalFilteredStations, stationsPerPage, currentPage, onStationsUpdate]);
+        onStationsUpdate(filteredStations);
+    }, [filteredStations, onStationsUpdate]);
 
     // Fetch countries, languages, and tags on mount
     useEffect(() => {
@@ -167,6 +166,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         fetchStations();
     }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm]);
 
+
     // Reset to first page when filter changes
     useEffect(() => {
         setCurrentPage(1);
@@ -247,7 +247,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     return (
         <div className="station-selector card">
-            <h2>Explore</h2>
+            <button>Explore</button>/<button>Favorites</button>
 
             <div className="search-bar">
                 <input
@@ -337,7 +337,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                     </button>
 
                     <span className="page-info">
-                        Page <input type="number" onChange={(ev) => paginate(parseInt(ev.target.value))} value={currentPage}/> of {Math.ceil(totalFilteredStations / stationsPerPage)}
+                        <input type="number" onChange={(ev) => paginate(parseInt(ev.target.value))} value={currentPage}/> of {Math.ceil(totalFilteredStations / stationsPerPage)}
                     </span>
 
                     <button

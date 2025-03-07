@@ -1,0 +1,4 @@
+.stations-list {
+    grid-row: span 2;
+    overflow-y: auto;
+}
