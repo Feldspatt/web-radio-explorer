@@ -56,18 +56,36 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
     }, []);
 
     // Handle station changes
+    // Handle station changes
     useEffect(() => {
         if(station === null) return
 
+        // IMMEDIATE ANIMATION STOP - Cancel any ongoing animation frame
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+
+            // Also clear the canvas if it exists
+            if (canvasRef.current) {
+                const ctx = canvasRef.current.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                }
+            }
+        }
+
+        // Reset state for new station
         setIsSafeMode(false);
         setIsLoading(true);
-        setPlaybackError(false); // Reset error state when station changes
-
-        // We'll attempt to play automatically when station changes
-        setIsPlaying(true);
+        setPlaybackError(false);
+        setIsPlaying(true); // We'll attempt to play automatically when station changes
 
         if (audioRef.current && safeAudioRef.current) {
             window.localStorage.setItem('lastStation', JSON.stringify(station));
+
+            // Stop any current playback before changing sources
+            audioRef.current.pause();
+            safeAudioRef.current.pause();
 
             audioRef.current.src = station.url;
             safeAudioRef.current.src = station.url;
@@ -75,9 +93,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
             // Always load the audio
             audioRef.current.load();
             safeAudioRef.current.load();
-
-            // Don't try to play here - we'll let the canplay event handler do it
-            // This is the key change - remove the play attempt here
         } else {
             setIsLoading(false);
         }
@@ -116,9 +131,15 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                         }
                     });
 
-                    // Start visualizer if we're in normal mode and playing
-                    if (!isSafeMode && isPlaying) {
-                        drawVisualizer();
+                    // Start visualizer if playing
+                    if (isPlaying) {
+                        if (!isSafeMode) {
+                            // Use frequency data visualizer for normal mode
+                            drawVisualizer();
+                        } else {
+                            // Use fallback animation for safe mode
+                            drawFallbackAnimation();
+                        }
                     }
                 }
             }
@@ -174,7 +195,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         if(savedVolume) setVolume(parseInt(savedVolume));
     }, []);
 
-    // Visualizer function
+    // Regular audio visualizer that uses frequency data
     const drawVisualizer = () => {
         if (!analyserRef.current || !canvasRef.current) return;
 
@@ -214,6 +235,105 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         draw();
     };
 
+    // Store current station in a ref to track changes
+    const currentStationRef = useRef<string | null>(null);
+
+// Improved fallback animation with station change detection
+    const drawFallbackAnimation = () => {
+        if (!canvasRef.current) return;
+
+        // Store current station URL to detect changes
+        const stationUrl = station?.url || null;
+        currentStationRef.current = stationUrl;
+
+        // Cancel any existing animation frame when starting a new one
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+        }
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Clear the canvas immediately to ensure no artifacts
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let time = 0;
+        const waveCount = 2;
+
+        const waves = Array(waveCount).fill(0).map((_, i) => ({
+            amplitude: 8 + Math.random() * 10,
+            period: 0.4 + Math.random() * 0.2,
+            phase: Math.random() * Math.PI * 2,
+            color: `rgba(220, 220, 220, ${0.6 - (i * 0.2)})`
+        }));
+
+        const draw = () => {
+            // Check if station has changed or playback stopped
+            if (!isPlaying || currentStationRef.current !== stationUrl) {
+                // Cancel animation and clear canvas if station changed or not playing
+                if (animationFrameRef.current) {
+                    cancelAnimationFrame(animationFrameRef.current);
+                    animationFrameRef.current = null;
+                }
+
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            // Continue animation only if playing the same station
+            animationFrameRef.current = requestAnimationFrame(draw);
+
+            // Clear with full reset
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Monochrome background
+            ctx.fillStyle = 'rgba(40, 40, 40, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerY = canvas.height / 2;
+
+            // Draw each wave
+            waves.forEach((wave, index) => {
+                ctx.beginPath();
+                ctx.moveTo(0, centerY);
+
+                // Create a sine wave with better spacing
+                for (let x = 0; x < canvas.width; x += 3) {
+                    const y = centerY + Math.sin(x * wave.period + time + wave.phase) * wave.amplitude;
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+
+            // Simple beats
+            const beatCount = 7;
+            const beatWidth = canvas.width / beatCount;
+
+            for (let i = 0; i < beatCount; i++) {
+                const beatHeight = 4 + Math.abs(Math.sin(time * 0.4 + i * 0.3)) * 16;
+                const opacity = 0.2 + Math.abs(Math.sin(time * 0.3 + i * 0.4)) * 0.3;
+                ctx.fillStyle = `rgba(200, 200, 200, ${opacity})`;
+
+                ctx.fillRect(
+                    i * beatWidth + beatWidth * 0.3,
+                    centerY - beatHeight / 2,
+                    beatWidth * 0.4,
+                    beatHeight
+                );
+            }
+
+            time += 0.03;
+        };
+
+        draw();
+    };
+
     // Toggle play/pause
     const togglePlayPause = () => {
         console.info("toggled play pause");
@@ -246,7 +366,13 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 .then(() => {
                     setIsPlaying(true);
                     setIsLoading(false);
-                    drawVisualizer();
+
+                    // Start the appropriate animation based on mode
+                    if (!isSafeMode) {
+                        drawVisualizer();
+                    } else {
+                        drawFallbackAnimation();
+                    }
                 })
                 .catch(error => {
                     console.error("Error playing audio:", error);
@@ -258,6 +384,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                             .then(() => {
                                 setIsPlaying(true);
                                 setIsLoading(false);
+                                drawFallbackAnimation(); // Use fallback animation in safe mode
                             })
                             .catch(safeError => {
                                 console.error("Safe mode playback failed too:", safeError);
@@ -308,6 +435,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                     .then(() => {
                         setIsPlaying(true);
                         setIsLoading(false);
+                        drawFallbackAnimation(); // Use fallback animation in safe mode
                     })
                     .catch(safeError => {
                         console.error("Safe mode playback also failed during retry:", safeError);
