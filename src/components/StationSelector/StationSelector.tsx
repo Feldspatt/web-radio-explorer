@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './StationSelector.css';
 import { paths } from "../../services/path.service.ts";
 
@@ -148,7 +148,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             if (limitedUUIDs.length > 0) {
                 // Fetch station details for each UUID
                 const recentStations = await fetchStationsByUUIDs(limitedUUIDs);
-                setRecentlyListened(recentStations);
+                const orderedStations = []
+                for (const uuid of limitedUUIDs) {
+                    const station = recentStations.find(station => station.stationuuid === uuid);
+                    if(station) orderedStations.push(station);
+                }
+
+                setRecentlyListened(orderedStations);
             } else {
                 setRecentlyListened([]);
             }

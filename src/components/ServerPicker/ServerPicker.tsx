@@ -36,7 +36,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
 
             // Select a random server if available
             if (data.length > 0) {
-                selectRandomServer(data);
+                await selectRandomServer(data);
             } else {
                 setErrorMessage("No servers available");
                 setIsLoading(false);
@@ -76,6 +76,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
 
                 // Call the callback with the selected server
                 if (onServerSelected) {
+                    await new Promise(resolve => { setTimeout(resolve, 1000) })
                     onServerSelected({...randomServer, stations: stats.stations - stats.stations_broken });
                 }
                 setIsLoading(false)
@@ -108,14 +109,14 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
     }
 
     if(isLoading) {
-        return <object type="image/svg+xml" data="/splashart.svg">Your browser does not support SVG</object>
+        return <object type="image/svg+xml" data="/splash_art.svg">Your browser does not support SVG</object>
     }
 
     if (servers.length === 0) {
         return <div className="p-4 text-center">No servers available</div>;
     }
 
-    return <object type="image/svg+xml" data="/splashart.svg">Your browser does not support SVG</object>
+    return <object type="image/svg+xml" data="/splash_art.svg">Your browser does not support SVG</object>
 };
 
 export default RadioBrowserServerSelector;

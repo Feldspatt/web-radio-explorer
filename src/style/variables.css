@@ -110,7 +110,7 @@
 
 /* Class for forcing light mode */
 .light-theme {
-    --color-bg-main: #ffffff;
+    --color-bg-main: #d8d6d1;
     --color-bg-panel: #f7fafc;
     --color-bg-panel-gradient-start: #f7fafc;
     --color-bg-panel-gradient-end: #edf2f7;
