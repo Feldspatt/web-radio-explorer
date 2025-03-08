@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './StationSelector.css';
 import { paths } from "../../services/path.service.ts";
 
@@ -7,6 +7,23 @@ interface StationSelectorProps {
     stationsPerPage: number;
     onStationsUpdate: (stations: RadioStation[]) => void;
 }
+
+// Custom hook for debounce
+const useDebounce = <T extends any>(value: T, delay: number): T => {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
 
 const StationSelector: React.FC<StationSelectorProps> = ({
                                                              stationCount, stationsPerPage, onStationsUpdate
@@ -45,8 +62,37 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [favoritesPage, setFavoritesPage] = useState(1);
 
+    // Pagination input values (for debouncing)
+    const [currentPageInput, setCurrentPageInput] = useState<string>("1");
+    const [favoritesPageInput, setFavoritesPageInput] = useState<string>("1");
+
     // Search term
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+
+    // Apply debounce to search and pagination
+    const debouncedSearchTerm = useDebounce(searchInput, 500);
+    const debouncedCurrentPageInput = useDebounce(currentPageInput, 500);
+    const debouncedFavoritesPageInput = useDebounce(favoritesPageInput, 500);
+
+    // Update actual values when debounced values change
+    useEffect(() => {
+        handleSearch(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
+
+    useEffect(() => {
+        const pageNumber = parseInt(debouncedCurrentPageInput) || 1;
+        if (pageNumber >= 1) {
+            setCurrentPage(pageNumber);
+        }
+    }, [debouncedCurrentPageInput]);
+
+    useEffect(() => {
+        const pageNumber = parseInt(debouncedFavoritesPageInput) || 1;
+        if (pageNumber >= 1 && pageNumber <= Math.ceil(favorites.length / stationsPerPage)) {
+            setFavoritesPage(pageNumber);
+        }
+    }, [debouncedFavoritesPageInput, favorites.length, stationsPerPage]);
 
     // Fetch station details by UUID
     const fetchStationsByUUIDs = async (uuids: string[]): Promise<RadioStation[]> => {
@@ -121,8 +167,10 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         // Reset pagination when changing tabs
         if (tab === 'explore') {
             setCurrentPage(1);
+            setCurrentPageInput("1");
         } else if (tab === 'favorites') {
             setFavoritesPage(1);
+            setFavoritesPageInput("1");
             loadFavoriteStations();
         } else if (tab === 'recent') {
             loadRecentlyListenedStations();
@@ -262,9 +310,19 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         fetchStations();
     }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm, activeTab]);
 
+    // Update page input when page changes
+    useEffect(() => {
+        setCurrentPageInput(currentPage.toString());
+    }, [currentPage]);
+
+    useEffect(() => {
+        setFavoritesPageInput(favoritesPage.toString());
+    }, [favoritesPage]);
+
     // Reset to first page when filter changes
     useEffect(() => {
         setCurrentPage(1);
+        setCurrentPageInput("1");
     }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, searchTerm]);
 
     // Apply country filter
@@ -273,6 +331,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         setSelectedLanguage('all');
         setSelectedTag('all');
         setSearchTerm('');
+        setSearchInput('');
 
         setSelectedCountry(value);
         setActiveFilter(value === 'all' ? null : 'country');
@@ -290,6 +349,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         setSelectedCountry('all');
         setSelectedTag('all');
         setSearchTerm('');
+        setSearchInput('');
 
         setSelectedLanguage(value);
         setActiveFilter(value === 'all' ? null : 'language');
@@ -307,6 +367,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         setSelectedCountry('all');
         setSelectedLanguage('all');
         setSearchTerm('');
+        setSearchInput('');
 
         setSelectedTag(value);
         setActiveFilter(value === 'all' ? null : 'tag');
@@ -337,7 +398,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     // Pagination controls
     const paginate = (pageNumber: number) => {
-        if(pageNumber >= 1) setCurrentPage(pageNumber);
+        if(pageNumber >= 1 && pageNumber <= Math.ceil(totalFilteredStations / stationsPerPage)) {
+            setCurrentPage(pageNumber);
+        }
     }
 
     // Favorites pagination
@@ -376,8 +439,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                         <input
                             type="text"
                             placeholder="Search stations..."
-                            value={searchTerm}
-                            onChange={(e) => handleSearch(e.target.value)}
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
                             className={`search-input ${activeFilter === 'search' ? 'active-filter' : ''}`}
                         />
                     </div>
@@ -478,9 +541,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 </div>
             )}
 
-            {/* Pagination for Explore tab */}
-            {filteredStations.length > 0 && activeTab === 'explore' && (
-                <div className="pagination">
+            {/* Pagination for Explore tab - Always render but conditionally show */}
+            {activeTab === 'explore' && (
+                <div className="pagination" style={{ display: filteredStations.length > 0 ? 'flex' : 'none' }}>
                     <button
                         onClick={() => paginate(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -491,15 +554,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
                     <span className="page-info">
                         <input
-                            type="number"
-                            onChange={(ev) => paginate(parseInt(ev.target.value))}
-                            value={currentPage}
+                            type="text"
+                            onChange={(ev) => setCurrentPageInput(ev.target.value)}
+                            value={currentPageInput}
                         /> of {Math.ceil(totalFilteredStations / stationsPerPage)}
                     </span>
 
                     <button
                         onClick={() => paginate(currentPage + 1)}
-                        disabled={currentPage === Math.ceil(totalFilteredStations / stationsPerPage)}
+                        disabled={currentPage >= Math.ceil(totalFilteredStations / stationsPerPage)}
                         className="page-button"
                     >
                         Next &raquo;
@@ -507,9 +570,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 </div>
             )}
 
-            {/* Pagination for Favorites tab */}
-            {favorites.length > stationsPerPage && activeTab === 'favorites' && !loadingFavorites && (
-                <div className="pagination">
+            {/* Pagination for Favorites tab - Always render but conditionally show */}
+            {activeTab === 'favorites' && !loadingFavorites && (
+                <div className="pagination" style={{ display: favorites.length > stationsPerPage ? 'flex' : 'none' }}>
                     <button
                         onClick={() => paginateFavorites(favoritesPage - 1)}
                         disabled={favoritesPage === 1}
@@ -520,15 +583,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
                     <span className="page-info">
                         <input
-                            type="number"
-                            onChange={(ev) => paginateFavorites(parseInt(ev.target.value))}
-                            value={favoritesPage}
+                            type="text"
+                            onChange={(ev) => setFavoritesPageInput(ev.target.value)}
+                            value={favoritesPageInput}
                         /> of {Math.ceil(favorites.length / stationsPerPage)}
                     </span>
 
                     <button
                         onClick={() => paginateFavorites(favoritesPage + 1)}
-                        disabled={favoritesPage === Math.ceil(favorites.length / stationsPerPage)}
+                        disabled={favoritesPage >= Math.ceil(favorites.length / stationsPerPage)}
                         className="page-button"
                     >
                         Next &raquo;

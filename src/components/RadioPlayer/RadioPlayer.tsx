@@ -334,36 +334,82 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         draw();
     };
 
-    // Toggle play/pause
+    // First, improve the keyboard event listener in your useEffect
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            // Only handle space if the active element is not an input or textarea
+            if (event.code === 'Space' &&
+                (document.activeElement?.tagName && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName) &&
+                    document.activeElement.getAttribute('contenteditable') !== 'true')) {
+
+                event.preventDefault(); // Prevent page scrolling
+                togglePlayPause(); // Your media play/pause function
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isPlaying, isSafeMode]); // Add dependencies to ensure the listener has the latest state
+
+// Then modify the togglePlayPause function
     const togglePlayPause = () => {
         console.info("toggled play pause");
         if (!audioRef.current || !safeAudioRef.current || !audioContextRef.current) return;
 
         const audioContext = audioContextRef.current;
-        const audioElement = !isSafeMode ? audioRef.current : safeAudioRef.current;
 
         // Reset error state when attempting to play
         setPlaybackError(false);
 
         // If audio context is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
-            audioContext.resume().then()
+            audioContext.resume().then();
         }
 
-        setIsLoading(true); // Add loading state when toggling
-
+        // First determine what to do based on current playing state
         if (isPlaying) {
-            audioElement.pause();
-            setIsPlaying(false);
-            setIsLoading(false);
+            // PAUSE LOGIC
+            setIsLoading(false); // No need for loading state when pausing
 
+            // Pause BOTH audio elements regardless of mode
+            audioRef.current.pause();
+            safeAudioRef.current.pause();
+
+            // Update state AFTER pausing
+            setIsPlaying(false);
+
+            // Cancel any animations
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
                 animationFrameRef.current = null;
+
+                // Clear canvas if it exists
+                if (canvasRef.current) {
+                    const ctx = canvasRef.current.getContext('2d');
+                    if (ctx) {
+                        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                    }
+                }
             }
         } else {
+            // PLAY LOGIC
+            setIsLoading(true);
+
+            // Determine which player to use
+            const audioElement = !isSafeMode ? audioRef.current : safeAudioRef.current;
+
             audioElement.play()
                 .then(() => {
+                    // Make sure the OTHER player is paused
+                    if (!isSafeMode) {
+                        safeAudioRef.current.pause();
+                    } else {
+                        audioRef.current.pause();
+                    }
+
                     setIsPlaying(true);
                     setIsLoading(false);
 
@@ -380,6 +426,10 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                     // Try safe mode if normal playback fails
                     if (!isSafeMode && safeAudioRef.current) {
                         setIsSafeMode(true);
+
+                        // Make sure the primary player is paused
+                        audioRef.current.pause();
+
                         safeAudioRef.current.play()
                             .then(() => {
                                 setIsPlaying(true);
