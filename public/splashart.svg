@@ -1,0 +1,35 @@
+<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <linearGradient id="pulseGradient" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#ffcc00">
+                <animate attributeName="stop-color" values="#ffcc00;#ff8800;#ffcc00" dur="1.5s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stop-color="#ff8800">
+                <animate attributeName="stop-color" values="#ff8800;#ffcc00;#ff8800" dur="1.5s" repeatCount="indefinite" />
+            </stop>
+        </linearGradient>
+    </defs>
+
+    <g fill="url(#pulseGradient)">
+        <rect x="55" y="100" width="16" height="60">
+            <animate attributeName="y" values="100;80;100" dur="1.2s" repeatCount="indefinite" />
+            <animate attributeName="height" values="60;80;60" dur="1.2s" repeatCount="indefinite" />
+        </rect>
+        <rect x="75" y="80" width="16" height="80">
+            <animate attributeName="y" values="80;110;80" dur="1.2s" begin="0.3s" repeatCount="indefinite" />
+            <animate attributeName="height" values="80;50;80" dur="1.2s" begin="0.3s" repeatCount="indefinite" />
+        </rect>
+        <rect x="95" y="120" width="16" height="40">
+            <animate attributeName="y" values="120;90;120" dur="1.2s" begin="0.6s" repeatCount="indefinite" />
+            <animate attributeName="height" values="40;70;40" dur="1.2s" begin="0.6s" repeatCount="indefinite" />
+        </rect>
+        <rect x="115" y="80" width="16" height="80">
+            <animate attributeName="y" values="80;110;80" dur="1.2s" begin="0.9s" repeatCount="indefinite" />
+            <animate attributeName="height" values="80;50;80" dur="1.2s" begin="0.9s" repeatCount="indefinite" />
+        </rect>
+        <rect x="135" y="100" width="16" height="60">
+            <animate attributeName="y" values="100;80;100" dur="1.2s" begin="1.2s" repeatCount="indefinite" />
+            <animate attributeName="height" values="60;80;60" dur="1.2s" begin="1.2s" repeatCount="indefinite" />
+        </rect>
+    </g>
+</svg>

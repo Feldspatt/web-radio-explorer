@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { paths } from "../services/path.service.ts";
+import { paths } from "../../services/path.service.ts";
+import './ServerPicker.css'
 
 interface RadioBrowserServerSelectorProps {
     onServerSelected?: (server: Server) => void;
@@ -20,6 +21,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
     const fetchServers = async () => {
         setIsLoading(true);
         setErrorMessage(null);
+
         try {
             // Using the all.api domain which should redirect to a working server
             const response = await fetch(paths.getServers());
@@ -105,24 +107,15 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
         );
     }
 
-    if (isLoading) {
-        return <div className="p-4 text-center">Loading servers...</div>;
+    if(isLoading) {
+        return <object type="image/svg+xml" data="/splashart.svg">Your browser does not support SVG</object>
     }
 
     if (servers.length === 0) {
         return <div className="p-4 text-center">No servers available</div>;
     }
 
-    return (
-        <div className="p-4">
-            <button
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => selectRandomServer(servers)}
-            >
-                Change Server
-            </button>
-        </div>
-    );
+    return <object type="image/svg+xml" data="/splashart.svg">Your browser does not support SVG</object>
 };
 
 export default RadioBrowserServerSelector;
