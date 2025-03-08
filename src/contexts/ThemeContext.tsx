@@ -1,14 +1,20 @@
 // src/contexts/ThemeContext.tsx
 import { createContext, useState, useEffect, ReactNode } from 'react';
 
-// Define the contexts shape
+// Define Theme type
+interface Theme {
+    name: string;
+    symbol: string;
+    label: string;
+}
+
+// Define the context shape
 interface ThemeContextType {
     theme: Theme;
     setTheme: (theme: Theme) => void;
     toggleTheme: () => void;
     availableThemes: Theme[];
 }
-
 
 const themes: Theme[] = [
     {
@@ -30,11 +36,6 @@ const themes: Theme[] = [
         name: 'blue-theme',
         symbol: '🌊',
         label: 'Blue'
-    },
-    {
-        name: 'green-theme',
-        symbol: '🌿',
-        label: 'Green'
     },
     {
         name: 'high-contrast-theme',
@@ -63,7 +64,7 @@ const themes: Theme[] = [
     }
 ];
 
-// Create contexts with default values
+// Create context with default values
 export const ThemeContext = createContext<ThemeContextType>({
     theme: themes[0],
     setTheme: () => {},
@@ -82,10 +83,14 @@ export const ThemeProvider = ({
                               }: ThemeProviderProps) => {
     const [theme, setThemeState] = useState<Theme>(() => {
         // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme') as Theme | null;
+        const savedThemeName = localStorage.getItem('theme');
 
-        if (savedTheme && themes.includes(savedTheme)) {
-            return savedTheme;
+        if (savedThemeName) {
+            // Find the theme object that matches the saved name
+            const savedTheme = themes.find(t => t.name === savedThemeName);
+            if (savedTheme) {
+                return savedTheme;
+            }
         }
 
         // Use system preference as fallback if no saved theme
@@ -98,14 +103,17 @@ export const ThemeProvider = ({
 
     // Set theme in document and localStorage
     useEffect(() => {
-
-        for(const theme of themes){
-            document.documentElement.classList.remove(theme.name);
+        // Remove all theme classes first
+        for (const t of themes) {
+            document.documentElement.classList.remove(t.name);
         }
 
+        // Add the active theme class
         document.documentElement.classList.add(theme.name);
+
+        // Store just the theme name in localStorage
         localStorage.setItem('theme', theme.name);
-    }, [theme, themes]);
+    }, [theme]);
 
     // Listen for system theme changes (only if using system preference)
     useEffect(() => {
@@ -116,23 +124,24 @@ export const ThemeProvider = ({
 
         const handleChange = (e: MediaQueryListEvent) => {
             const newThemeName = e.matches ? 'dark-theme' : 'light-theme';
-            const newTheme = themes.find(theme=> theme.name === newThemeName)
-            if(newTheme) setThemeState(newTheme);
-        }
+            const newTheme = themes.find(theme => theme.name === newThemeName);
+            if (newTheme) setThemeState(newTheme);
+        };
 
         // Add event listener
         mediaQuery.addEventListener('change', handleChange);
 
         // Cleanup
         return () => mediaQuery.removeEventListener('change', handleChange);
-    }, [themes]);
+    }, []);
 
     // Custom setter that validates the theme
     const setTheme = (newTheme: Theme) => {
-        if (themes.includes(newTheme)) {
-            setThemeState(newTheme);
+        const validTheme = themes.find(t => t.name === newTheme.name);
+        if (validTheme) {
+            setThemeState(validTheme);
         } else {
-            console.warn(`Theme "${newTheme}" is not available. Using default theme instead.`);
+            console.warn(`Theme "${newTheme.name}" is not available. Using default theme instead.`);
             setThemeState(themes[0]);
         }
     };
@@ -140,7 +149,7 @@ export const ThemeProvider = ({
     // Toggle through available themes in sequence
     const toggleTheme = () => {
         setThemeState(prevTheme => {
-            const currentIndex = themes.indexOf(prevTheme);
+            const currentIndex = themes.findIndex(t => t.name === prevTheme.name);
             const nextIndex = (currentIndex + 1) % themes.length;
             return themes[nextIndex];
         });
