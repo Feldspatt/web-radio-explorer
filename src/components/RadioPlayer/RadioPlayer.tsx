@@ -346,7 +346,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         // Reset error state when attempting to play
         setPlaybackError(false);
 
-        // If audio context is suspended (browser policy), resume it
+        // If audio contexts is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
             audioContext.resume().then();
         }

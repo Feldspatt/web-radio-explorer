@@ -136,3 +136,110 @@
     --color-tag-text: #4a5568;
 }
 
+.deep-ocean-theme {
+    --color-bg-main: #0a192f;
+    --color-bg-panel: #112240;
+    --color-bg-panel-gradient-start: #0a192f;
+    --color-bg-panel-gradient-end: #112240;
+    --color-bg-input: rgba(255, 255, 255, 0.08);
+    --color-bg-input-focus: rgba(255, 255, 255, 0.15);
+    --color-bg-item: rgba(255, 255, 255, 0.06);
+    --color-bg-item-hover: rgba(255, 255, 255, 0.12);
+
+    --color-text-primary: #e6f1ff;
+    --color-text-secondary: #a8b2d1;
+    --color-text-tertiary: #8892b0;
+    --color-text-inverse: #0a192f;
+
+    --color-border: rgba(255, 255, 255, 0.12);
+    --color-shadow: rgba(0, 0, 0, 0.4);
+    --shadow-strength: 0.4;
+
+    --color-button-bg: linear-gradient(145deg, #64ffda, #00b7c4);
+    --color-button-bg-hover: linear-gradient(145deg, #64ffda, #00e5ff);
+    --color-button-playing: linear-gradient(145deg, #ff5252, #ff1744);
+
+    --color-tag-bg: rgba(100, 255, 218, 0.2);
+    --color-tag-text: #a8b2d1;
+}
+
+.sunset-theme {
+    --color-bg-main: #2c1a4d;
+    --color-bg-panel: #472b7a;
+    --color-bg-panel-gradient-start: #472b7a;
+    --color-bg-panel-gradient-end: #582f80;
+    --color-bg-input: rgba(255, 255, 255, 0.12);
+    --color-bg-input-focus: rgba(255, 255, 255, 0.2);
+    --color-bg-item: rgba(255, 255, 255, 0.08);
+    --color-bg-item-hover: rgba(255, 255, 255, 0.14);
+
+    --color-text-primary: #fff7f9;
+    --color-text-secondary: #ffd6e0;
+    --color-text-tertiary: #c4a1ff;
+    --color-text-inverse: #2c1a4d;
+
+    --color-border: rgba(255, 255, 255, 0.15);
+    --color-shadow: rgba(0, 0, 0, 0.35);
+    --shadow-strength: 0.35;
+
+    --color-button-bg: linear-gradient(145deg, #ff9a8b, #ff6a88);
+    --color-button-bg-hover: linear-gradient(145deg, #ff9a8b, #ff8e8e);
+    --color-button-playing: linear-gradient(145deg, #b5179e, #7209b7);
+
+    --color-tag-bg: rgba(255, 154, 139, 0.25);
+    --color-tag-text: #ffd6e0;
+}
+
+.mint-theme {
+    --color-bg-main: #f0fff4;
+    --color-bg-panel: #ffffff;
+    --color-bg-panel-gradient-start: #ffffff;
+    --color-bg-panel-gradient-end: #f0fff4;
+    --color-bg-input: rgba(0, 179, 125, 0.1);
+    --color-bg-input-focus: rgba(0, 179, 125, 0.18);
+    --color-bg-item: rgba(0, 0, 0, 0.05);
+    --color-bg-item-hover: rgba(0, 0, 0, 0.08);
+
+    --color-text-primary: #1a202c;
+    --color-text-secondary: #2d3748;
+    --color-text-tertiary: #4a5568;
+    --color-text-inverse: #ffffff;
+
+    --color-border: rgba(0, 179, 125, 0.2);
+    --color-shadow: rgba(0, 0, 0, 0.06);
+    --shadow-strength: 0.06;
+
+    --color-button-bg: linear-gradient(145deg, #38b2ac, #319795);
+    --color-button-bg-hover: linear-gradient(145deg, #4fd1c5, #38b2ac);
+    --color-button-playing: linear-gradient(145deg, #f56565, #e53e3e);
+
+    --color-tag-bg: rgba(56, 178, 172, 0.15);
+    --color-tag-text: #2d3748;
+}
+
+.night-dj-theme {
+    --color-bg-main: #000000;
+    --color-bg-panel: #121212;
+    --color-bg-panel-gradient-start: #121212;
+    --color-bg-panel-gradient-end: #1a1a1a;
+    --color-bg-input: rgba(255, 255, 255, 0.08);
+    --color-bg-input-focus: rgba(255, 255, 255, 0.15);
+    --color-bg-item: rgba(255, 255, 255, 0.04);
+    --color-bg-item-hover: rgba(255, 255, 255, 0.08);
+
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b3b3b3;
+    --color-text-tertiary: #737373;
+    --color-text-inverse: #000000;
+
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-shadow: rgba(0, 0, 0, 0.5);
+    --shadow-strength: 0.5;
+
+    --color-button-bg: linear-gradient(145deg, #9c27b0, #673ab7);
+    --color-button-bg-hover: linear-gradient(145deg, #ba68c8, #9c27b0);
+    --color-button-playing: linear-gradient(145deg, #1db954, #1ed760);
+
+    --color-tag-bg: rgba(156, 39, 176, 0.25);
+    --color-tag-text: #b3b3b3;
+}
