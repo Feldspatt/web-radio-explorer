@@ -309,24 +309,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 ctx.strokeStyle = wave.color;
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
-            });
-
-            // Simple beats
-            const beatCount = 7;
-            const beatWidth = canvas.width / beatCount;
-
-            for (let i = 0; i < beatCount; i++) {
-                const beatHeight = 4 + Math.abs(Math.sin(time * 0.4 + i * 0.3)) * 16;
-                const opacity = 0.2 + Math.abs(Math.sin(time * 0.3 + i * 0.4)) * 0.3;
-                ctx.fillStyle = `rgba(200, 200, 200, ${opacity})`;
-
-                ctx.fillRect(
-                    i * beatWidth + beatWidth * 0.3,
-                    centerY - beatHeight / 2,
-                    beatWidth * 0.4,
-                    beatHeight
-                );
-            }
+            })
 
             time += 0.03;
         };

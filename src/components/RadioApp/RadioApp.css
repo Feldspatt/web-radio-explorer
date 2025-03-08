@@ -157,3 +157,7 @@ button {
     scrollbar-width: thin; /* Options: auto, thin, none */
     scrollbar-color: var(--color-border) transparent; /* Thumb color and track color */
 }
+
+canvas {
+    background-color: var(--color-bg-panel-gradient-end);
+}
