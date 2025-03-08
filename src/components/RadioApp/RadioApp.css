@@ -155,5 +155,5 @@ button {
 
 * {
     scrollbar-width: thin; /* Options: auto, thin, none */
-    scrollbar-color: var(--color-bg-panel-gradient-end) var(--color-bg-panel-gradient-start); /* Thumb color and track color */
+    scrollbar-color: var(--color-border) transparent; /* Thumb color and track color */
 }
