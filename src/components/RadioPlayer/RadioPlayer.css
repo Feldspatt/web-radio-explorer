@@ -41,16 +41,16 @@
 }
 
 .status-indicator.online {
-    background-color: var(--color-success);
+    background-color: var(--color-online);
     animation: pulse 2s infinite;
 }
 
 .status-indicator.paused {
-    background-color: var(--color-error);
+    background-color: var(--color-pause);
 }
 
 .status-indicator.loading {
-    background-color: #f9a825; /* yellow/orange for loading */
+    background-color:  var(--color-loading); /* yellow/orange for loading */
     animation: pulse 2s infinite;
 }
 
@@ -113,7 +113,7 @@
     flex: 1;
     height: 8px;
     -webkit-appearance: none;
-    background: linear-gradient(to right, var(--color-primary-700), var(--color-primary-500));
+    background: var(--color-button-bg);
     border-radius: 3px;
     outline: none;
 }

@@ -1,65 +1,111 @@
 // src/contexts/ThemeContext.tsx
 import { createContext, useState, useEffect, ReactNode } from 'react';
 
-// Define available themes
-export type ThemeName = 'light-theme' | 'dark-theme' | 'blue-theme' | 'green-theme' | 'high-contrast-theme';
-
 // Define the contexts shape
 interface ThemeContextType {
-    theme: ThemeName;
-    setTheme: (theme: ThemeName) => void;
+    theme: Theme;
+    setTheme: (theme: Theme) => void;
     toggleTheme: () => void;
-    availableThemes: ThemeName[];
+    availableThemes: Theme[];
 }
+
+
+const themes: Theme[] = [
+    {
+        name: 'light-theme',
+        symbol: '☀️',
+        label: 'Light'
+    },
+    {
+        name: 'dark-theme',
+        symbol: '🌙',
+        label: 'Dark'
+    },
+    {
+        name: 'solarized-theme',
+        symbol: '🌞',
+        label: 'Solarized'
+    },
+    {
+        name: 'blue-theme',
+        symbol: '🌊',
+        label: 'Blue'
+    },
+    {
+        name: 'green-theme',
+        symbol: '🌿',
+        label: 'Green'
+    },
+    {
+        name: 'high-contrast-theme',
+        symbol: '👁️',
+        label: 'High Contrast'
+    },
+    {
+        name: 'sepia-theme',
+        symbol: '📜',
+        label: 'Sepia'
+    },
+    {
+        name: 'nord-theme',
+        symbol: '❄️',
+        label: 'Nord'
+    },
+    {
+        name: 'cyberpunk-theme',
+        symbol: '⚡',
+        label: 'Cyberpunk'
+    },
+    {
+        name: 'pastel-theme',
+        symbol: '🎨',
+        label: 'Pastel'
+    }
+];
 
 // Create contexts with default values
 export const ThemeContext = createContext<ThemeContextType>({
-    theme: 'light-theme',
+    theme: themes[0],
     setTheme: () => {},
     toggleTheme: () => {},
-    availableThemes: ['light-theme', 'dark-theme']
+    availableThemes: themes
 });
 
 interface ThemeProviderProps {
     children: ReactNode;
-    defaultTheme?: ThemeName;
-    availableThemes?: ThemeName[];
+    defaultTheme?: Theme;
+    availableThemes?: Theme[];
 }
 
 export const ThemeProvider = ({
                                   children,
-                                  defaultTheme = 'light-theme',
-                                  availableThemes = ['light-theme', 'dark-theme', 'blue-theme', 'green-theme', 'high-contrast-theme']
                               }: ThemeProviderProps) => {
-    const [theme, setThemeState] = useState<ThemeName>(() => {
+    const [theme, setThemeState] = useState<Theme>(() => {
         // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme') as ThemeName | null;
+        const savedTheme = localStorage.getItem('theme') as Theme | null;
 
-        if (savedTheme && availableThemes.includes(savedTheme)) {
+        if (savedTheme && themes.includes(savedTheme)) {
             return savedTheme;
         }
 
         // Use system preference as fallback if no saved theme
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return availableThemes.includes('dark-theme') ? 'dark-theme' : defaultTheme;
+            return themes.find(theme => theme.name === 'dark-theme') ?? themes[0];
         }
 
-        return defaultTheme;
+        return themes[0];
     });
 
     // Set theme in document and localStorage
     useEffect(() => {
-        // Remove all theme classes first
-        availableThemes.forEach(themeName => {
-            document.documentElement.classList.remove(themeName);
-        });
 
-        // Add current theme class
-        document.documentElement.classList.add(theme);
+        for(const theme of themes){
+            document.documentElement.classList.remove(theme.name);
+        }
 
-        // Save theme preference
-        localStorage.setItem('theme', theme);
-    }, [theme, availableThemes]);
+        document.documentElement.classList.add(theme.name);
+        localStorage.setItem('theme', theme.name);
+    }, [theme, themes]);
 
     // Listen for system theme changes (only if using system preference)
     useEffect(() => {
@@ -69,40 +115,39 @@ export const ThemeProvider = ({
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
         const handleChange = (e: MediaQueryListEvent) => {
-            const newTheme = e.matches ? 'dark-theme' : 'light-theme';
-            if (availableThemes.includes(newTheme)) {
-                setThemeState(newTheme);
-            }
-        };
+            const newThemeName = e.matches ? 'dark-theme' : 'light-theme';
+            const newTheme = themes.find(theme=> theme.name === newThemeName)
+            if(newTheme) setThemeState(newTheme);
+        }
 
         // Add event listener
         mediaQuery.addEventListener('change', handleChange);
 
         // Cleanup
         return () => mediaQuery.removeEventListener('change', handleChange);
-    }, [availableThemes]);
+    }, [themes]);
 
     // Custom setter that validates the theme
-    const setTheme = (newTheme: ThemeName) => {
-        if (availableThemes.includes(newTheme)) {
+    const setTheme = (newTheme: Theme) => {
+        if (themes.includes(newTheme)) {
             setThemeState(newTheme);
         } else {
             console.warn(`Theme "${newTheme}" is not available. Using default theme instead.`);
-            setThemeState(defaultTheme);
+            setThemeState(themes[0]);
         }
     };
 
     // Toggle through available themes in sequence
     const toggleTheme = () => {
         setThemeState(prevTheme => {
-            const currentIndex = availableThemes.indexOf(prevTheme);
-            const nextIndex = (currentIndex + 1) % availableThemes.length;
-            return availableThemes[nextIndex];
+            const currentIndex = themes.indexOf(prevTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            return themes[nextIndex];
         });
     };
 
     return (
-        <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, availableThemes }}>
+        <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, availableThemes: themes }}>
             {children}
         </ThemeContext.Provider>
     );
