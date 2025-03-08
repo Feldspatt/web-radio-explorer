@@ -43,6 +43,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
+    const [favoritesPage, setFavoritesPage] = useState(1);
 
     // Search term
     const [searchTerm, setSearchTerm] = useState('');
@@ -95,9 +96,12 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             // Get recently listened UUIDs from localStorage
             const recentUUIDs = JSON.parse(localStorage.getItem('last_listened') || '[]');
 
-            if (recentUUIDs.length > 0) {
+            // Limit to stationsPerPage
+            const limitedUUIDs = recentUUIDs.slice(0, stationsPerPage);
+
+            if (limitedUUIDs.length > 0) {
                 // Fetch station details for each UUID
-                const recentStations = await fetchStationsByUUIDs(recentUUIDs);
+                const recentStations = await fetchStationsByUUIDs(limitedUUIDs);
                 setRecentlyListened(recentStations);
             } else {
                 setRecentlyListened([]);
@@ -110,25 +114,34 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         }
     };
 
-    // Load favorites and recently played when tab is selected
-    useEffect(() => {
-        if (activeTab === 'favorites' && favorites.length === 0 && !loadingFavorites) {
+    // Handle tab change and reset pagination
+    const handleTabChange = (tab: 'explore' | 'favorites' | 'recent') => {
+        setActiveTab(tab);
+
+        // Reset pagination when changing tabs
+        if (tab === 'explore') {
+            setCurrentPage(1);
+        } else if (tab === 'favorites') {
+            setFavoritesPage(1);
             loadFavoriteStations();
-        } else if (activeTab === 'recent' && recentlyListened.length === 0 && !loadingRecent) {
+        } else if (tab === 'recent') {
             loadRecentlyListenedStations();
         }
-    }, [activeTab]);
+    };
 
     // Update parent component with stations based on active tab
     useEffect(() => {
         if (activeTab === 'explore') {
             onStationsUpdate(filteredStations);
         } else if (activeTab === 'favorites') {
-            onStationsUpdate(favorites);
+            // Get paginated favorites
+            const startIndex = (favoritesPage - 1) * stationsPerPage;
+            const paginatedFavorites = favorites.slice(startIndex, startIndex + stationsPerPage);
+            onStationsUpdate(paginatedFavorites);
         } else if (activeTab === 'recent') {
             onStationsUpdate(recentlyListened);
         }
-    }, [filteredStations, favorites, recentlyListened, activeTab, onStationsUpdate]);
+    }, [filteredStations, favorites, recentlyListened, activeTab, favoritesPage, onStationsUpdate]);
 
     // Fetch countries, languages, and tags on mount
     useEffect(() => {
@@ -327,57 +340,31 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         if(pageNumber >= 1) setCurrentPage(pageNumber);
     }
 
-    // Get current displayed stations based on active tab
-    const getCurrentStations = () => {
-        switch(activeTab) {
-            case 'favorites':
-                return favorites;
-            case 'recent':
-                return recentlyListened;
-            default:
-                return filteredStations;
+    // Favorites pagination
+    const paginateFavorites = (pageNumber: number) => {
+        if(pageNumber >= 1 && pageNumber <= Math.ceil(favorites.length / stationsPerPage)) {
+            setFavoritesPage(pageNumber);
         }
-    };
-
-    // Get current count based on active tab
-    const getCurrentCount = () => {
-        switch(activeTab) {
-            case 'favorites':
-                return favorites.length;
-            case 'recent':
-                return recentlyListened.length;
-            default:
-                return totalFilteredStations;
-        }
-    };
-
-    // Refresh favorites or recently listened
-    const handleRefresh = () => {
-        if (activeTab === 'favorites') {
-            loadFavoriteStations();
-        } else if (activeTab === 'recent') {
-            loadRecentlyListenedStations();
-        }
-    };
+    }
 
     return (
         <div className="station-selector card">
             <div className="tabs">
                 <button
                     className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}
-                    onClick={() => setActiveTab('explore')}
+                    onClick={() => handleTabChange('explore')}
                 >
                     Explore
                 </button>
                 <button
                     className={`tab ${activeTab === 'favorites' ? 'active-tab' : ''}`}
-                    onClick={() => setActiveTab('favorites')}
+                    onClick={() => handleTabChange('favorites')}
                 >
                     Favorites {favorites.length > 0 && `(${favorites.length})`}
                 </button>
                 <button
                     className={`tab ${activeTab === 'recent' ? 'active-tab' : ''}`}
-                    onClick={() => setActiveTab('recent')}
+                    onClick={() => handleTabChange('recent')}
                 >
                     Last Listened {recentlyListened.length > 0 && `(${recentlyListened.length})`}
                 </button>
@@ -462,20 +449,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             {(activeTab === 'favorites' || activeTab === 'recent') && (
                 <div className="saved-stations-header">
                     <h3>{activeTab === 'favorites' ? 'Your Favorite Stations' : 'Recently Listened Stations'}</h3>
-                    <button
-                        onClick={handleRefresh}
-                        className="refresh-button"
-                        disabled={
-                            (activeTab === 'favorites' && loadingFavorites) ||
-                            (activeTab === 'recent' && loadingRecent)
-                        }
-                    >
-                        {(activeTab === 'favorites' && loadingFavorites) ||
-                        (activeTab === 'recent' && loadingRecent)
-                            ? 'Loading...'
-                            : 'Refresh'
-                        }
-                    </button>
                 </div>
             )}
 
@@ -505,7 +478,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 </div>
             )}
 
-            {getCurrentStations().length > 0 && activeTab === 'explore' && (
+            {/* Pagination for Explore tab */}
+            {filteredStations.length > 0 && activeTab === 'explore' && (
                 <div className="pagination">
                     <button
                         onClick={() => paginate(currentPage - 1)}
@@ -520,12 +494,41 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                             type="number"
                             onChange={(ev) => paginate(parseInt(ev.target.value))}
                             value={currentPage}
-                        /> of {Math.ceil(getCurrentCount() / stationsPerPage)}
+                        /> of {Math.ceil(totalFilteredStations / stationsPerPage)}
                     </span>
 
                     <button
                         onClick={() => paginate(currentPage + 1)}
-                        disabled={currentPage === Math.ceil(getCurrentCount() / stationsPerPage)}
+                        disabled={currentPage === Math.ceil(totalFilteredStations / stationsPerPage)}
+                        className="page-button"
+                    >
+                        Next &raquo;
+                    </button>
+                </div>
+            )}
+
+            {/* Pagination for Favorites tab */}
+            {favorites.length > stationsPerPage && activeTab === 'favorites' && !loadingFavorites && (
+                <div className="pagination">
+                    <button
+                        onClick={() => paginateFavorites(favoritesPage - 1)}
+                        disabled={favoritesPage === 1}
+                        className="page-button"
+                    >
+                        &laquo; Prev
+                    </button>
+
+                    <span className="page-info">
+                        <input
+                            type="number"
+                            onChange={(ev) => paginateFavorites(parseInt(ev.target.value))}
+                            value={favoritesPage}
+                        /> of {Math.ceil(favorites.length / stationsPerPage)}
+                    </span>
+
+                    <button
+                        onClick={() => paginateFavorites(favoritesPage + 1)}
+                        disabled={favoritesPage === Math.ceil(favorites.length / stationsPerPage)}
                         className="page-button"
                     >
                         Next &raquo;

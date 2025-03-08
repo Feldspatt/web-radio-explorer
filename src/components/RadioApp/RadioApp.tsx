@@ -30,15 +30,11 @@ const RadioApp: React.FC = () => {
                 <h1>Web Radio Explorer</h1>
                 <p>Discover and listen to radio stations from around the world</p>
             </header>
-
             <RadioPlayer station={selectedStation}/>
-
-                <StationList
-                    stations={stations}
-                    favoriteStations={[]}
-                    onStationSelect={(station)=>setSelectedStation(station)}
-                    onToggleFavorite={()=>{}}
-                />
+            <StationList
+                stations={stations}
+                onStationSelect={(station)=>setSelectedStation(station)}
+            />
             <StationSelector
                 stationsPerPage={20}
                 stationCount={selectedServer.stations}

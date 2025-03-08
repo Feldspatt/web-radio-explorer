@@ -112,7 +112,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 if (currentPlayer) {
                     // Make sure audioContext is resumed
                     if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-                        audioContextRef.current.resume();
+                        audioContextRef.current.resume().then()
                     }
 
                     currentPlayer.play().catch(e => {
@@ -296,7 +296,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
             const centerY = canvas.height / 2;
 
             // Draw each wave
-            waves.forEach((wave, index) => {
+            waves.forEach((wave) => {
                 ctx.beginPath();
                 ctx.moveTo(0, centerY);
 
@@ -347,7 +347,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
 
         // If audio context is suspended (browser policy), resume it
         if (audioContext.state === 'suspended') {
-            audioContext.resume();
+            audioContext.resume().then()
         }
 
         setIsLoading(true); // Add loading state when toggling
