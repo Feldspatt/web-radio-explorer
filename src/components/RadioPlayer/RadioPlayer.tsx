@@ -336,7 +336,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
 
     // First, improve the keyboard event listener in your useEffect
     useEffect(() => {
-        const handleKeyDown = (event) => {
+        const handleKeyDown = (event: any) => {
             // Only handle space if the active element is not an input or textarea
             if (event.code === 'Space' &&
                 (document.activeElement?.tagName && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName) &&
@@ -354,7 +354,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
         };
     }, [isPlaying, isSafeMode]); // Add dependencies to ensure the listener has the latest state
 
-// Then modify the togglePlayPause function
     const togglePlayPause = () => {
         console.info("toggled play pause");
         if (!audioRef.current || !safeAudioRef.current || !audioContextRef.current) return;
@@ -405,13 +404,19 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 .then(() => {
                     // Make sure the OTHER player is paused
                     if (!isSafeMode) {
-                        safeAudioRef.current.pause();
+                        safeAudioRef.current?.pause();
                     } else {
-                        audioRef.current.pause();
+                        audioRef.current?.pause();
                     }
 
                     setIsPlaying(true);
                     setIsLoading(false);
+
+                    // Always cancel any existing animation before starting a new one
+                    if (animationFrameRef.current) {
+                        cancelAnimationFrame(animationFrameRef.current);
+                        animationFrameRef.current = null;
+                    }
 
                     // Start the appropriate animation based on mode
                     if (!isSafeMode) {
@@ -428,12 +433,19 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                         setIsSafeMode(true);
 
                         // Make sure the primary player is paused
-                        audioRef.current.pause();
+                        audioRef.current?.pause();
 
                         safeAudioRef.current.play()
                             .then(() => {
                                 setIsPlaying(true);
                                 setIsLoading(false);
+
+                                // Make sure to cancel any existing animation
+                                if (animationFrameRef.current) {
+                                    cancelAnimationFrame(animationFrameRef.current);
+                                    animationFrameRef.current = null;
+                                }
+
                                 drawFallbackAnimation(); // Use fallback animation in safe mode
                             })
                             .catch(safeError => {
