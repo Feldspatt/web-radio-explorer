@@ -1,28 +1,95 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FavoriteButton from "../FavoriteButton/FavoriteButton.tsx";
 import VoteButton from "../VoteButton/VoteButton.tsx";
-import './StationList.css'
+import './StationList.css';
 
 interface StationListProps {
     stations: RadioStation[];
-    favoriteStations: string[];
     onStationSelect: (station: RadioStation) => void;
-    onToggleFavorite: (uuid: string) => void;
 }
 
 const StationList: React.FC<StationListProps> = ({
                                                      stations,
-                                                     favoriteStations,
-                                                     onStationSelect,
-                                                     onToggleFavorite
+                                                     onStationSelect
                                                  }) => {
+    // State to store favorite station UUIDs
+    const [favoriteStations, setFavoriteStations] = useState<string[]>([]);
+
+    // Load favorite stations from localStorage on component mount
+    useEffect(() => {
+        try {
+            const savedFavorites = localStorage.getItem('favorites');
+            if (savedFavorites) {
+                setFavoriteStations(JSON.parse(savedFavorites));
+            }
+        } catch (error) {
+            console.error('Error loading favorites from localStorage:', error);
+            // Initialize with empty array if there's an error
+            setFavoriteStations([]);
+        }
+    }, []);
+
+    // Handle toggling a station as favorite
+    const handleToggleFavorite = (uuid: string) => {
+        try {
+            // Create a new array based on current state
+            let updatedFavorites: string[];
+
+            if (favoriteStations.includes(uuid)) {
+                // Remove from favorites if already present
+                updatedFavorites = favoriteStations.filter(id => id !== uuid);
+            } else {
+                // Add to favorites if not present
+                updatedFavorites = [...favoriteStations, uuid];
+            }
+
+            // Update state
+            setFavoriteStations(updatedFavorites);
+
+            // Save to localStorage
+            localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+        } catch (error) {
+            console.error('Error updating favorites in localStorage:', error);
+        }
+    };
+
+    // Handle station selection and update recently listened
+    const handleStationSelect = (station: RadioStation) => {
+        try {
+            // Call the parent component's onStationSelect handler
+            onStationSelect(station);
+
+            // Get current recently listened list
+            const savedRecent = localStorage.getItem('last_listened');
+            let recentlyListened: string[] = savedRecent ? JSON.parse(savedRecent) : [];
+
+            // Remove the station if it's already in the list
+            recentlyListened = recentlyListened.filter(id => id !== station.stationuuid);
+
+            // Add the station to the beginning of the list
+            recentlyListened.unshift(station.stationuuid);
+
+            // Limit to 10 most recent stations
+            if (recentlyListened.length > 10) {
+                recentlyListened = recentlyListened.slice(0, 10);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('last_listened', JSON.stringify(recentlyListened));
+        } catch (error) {
+            console.error('Error updating recently listened in localStorage:', error);
+            // Still call onStationSelect even if localStorage update fails
+            onStationSelect(station);
+        }
+    };
+
     return (
         <div className="stations-list card">
             {stations.map(station => (
                 <div
                     key={station.stationuuid}
                     className="station-item"
-                    onClick={() => onStationSelect(station)}
+                    onClick={() => handleStationSelect(station)}
                 >
                     <div className="station-logo">
                         {station.favicon ? (
@@ -58,7 +125,7 @@ const StationList: React.FC<StationListProps> = ({
                         <FavoriteButton
                             uuid={station.stationuuid}
                             isFavorite={favoriteStations.includes(station.stationuuid)}
-                            onToggleFavorite={onToggleFavorite}
+                            onToggleFavorite={handleToggleFavorite}
                         />
                         <VoteButton uuid={station.stationuuid} votes={station.votes} />
                     </div>
