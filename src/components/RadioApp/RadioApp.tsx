@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
 import StationSelector from '../StationSelector/StationSelector.tsx';
 import './RadioApp.css';
@@ -13,16 +13,14 @@ const RadioApp: React.FC = () => {
     const [stations, setStations] = useState<RadioStation[]>([])
     const [selectedServer, setSelectedServer] = useState<Server | null>(null)
 
-    useEffect(() => {
-        if(selectedServer) {
-            paths.setServer(selectedServer.name)
-            console.log('Selected server', selectedServer.name)
-        }
-    }, [selectedServer])
+    const onNewServerSelected = (server: Server)=> {
+        paths.setServer(server.name)
+        setSelectedServer(server)
+    }
 
     return (
         <ThemeProvider>
-            {!selectedServer ?  <ServerPicker onServerSelected={(server)=>setSelectedServer(server)}></ServerPicker>:
+            {!selectedServer ?  <ServerPicker onServerSelected={(server)=>onNewServerSelected(server)}></ServerPicker>:
                 <>
         <div className="radio-app">
             <ThemeToggle/>

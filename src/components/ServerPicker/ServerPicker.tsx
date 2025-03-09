@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { paths } from "../../services/path.service.ts";
+import {paths, radioServerUrl} from "../../services/path.service.ts";
 import './ServerPicker.css'
 
 interface RadioBrowserServerSelectorProps {
@@ -45,6 +45,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
             console.error('Error fetching radio browser servers:', err);
             if(err instanceof Error) setErrorMessage(err.message);
             setIsLoading(false);
+            await selectServer(radioServerUrl)
         }
     };
 
@@ -67,21 +68,8 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
         console.debug('randomly selected server:', randomServer.name);
         // Test if the server is operational
         try {
-            const response = await fetch(paths.getServerStats(randomServer.name));
-
-            if (!response.ok) throw new Error(`Failed to fetch servers: ${response.status}`)
-
-            const stats = await response.json()
-            if(stats.status !== 'OK') throw new Error(`Server is not ok: ${stats.status}`);
-
-                // Call the callback with the selected server
-                if (onServerSelected) {
-                    await new Promise(resolve => { setTimeout(resolve, 1000) })
-                    onServerSelected({...randomServer, stations: stats.stations - stats.stations_broken });
-                }
-                setIsLoading(false)
-                console.log(`${randomServer.name} is operational`);
-                return
+            await selectServer(randomServer.name);
+            return
         } catch (err) {
             // Mark this server as checked/failed
             const newCheckedServers = new Set(checkedServers);
@@ -92,6 +80,23 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
             console.error(`Server ${randomServer.name} failed:`, err);
             await selectRandomServer(serverList);
         }
+    }
+
+    const selectServer = async (serverName: string) => {
+        const response = await fetch(paths.getServerStats(serverName));
+
+        if (!response.ok) throw new Error(`Failed to fetch servers: ${response.status}`)
+
+        const stats = await response.json()
+        if(stats.status !== 'OK') throw new Error(`Server is not ok: ${stats.status}`);
+
+        // Call the callback with the selected server
+        if (onServerSelected) {
+            await new Promise(resolve => { setTimeout(resolve, 1000) })
+            onServerSelected({name: serverName, stations: stats.stations - stats.stations_broken });
+        }
+        setIsLoading(false)
+        console.log(`${serverName} is operational`);
     }
 
     if (errorMessage && !isLoading) {
