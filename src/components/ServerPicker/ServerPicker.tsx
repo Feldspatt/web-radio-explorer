@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {paths, radioServerUrl} from "../../services/path.service.ts";
+import {defaultServerUrl, paths} from "../../services/path.service.ts";
 import './ServerPicker.css'
 
 interface RadioBrowserServerSelectorProps {
@@ -45,7 +45,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
             console.error('Error fetching radio browser servers:', err);
             if(err instanceof Error) setErrorMessage(err.message);
             setIsLoading(false);
-            await selectServer(radioServerUrl)
+            await selectServer(defaultServerUrl)
         }
     };
 
