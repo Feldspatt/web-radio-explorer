@@ -1,5 +1,5 @@
 const infoUrl = 'http://all.api.radio-browser.info/json'
-export const defaultServerUrl = 'de1.api.radio-browser.info/json'
+export const defaultServerUrl = 'de1.api.radio-browser.info'
 let radioServerUrl = 'https://de1.api.radio-browser.info/json'
 
 export const paths = {
