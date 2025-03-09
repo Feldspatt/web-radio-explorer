@@ -4,8 +4,8 @@ let radioServerUrl = 'https://de1.api.radio-browser.info/json'
 
 export const paths = {
     getServers: ()=> infoUrl + '/servers',
-    getServerStats: (ip: string)=> 'http://' + ipvFormatter(ip) + '/json/stats',
-    setServer: (ip: string)=> radioServerUrl = 'http://' + ipvFormatter(ip) + '/json',
+    getServerStats: (ip: string)=> 'https://' + ipvFormatter(ip) + '/json/stats',
+    setServer: (ip: string)=> radioServerUrl = 'https://' + ipvFormatter(ip) + '/json',
     getCountries: () => radioServerUrl + '/countries',
     getLanguages: () => radioServerUrl + '/languages',
     getTags: () => radioServerUrl + '/tags',
