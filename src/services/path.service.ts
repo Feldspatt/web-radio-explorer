@@ -1,4 +1,4 @@
-const infoUrl = 'http://all.api.radio-browser.info/json'
+const infoUrl = 'https://all.api.radio-browser.info/json'
 
 let radioServerUrl = 'https://de1.api.radio-browser.info/json'
 
