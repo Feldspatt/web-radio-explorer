@@ -4,7 +4,6 @@
 .radio-player {
     width: 100%;
     max-width: 600px;
-    font-family: 'Arial', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -14,7 +13,7 @@
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: var(--border);
 }
 
 
@@ -28,7 +27,7 @@
     font-size: 22px;
     font-weight: 600;
     color: var(--color-text-primary);
-    text-shadow: 0 2px 4px var(--color-shadow);
+    text-shadow: var(--text-shadow);
 }
 
 .status-indicator {
@@ -41,16 +40,16 @@
 }
 
 .status-indicator.online {
-    background-color: var(--color-online);
+    background-color: var(--color-bg-online);
     animation: pulse 2s infinite;
 }
 
 .status-indicator.paused {
-    background-color: var(--color-pause);
+    background-color: var(--color-bg-pause);
 }
 
 .status-indicator.loading {
-    background-color:  var(--color-loading); /* yellow/orange for loading */
+    background-color:  var(--color-bg-loading); /* yellow/orange for loading */
     animation: pulse 2s infinite;
 }
 
@@ -73,11 +72,10 @@
     margin-bottom: 20px;
 }
 
-.play-pause-button {
+.play-button {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: var(--color-button-bg);
     color: var(--color-text-inverse);
     border: none;
     font-size: 18px;
@@ -86,16 +84,26 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 6px var(--color-shadow);
+    box-shadow: var(--box-shadow);
 }
 
-.play-pause-button:hover {
+.play-button:hover {
     transform: scale(1.05);
-    background: var(--color-button-bg-hover);
 }
 
-.play-pause-button.playing {
-    background: var(--color-button-playing);
+.play-button.play {
+    fill: var(--color-text-play-button-play);
+    background: var(--color-play-button-play);
+}
+
+.play-button.pause {
+    fill: var(--color-text-play-button-pause);
+    background: var(--color-play-button-pause);
+}
+
+.play-button.retry {
+    fill: var(--color-text-play-button-retry);
+    background: var(--color-play-button-retry);
 }
 
 .volume-control {
@@ -125,7 +133,7 @@
     border-radius: 50%;
     background: var(--color-text-inverse);
     cursor: pointer;
-    box-shadow: 0 2px 4px var(--color-shadow);
+    box-shadow: var(--box-shadow);
     transition: all 0.2s ease;
 }
 
@@ -139,7 +147,7 @@
     border-radius: 50%;
     background: var(--color-text-inverse);
     cursor: pointer;
-    box-shadow: 0 2px 4px var(--color-shadow);
+    box-shadow: var(--box-shadow);
     border: none;
     transition: all 0.2s ease;
 }

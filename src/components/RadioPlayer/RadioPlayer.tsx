@@ -535,17 +535,27 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station } : RadioPlayerProps)
                 <div className="controls">
                     {playbackError ? (
                         <button
-                            className="retry-button"
+                            className="play-button retry"
                             onClick={retryConnection}
                         >
-                            🔄 Retry
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 12a9 9 0 1 1-4.22-7.59" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 3v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </button>
                     ) : (
                         <button
-                            className={`play-pause-button ${isPlaying ? 'playing' : ''}`}
+                            className={`play-button ${isPlaying ? 'play' : 'pause'}`}
                             onClick={togglePlayPause}
                         >
-                            {isPlaying ? '❚❚' : '▶'}
+                            {isPlaying ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <rect x="3" y="2" width="8" height="20"/>
+                                    <rect x="13" y="2" width="8" height="20"/>
+                                </svg>
+
+                                : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <polygon points="6,4 20,12 6,20"/>
+                            </svg>}
                         </button>
                     )}
 

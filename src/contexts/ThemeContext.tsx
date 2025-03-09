@@ -18,14 +18,15 @@ interface ThemeContextType {
 
 const themes: Theme[] = [
     {
+        name: 'nordic-theme',
+        symbol: '❄',
+        label: 'Nordic',
+
+    },
+    {
         name: 'light-theme',
         symbol: '☀️',
         label: 'Light'
-    },
-    {
-        name: 'dark-theme',
-        symbol: '🌙',
-        label: 'Dark'
     },
     {
         name: 'solarized-theme',
@@ -33,34 +34,14 @@ const themes: Theme[] = [
         label: 'Solarized'
     },
     {
-        name: 'blue-theme',
-        symbol: '🌊',
-        label: 'Blue'
+        name: 'dark-theme',
+        symbol: '🌙',
+        label: 'Dark'
     },
     {
         name: 'high-contrast-theme',
         symbol: '👁️',
         label: 'High Contrast'
-    },
-    {
-        name: 'sepia-theme',
-        symbol: '📜',
-        label: 'Sepia'
-    },
-    {
-        name: 'nord-theme',
-        symbol: '❄️',
-        label: 'Nord'
-    },
-    {
-        name: 'cyberpunk-theme',
-        symbol: '⚡',
-        label: 'Cyberpunk'
-    },
-    {
-        name: 'pastel-theme',
-        symbol: '🎨',
-        label: 'Pastel'
     }
 ];
 

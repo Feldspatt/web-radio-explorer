@@ -177,9 +177,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         } else if (tab === 'favorites') {
             setFavoritesPage(1);
             setFavoritesPageInput("1");
-            loadFavoriteStations();
+            loadFavoriteStations().then();
         } else if (tab === 'recent') {
-            loadRecentlyListenedStations();
+            loadRecentlyListenedStations().then();
         }
     };
 
@@ -313,7 +313,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             }
         };
 
-        fetchStations();
+        fetchStations().then();
     }, [activeFilter, selectedCountry, selectedLanguage, selectedTag, sortBy, currentPage, stationsPerPage, searchTerm, activeTab]);
 
     // Update page input when page changes

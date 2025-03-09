@@ -90,7 +90,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
 
             // Try another server
             console.error(`Server ${randomServer.name} failed:`, err);
-            selectRandomServer(serverList);
+            await selectRandomServer(serverList);
         }
     }
 
