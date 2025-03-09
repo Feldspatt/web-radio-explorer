@@ -1,12 +1,12 @@
 {
-  "name": "gg_radio",
+  "name": "web-radio-explorer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint gg_radio",
+    "lint": "eslint web-radio-explorer",
     "preview": "vite preview"
   },
   "dependencies": {
