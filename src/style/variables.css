@@ -1,5 +1,4 @@
 .dark-theme {
-    /* bg can be gradients */
     --color-bg-main: linear-gradient(145deg, hsl(0, 0%, 7%), hsl(0, 0%, 10%));
     --color-bg-panel: linear-gradient(145deg, hsl(0, 0%, 12%), hsl(0, 0%, 15%));
 
