@@ -1,14 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<!-- Background -->
 <rect width="64" height="64" rx="12" fill="#2E3440"/>
-
-    <!-- Radio wave circles - in Nordic blue tones -->
 <circle cx="32" cy="32" r="24" fill="none" stroke="#88C0D0" stroke-width="2.5" stroke-dasharray="4 4"/>
-<circle cx="32" cy="32" r="18" fill="none" stroke="#81A1C1" stroke-width="2" stroke-dasharray="3 3"/>
-<circle cx="32" cy="32" r="12" fill="none" stroke="#5E81AC" stroke-width="1.5" stroke-dasharray="2 2"/>
-
-    <!-- Radio center -->
-<circle cx="32" cy="32" r="6" fill="#ECEFF4"/>
-
 <path d="M 22,16 L 22,48 L 50,32 Z" fill="#ECEFF4"/>
 </svg>
