@@ -114,14 +114,15 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
     }
 
     if(isLoading) {
-        return <object type="image/svg+xml" data="/splash_art.svg">Your browser does not support SVG</object>
+        return <object type="image/svg+xml"
+                       data={`${import.meta.env.BASE_URL}splash_art.svg`}>Your browser does not support SVG</object>
     }
 
     if (servers.length === 0) {
         return <div className="p-4 text-center">No servers available</div>;
     }
 
-    return <object type="image/svg+xml" data="/splash_art.svg">Your browser does not support SVG</object>
+    return <object type="image/svg+xml" data={`${import.meta.env.BASE_URL}splash_art.svg`}>Your browser does not support SVG</object>
 };
 
 export default RadioBrowserServerSelector;
