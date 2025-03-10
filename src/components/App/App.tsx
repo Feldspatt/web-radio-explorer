@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
 import StationSelector from '../StationSelector/StationSelector.tsx';
-import './RadioApp.css';
-import {ThemeProvider} from "../../contexts/ThemeContext.tsx";
+import './App.css';
 import ThemeToggle from "../ThemeToggle/ThemeToggle.tsx";
 import ServerPicker from "../ServerPicker/ServerPicker.tsx";
 import {paths} from "../../services/path.service.ts";
 import StationList from "../StationList/StationList.tsx";
+import {ThemeProvider} from "../ThemeProvider/ThemeProvider.tsx";
 
-const RadioApp: React.FC = () => {
+const App: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
     const [stations, setStations] = useState<RadioStation[]>([])
     const [selectedServer, setSelectedServer] = useState<Server | null>(null)
@@ -45,4 +45,4 @@ const RadioApp: React.FC = () => {
     );
 };
 
-export default RadioApp;
+export default App;
