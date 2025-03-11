@@ -212,7 +212,7 @@ export const useThemeApplier = (
     initialTheme: string = 'dark',
     transitionDuration: number = 400
 ): ThemeContextType => {
-    const [currentTheme, setCurrentTheme] = useState<string>(initialTheme);
+    const [currentTheme, setCurrentTheme] = useState<string>(window.localStorage.getItem('theme') ?? initialTheme);
 
     // Setup global transitions on mount
     useEffect(() => {
@@ -221,13 +221,12 @@ export const useThemeApplier = (
 
     // Apply theme whenever it changes
     useEffect(() => {
-        // @ts-ignore
-        const theme = themes[currentTheme] || themes.dark;
+        const theme: Theme = themes[currentTheme] || themes.dark;
+        window.localStorage.setItem('theme', theme.name);
         applyTheme(theme, document.documentElement, transitionDuration);
     }, [currentTheme, transitionDuration]);
 
     const setTheme = useCallback((themeName: string) => {
-        // @ts-ignore
         if (themes[themeName]) {
             setCurrentTheme(themeName);
         } else {
@@ -251,7 +250,6 @@ export const useThemeApplier = (
     return {
         getNextTheme,
         switchToNextTheme,
-        // @ts-ignore
         theme: themes[currentTheme] || themes.dark,
         setTheme,
         themes

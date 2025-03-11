@@ -545,7 +545,7 @@ export const highContrastTheme: Theme = {
 };
 
 // Create a themes collection for easy access
-export const themes = {
+export const themes: Record<string, Theme> = {
     dark: darkTheme,
     nordic: nordicTheme,
     solarized: solarizedTheme,
