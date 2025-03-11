@@ -3,11 +3,87 @@ import {GradientColor, gradientToString, hslaToString, Theme, themes} from "../s
 import {ThemeContextType} from "../contexts/ThemeContext.tsx";
 
 /**
- * Applies the provided theme to the application
+ * Creates a global CSS rule to ensure all elements inherit transitions
+ * @param transitionDuration Transition duration in ms
+ */
+export const setupGlobalThemeTransitions = (transitionDuration: number = 400): void => {
+    // Create a style element if it doesn't exist already
+    let styleElement = document.getElementById('theme-transition-styles');
+
+    if (!styleElement) {
+        styleElement = document.createElement('style');
+        styleElement.id = 'theme-transition-styles';
+        document.head.appendChild(styleElement);
+
+        // Apply transition inheritance to all elements
+        styleElement.textContent = `
+      * {
+        transition-property: color, background-color, border-color, box-shadow;
+        transition-duration: ${transitionDuration}ms;
+        transition-timing-function: ease;
+      }
+      
+      /* Exception for elements where transition might cause issues */
+      .no-transition,
+      .no-transition * {
+        transition: none !important;
+      }
+    `;
+    }
+};
+
+/**
+ * Applies the provided theme to the application with smooth transitions
  * @param theme The theme to apply
  * @param targetElement Optional target element (defaults to document.documentElement)
+ * @param transitionDuration Optional transition duration in ms (defaults to 400ms)
  */
-export const applyTheme = (theme: Theme, targetElement: HTMLElement = document.documentElement): void => {
+export const applyTheme = (
+    theme: Theme,
+    targetElement: HTMLElement = document.documentElement,
+    transitionDuration: number = 400
+): void => {
+    // Setup transition properties if not already set
+    const currentTransition = targetElement.style.getPropertyValue('transition');
+
+    if (!currentTransition.includes('--color')) {
+        // Apply transitions to all CSS variables for smooth theme changes
+        const transitionValue = `
+      background-color ${transitionDuration}ms ease,
+      color ${transitionDuration}ms ease,
+      border-color ${transitionDuration}ms ease,
+      box-shadow ${transitionDuration}ms ease,
+      --color-bg-main ${transitionDuration}ms ease,
+      --color-bg-panel ${transitionDuration}ms ease,
+      --bar-hue-start ${transitionDuration}ms ease,
+      --bar-hue-end ${transitionDuration}ms ease,
+      --color-bg-input ${transitionDuration}ms ease,
+      --color-bg-input-focus ${transitionDuration}ms ease,
+      --color-bg-item ${transitionDuration}ms ease,
+      --color-bg-item-hover ${transitionDuration}ms ease,
+      --color-text-primary ${transitionDuration}ms ease,
+      --color-text-secondary ${transitionDuration}ms ease,
+      --color-text-tertiary ${transitionDuration}ms ease,
+      --color-text-inverse ${transitionDuration}ms ease,
+      --color-text-header-primary ${transitionDuration}ms ease,
+      --border-color ${transitionDuration}ms ease,
+      --color-button-bg ${transitionDuration}ms ease,
+      --color-button-bg-hover ${transitionDuration}ms ease,
+      --color-tag-bg ${transitionDuration}ms ease,
+      --color-tag-text ${transitionDuration}ms ease,
+      --color-play-button-play ${transitionDuration}ms ease,
+      --color-play-button-pause ${transitionDuration}ms ease,
+      --color-play-button-retry ${transitionDuration}ms ease,
+      --color-bg-online ${transitionDuration}ms ease,
+      --color-bg-loading ${transitionDuration}ms ease,
+      --color-bg-pause ${transitionDuration}ms ease,
+      --color-bg-error ${transitionDuration}ms ease
+    `;
+
+        targetElement.style.setProperty('transition', transitionValue);
+    }
+
+    // Define CSS variables from theme properties
     const cssVars: Record<string, string> = {
         // Backgrounds
         '--color-bg-main': theme.colorBgMain.type === 'solid'
@@ -91,17 +167,26 @@ export const applyTheme = (theme: Theme, targetElement: HTMLElement = document.d
 /**
  * A custom hook that applies the theme and returns functions to change themes
  * @param initialTheme The initial theme to apply
+ * @param transitionDuration Optional transition duration in ms
  * @returns ThemeContextType object
  */
-export const useThemeApplier = (initialTheme: string = 'dark'): ThemeContextType => {
+export const useThemeApplier = (
+    initialTheme: string = 'dark',
+    transitionDuration: number = 400
+): ThemeContextType => {
     const [currentTheme, setCurrentTheme] = useState<string>(initialTheme);
+
+    // Setup global transitions on mount
+    useEffect(() => {
+        setupGlobalThemeTransitions(transitionDuration);
+    }, [transitionDuration]);
 
     // Apply theme whenever it changes
     useEffect(() => {
         // @ts-ignore
         const theme = themes[currentTheme] || themes.dark;
-        applyTheme(theme);
-    }, [currentTheme]);
+        applyTheme(theme, document.documentElement, transitionDuration);
+    }, [currentTheme, transitionDuration]);
 
     const setTheme = useCallback((themeName: string) => {
         // @ts-ignore
@@ -113,25 +198,24 @@ export const useThemeApplier = (initialTheme: string = 'dark'): ThemeContextType
         }
     }, []);
 
-    // New nextTheme function to cycle to the next theme
-    const switchToNextTheme = useCallback(() => {
-        setCurrentTheme(getNextTheme());
-    }, [currentTheme]);
-
-    const getNextTheme = useCallback(()=>{
+    // Next theme function to cycle to the next theme
+    const getNextTheme = useCallback(() => {
         const themeNames = Object.keys(themes);
         const currentIndex = themeNames.indexOf(currentTheme);
         const nextIndex = (currentIndex + 1) % themeNames.length;
         return themeNames[nextIndex]
     }, [currentTheme]);
 
+    const switchToNextTheme =()=>{
+        setCurrentTheme(getNextTheme());
+    }
 
     return {
+        getNextTheme,
+        switchToNextTheme,
         // @ts-ignore
         theme: themes[currentTheme] || themes.dark,
         setTheme,
-        switchToNextTheme,
-        themes,
-        getNextTheme
+        themes
     };
 };

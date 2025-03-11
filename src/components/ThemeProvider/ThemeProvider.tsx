@@ -7,8 +7,9 @@ import {useThemeApplier} from "../../hooks/useThemeApplier.ts";
 export const ThemeProvider: React.FC<{
     children: React.ReactNode;
     initialTheme?: string;
-}> = ({ children, initialTheme = 'dark' }) => {
-    const themeContext = useThemeApplier(initialTheme);
+    transitionDuration?: number;
+}> = ({ children, initialTheme = 'dark', transitionDuration = 400 }) => {
+    const themeContext = useThemeApplier(initialTheme, transitionDuration);
 
     return (
         <ThemeContext.Provider value={themeContext}>

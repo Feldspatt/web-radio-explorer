@@ -162,10 +162,10 @@ export const darkTheme: Theme = {
     },
     colorBgPanel: {
         type: 'linear-gradient',
-        angle: 145,
+        angle: 45,
         colors: [
-            { color: 'hsl(0, 0%, 12%)' },
-            { color: 'hsl(0, 0%, 15%)' }
+            { color: 'hsl(0, 0%, 0%)' },
+            { color: 'hsl(1, 0%, 50%, 0.1)' }
         ]
     },
 
