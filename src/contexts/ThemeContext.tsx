@@ -1,19 +1,13 @@
-
-
-// Create context with default values
+import {Theme} from "../style/themes.ts";
 import {createContext} from "react";
-import {themes} from "../services/theme.service.ts";
 
-interface ThemeContextType {
+// Updated Theme context type with nextTheme function
+export interface ThemeContextType {
     theme: Theme;
-    setTheme: (theme: Theme) => void;
-    toggleTheme: () => void;
-    availableThemes: Theme[];
+    setTheme: (themeName: string) => void;
+    switchToNextTheme: () => void;
+    themes: Record<string, Theme>;
+    getNextTheme: () => string;
 }
 
-export const ThemeContext = createContext<ThemeContextType>({
-    theme: themes[0],
-    setTheme: () => {},
-    toggleTheme: () => {},
-    availableThemes: themes
-});
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);

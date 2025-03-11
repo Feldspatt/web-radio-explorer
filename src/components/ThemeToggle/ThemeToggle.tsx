@@ -1,24 +1,15 @@
-// src/components/ThemeToggle.tsx
-import { useContext } from 'react';
-import { ThemeContext } from '../../contexts/ThemeContext';
 import './ThemeToggle.css';
+import {useTheme} from "../../hooks/useTheme.ts";
 
 const ThemeToggle = () => {
-    const { theme, toggleTheme, availableThemes } = useContext(ThemeContext);
-
-    // Get aria label for accessibility
-    const getNextTheme = () => {
-        const currentIndex = availableThemes.indexOf(theme);
-        const nextIndex = (currentIndex + 1) % availableThemes.length;
-        return availableThemes[nextIndex];
-    };
+    const { theme, switchToNextTheme, getNextTheme } = useTheme();
 
     return (
         <button
             className="theme-toggle"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${getNextTheme().name} mode`}
-            title={`Switch to ${getNextTheme().name} mode`}
+            onClick={switchToNextTheme}
+            aria-label={`Switch to ${getNextTheme()} mode`}
+            title={`Switch to ${getNextTheme()} mode`}
         >
             {theme.symbol}
         </button>

@@ -23,6 +23,7 @@ const App: React.FC = () => {
             {!selectedServer ?  <ServerPicker onServerSelected={(server)=>onNewServerSelected(server)}></ServerPicker>:
                 <>
         <div className="radio-app">
+
             <ThemeToggle/>
             <header className="app-header">
                 <h1>Web Radio Explorer</h1>

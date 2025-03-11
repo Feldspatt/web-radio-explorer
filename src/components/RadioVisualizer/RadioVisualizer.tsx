@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useCallback } from 'react';
+import React, {useEffect, useRef, useContext, useCallback, useLayoutEffect} from 'react';
 import { ThemeContext } from "../../contexts/ThemeContext.tsx";
 
 // Define proper types for colors
@@ -48,7 +48,7 @@ const RadioVisualizer: React.FC<RadioVisualizerProps> = ({
         const hueStart = parseHSLA(themeStyles.getPropertyValue('--bar-hue-start').trim());
         const hueEnd = parseHSLA(themeStyles.getPropertyValue('--bar-hue-end').trim());
         return { hueStart, hueEnd };
-    }, [parseHSLA, themeContext.theme.name]);
+    }, [parseHSLA, themeContext?.theme.name]);
 
     // Memoize the stop animation function
     const stopAnimation = useCallback(() => {
@@ -205,15 +205,15 @@ const RadioVisualizer: React.FC<RadioVisualizerProps> = ({
         }
 
         return stopAnimation;
-    }, [isPlaying, isSafeMode, station, themeContext.theme.name, stopAnimation, drawVisualizer, drawFallbackAnimation]);
+    }, [isPlaying, isSafeMode, station, themeContext?.theme.name, stopAnimation, drawVisualizer, drawFallbackAnimation]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isPlaying && !isSafeMode) {
             // Restart visualizer when theme changes
             stopAnimation();
             drawVisualizer();
         }
-    }, [themeContext.theme.name, isPlaying, isSafeMode, stopAnimation, drawVisualizer]);
+    }, [themeContext?.theme.name, isPlaying, isSafeMode, stopAnimation, drawVisualizer]);
 
     return (
         <div className="visualizer-container">
