@@ -1,6 +1,10 @@
 .dark-theme {
+    /* bg can be gradients */
     --color-bg-main: linear-gradient(145deg, hsl(0, 0%, 7%), hsl(0, 0%, 10%));
     --color-bg-panel: linear-gradient(145deg, hsl(0, 0%, 12%), hsl(0, 0%, 15%));
+
+    --bar-hue-start: hsla(220, 100%, 60%, 0.7); /* Vibrant blue */
+    --bar-hue-end: hsla(280, 100%, 65%, 0.8);  /* Deep purple */
 
     --color-bg-input: hsla(0, 0%, 100%, 0.1);
     --color-bg-input-focus: hsla(0, 0%, 100%, 0.2);
@@ -48,6 +52,9 @@
 .nordic-theme {
     --color-bg-main: linear-gradient(145deg, hsl(210, 25%, 15%), hsl(210, 25%, 18%));
     --color-bg-panel: linear-gradient(145deg, hsl(210, 25%, 20%), hsl(210, 25%, 25%));
+
+    --bar-hue-start: hsla(190, 80%, 45%, 0.6); /* Teal blue */
+    --bar-hue-end: hsla(230, 75%, 50%, 0.7);  /* Muted indigo */
 
     --color-bg-input: hsla(0, 0%, 100%, 0.1);
     --color-bg-input-focus: hsla(0, 0%, 100%, 0.2);
@@ -103,6 +110,9 @@
     --color-bg-main: linear-gradient(145deg, hsl(44, 50%, 90%), hsl(44, 50%, 85%));
     --color-bg-panel: linear-gradient(145deg, hsl(44, 50%, 80%), hsl(44, 50%, 75%));
 
+    --bar-hue-start: hsla(240, 40%, 50%, 1);
+    --bar-hue-end: hsla(180, 40%, 50%, 1);
+
     --color-bg-input: hsla(220, 15%, 20%, 0.1);
     --color-bg-input-focus: hsla(220, 15%, 20%, 0.2);
 
@@ -150,8 +160,11 @@
     --color-bg-main: linear-gradient(145deg, hsl(0, 0%, 77%), hsl(0, 0%, 89%));
     --color-bg-panel: linear-gradient(145deg, hsl(0, 0%, 94%), hsl(0, 0%, 92%));
 
-    --color-bg-input: hsla(0, 0%, 0%, 0.05);
-    --color-bg-input-focus: hsla(0, 0%, 0%, 0.1);
+    /*--bar-hue-start: hsla(30, 90%, 60%, 1);*/
+    /*--bar-hue-end: hsla(0, 80%, 50%, 1);  !* Soft violet *!*/
+
+    --bar-hue-start: hsla(180, 60%, 40%, 0.7); /* Deep cyan */
+    --bar-hue-end: hsla(40, 70%, 45%, 0.8);  /* Warm amber */
 
     --color-bg-item: hsla(0, 0%, 0%, 0.03);
     --color-bg-item-hover: hsla(0, 0%, 0%, 0.06);
@@ -196,6 +209,9 @@
 .high-contrast-theme {
     --color-bg-main: hsl(0, 0%, 0%);
     --color-bg-panel: hsl(0, 0%, 10%);
+
+    --bar-hue-start: hsla(0, 100%, 50%, 0.9);  /* Bright red */
+    --bar-hue-end: hsla(60, 100%, 50%, 1);    /* Bright yellow */
 
     --color-bg-input: hsla(0, 0%, 100%, 0.2);
     --color-bg-input-focus: hsla(0, 0%, 100%, 0.4);
