@@ -231,7 +231,7 @@
 }
 
 .symbol.selected {
-    color: var(--color-text-primary);
+    color: var(--color-tag-bg);
 }
 
 .pagination {

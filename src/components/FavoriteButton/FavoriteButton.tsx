@@ -1,4 +1,3 @@
-// FavoriteButton.tsx - Separated component for the favorite button
 import React from 'react';
 
 interface FavoriteButtonProps {
