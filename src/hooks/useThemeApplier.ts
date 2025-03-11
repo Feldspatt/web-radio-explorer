@@ -3,36 +3,6 @@ import {GradientColor, gradientToString, hslaToString, Theme, themes} from "../s
 import {ThemeContextType} from "../contexts/ThemeContext.tsx";
 
 /**
- * Creates a global CSS rule to ensure all elements inherit transitions
- * @param transitionDuration Transition duration in ms
- */
-export const setupGlobalThemeTransitions = (transitionDuration: number = 400): void => {
-    // Create a style element if it doesn't exist already
-    let styleElement = document.getElementById('theme-transition-styles');
-
-    if (!styleElement) {
-        styleElement = document.createElement('style');
-        styleElement.id = 'theme-transition-styles';
-        document.head.appendChild(styleElement);
-
-        // Apply transition inheritance to all elements
-        styleElement.textContent = `
-      * {
-        transition-property: color, background-color, border-color, box-shadow;
-        transition-duration: ${transitionDuration}ms;
-        transition-timing-function: ease;
-      }
-      
-      /* Exception for elements where transition might cause issues */
-      .no-transition,
-      .no-transition * {
-        transition: none !important;
-      }
-    `;
-    }
-};
-
-/**
  * Applies the provided theme to the application with smooth transitions
  * @param theme The theme to apply
  * @param targetElement Optional target element (defaults to document.documentElement)
@@ -121,10 +91,6 @@ export const applyTheme = (
         '--text-shadow': theme.textShadow,
         '--box-shadow': theme.boxShadow,
 
-        // Fonts
-        '--font-primary': theme.fontPrimary,
-        '--font-secondary': theme.fontSecondary,
-
         // Button styles
         '--color-button-bg': theme.colorButtonBg.type === 'solid'
             ? theme.colorButtonBg.color
@@ -160,8 +126,80 @@ export const applyTheme = (
         targetElement.style.setProperty(property, value);
     });
 
+    // Update fonts directly in the CSS to ensure they properly change
+    updateFontFamilies(theme);
+
     // Optionally add a data attribute to indicate the current theme
     targetElement.dataset.theme = theme.name;
+};
+
+/**
+ * Directly updates font-family styles to ensure they change properly
+ * @param theme The current theme
+ * @param targetElement The target element to apply styles to
+ */
+export const updateFontFamilies = (
+    theme: Theme,
+    targetElement: Element = document.body
+): void => {
+    // Create or update the font styles element
+    let fontStylesElement = document.getElementById('theme-font-styles');
+
+    if (!fontStylesElement) {
+        fontStylesElement = document.createElement('style');
+        fontStylesElement.id = 'theme-font-styles';
+        targetElement.appendChild(fontStylesElement);
+    }
+
+    // Apply the font-family styles directly using CSS
+    fontStylesElement.textContent = `
+    
+    body {
+        --font-primary: ${theme.fontPrimary};
+      --font-secondary: ${theme.fontSecondary};
+      font-family: var(--font-primary);
+      
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-secondary);
+    }
+    
+    /* Apply secondary font to specific elements if needed */
+    .secondary-font {
+      font-family: var(--font-secondary);
+    }
+  `;
+};
+
+/**
+ * Creates a global CSS rule to ensure all elements inherit transitions
+ * @param transitionDuration Transition duration in ms
+ */
+export const setupGlobalThemeTransitions = (transitionDuration: number = 400): void => {
+    // Create a style element if it doesn't exist already
+    let styleElement = document.getElementById('theme-transition-styles');
+
+    if (!styleElement) {
+        styleElement = document.createElement('style');
+        styleElement.id = 'theme-transition-styles';
+        document.head.appendChild(styleElement);
+
+        // Apply transition inheritance to all elements
+        styleElement.textContent = `
+      * {
+        transition-property: color, background-color, border-color, box-shadow;
+        transition-duration: ${transitionDuration}ms;
+        transition-timing-function: ease;
+      }
+      
+      /* Exception for elements where transition might cause issues */
+      .no-transition,
+      .no-transition * {
+        transition: none !important;
+      }
+    `;
+    }
 };
 
 /**

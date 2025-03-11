@@ -154,18 +154,18 @@ export const darkTheme: Theme = {
 
     colorBgMain: {
         type: 'linear-gradient',
-        angle: 145,
+        angle: 45,
         colors: [
-            { color: 'hsl(0, 0%, 7%)' },
-            { color: 'hsl(0, 0%, 10%)' }
+            { color: 'hsl(0, 0%, 0%)' },
+            { color: 'hsl(40, 0%, 15%)' }
         ]
     },
     colorBgPanel: {
         type: 'linear-gradient',
         angle: 45,
         colors: [
-            { color: 'hsl(0, 0%, 0%)' },
-            { color: 'hsl(1, 0%, 50%, 0.1)' }
+            { color: 'hsl(5, 0%, 10%)'},
+            { color: 'hsl(50, 0%, 15%)' }
         ]
     },
 
@@ -341,8 +341,8 @@ export const solarizedTheme: Theme = {
     colorBgItemHover: { hue: 220, saturation: 15, lightness: 20, alpha: 0.1 },
 
     colorTextPrimary: 'hsl(220, 15%, 20%)',
-    colorTextSecondary: 'hsl(220, 10%, 40%)',
-    colorTextTertiary: 'hsl(220, 10%, 60%)',
+    colorTextSecondary: 'hsl(220, 10%, 30%)',
+    colorTextTertiary: 'hsl(220, 10%, 40%)',
     colorTextInverse: 'hsl(44, 50%, 90%)',
     colorTextHeaderPrimary: 'hsl(187, 100%, 38%)',
 
@@ -505,7 +505,7 @@ export const highContrastTheme: Theme = {
     border: '2px solid hsl(0, 0%, 80%)',
 
     textShadow: 'none',
-    boxShadow: '0 0 5px hsla(0, 0%, 100%, 0.5)',
+    boxShadow: 'none',
 
     fontPrimary: "'Atkinson Hyperlegible', 'Arial', sans-serif",
     fontSecondary: "'Raleway', 'Tahoma', sans-serif",
