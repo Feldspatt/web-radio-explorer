@@ -21,6 +21,7 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [allServersFailed, setAllServersFailed] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [timer] = useState(new Promise(resolve => setTimeout(resolve, 1000)))
 
     useEffect(() => {
         fetchAndSelectServer().then();
@@ -33,10 +34,11 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
 
         try {
             const server = await Promise.any(serversAddresses.map(async server => testServer(server)))
-
+            await timer
             if(server){
                 setIsLoading(false);
                 console.log(`${server.name} is operational with ${server.stations} stations`);
+
                 onServerSelected(server)
                 return
             } else console.warn(`no server operational.`)
