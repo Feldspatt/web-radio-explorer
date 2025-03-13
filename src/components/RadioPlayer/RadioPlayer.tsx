@@ -10,9 +10,10 @@ type RadioStation = {
 
 type RadioPlayerProps = {
     station: Pick<RadioStation, 'url' | 'name' | 'favicon'> | null;
+    autoPlay: boolean;
 };
 
-const RadioPlayer: React.FC<RadioPlayerProps> = ({ station }: RadioPlayerProps) => {
+const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: RadioPlayerProps) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [volume, setVolume] = useState(80);
@@ -79,14 +80,9 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station }: RadioPlayerProps) 
         setIsSafeMode(false);
         setIsLoading(true);
         setPlaybackError(false);
-        setIsPlaying(true); // We'll attempt to play automatically when station changes
+        if(autoPlay) setIsPlaying(true); // We'll attempt to play automatically when station changes
 
         if (audioRef.current && safeAudioRef.current) {
-            try {
-                window.localStorage.setItem('lastStation', JSON.stringify(station));
-            } catch (error) {
-                console.error("Error saving station to localStorage:", error);
-            }
 
             // Stop any current playback before changing sources
             audioRef.current.pause();
@@ -350,7 +346,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station }: RadioPlayerProps) 
                                         src={station.favicon}
                                         alt={`${station.name} logo`}
                                         onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
+                                            (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
                                         }}
                                     />
                                 ) : (
