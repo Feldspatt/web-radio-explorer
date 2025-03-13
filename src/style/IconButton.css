@@ -1,0 +1,26 @@
+.icon-button {
+	cursor: pointer;
+	transition: transform 0.3s ease;
+	fill: none;
+}
+
+.icon-button:focus, .icon-button:hover {
+	transform: scale(1.2);
+}
+
+.icon-button:hover {
+	color: var(--color-text-hard);
+}
+
+.icon-button:active {
+	transform: scale(0.95);
+}
+
+.icon-button.filled {
+	color: var(--color-strong);
+	fill: currentColor;
+}
+
+.icon-button svg {
+	transition: fill 0.3s ease, stroke 0.3s ease;
+}

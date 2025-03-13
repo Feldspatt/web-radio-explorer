@@ -1,0 +1,97 @@
+.station-list {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr;
+	align-items: center;
+	overflow: auto;
+}
+
+.station-list-wrapper {
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
+
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 26em);
+	grid-template-rows: repeat(auto-fill, minmax(min-content, 8em));
+
+	gap: 1.5rem;
+	padding: 1.5rem;
+}
+
+/* Cards */
+.card {
+	position: relative;
+	background-color: hsla(0, 0%, 80%, 0.1);
+	border-radius: var(--border-radius-general);
+	box-shadow: var(--card-box-shadow);
+	display: flex;
+	gap: 0.5em;
+	height: 8em;
+	width: 26em;
+	transition: transform 0.3s ease;
+	overflow: hidden;
+}
+
+.card:hover, .card:focus-within {
+	transform: scale(1.05);
+}
+
+.card .station-logo {
+	display: block;
+	aspect-ratio: 1;
+	height: 100%;
+	object-fit: contain;
+}
+
+.card .default-logo {
+	font-size: 3em;
+	color: var(--color-text-soft);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card .default-logo svg {
+	width: 80%;
+	height: 80%;
+}
+
+.card-body {
+	flex: 1;
+	padding: 0.5em;
+	display: flex;
+	
+	flex-direction: column;
+	justify-content: center;
+	text-wrap: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.card-body > h4 {
+	margin: 0;
+}
+
+.card-title {
+	overflow: hidden;
+}
+
+.station-list .actions {
+	display: flex;
+	margin-top: 1em;
+	gap: 0.5em;
+	color: var(--color-text-soft);
+	flex-wrap: wrap;
+}
+
+.station-list .icon-button:not(.filled) {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.station-list .actions:focus-within .icon-button, .station-list .card:hover .actions .icon-button {
+	opacity: 1;
+}
+
+

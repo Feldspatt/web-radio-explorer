@@ -1,4 +1,4 @@
 type Server = {
-    name: string,
-    stations: number
+	name: string
+	stations: number
 }

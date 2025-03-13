@@ -1,0 +1,143 @@
+.station-selector {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	padding: 1em;
+	background-color: hsl(255, 0%, 50%, 0.1);
+}
+
+.station-selector > .title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.station-selector > .title > h2 {
+	margin: 0;
+}
+
+.station-selector > .title > svg {
+	max-height: 3rem;
+}
+
+.filter-group {
+	display: flex;
+	min-width: 20em;
+	gap: 1em;
+	align-items: center;
+}
+
+.filter-group label {
+	width: 4em;
+}
+
+.filter-group-delete {
+	display: flex;
+	aspect-ratio: 1;
+	width: 1.5rem;
+	transition: transform 0.5s ease, opacity 0.5s ease;
+	opacity: 0;
+	color: var(--color-text-hard);
+	visibility: hidden;
+}
+
+.active-filter .filter-group-delete {
+	visibility: visible;
+	opacity: 0.5;
+	pointer-events: visible;
+}
+
+.active-filter .filter-group-delete:hover, .active-filter .filter-group-delete:focus {
+	opacity: 1;
+	transform: scale(1.3);
+}
+
+.visible-group {
+	width: 12rem;
+	display: flex;
+	justify-content: center;
+	gap: 0.2rem;
+}
+
+.hidden-input-group > div {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.hidden-input-group select {
+	opacity: 0;
+	transition: opacity 0.5s ease, flex 0.5s ease, width 0.5s ease;
+	width: 0;
+}
+
+.hidden-input-group:hover select,
+.hidden-input-group select:focus,
+.hidden-input-group.active-filter select {
+	opacity: 1;
+	width: 12rem;
+}
+
+.hidden-input-group.active-filter select:not(:focus) {
+	border-color: var(--color-strong);
+}
+
+.divider {
+	width: 100%;
+	margin: 0.5em 0;
+	border-bottom: 1px solid var(--color-text-soft);
+}
+
+.station-selector .tab {
+	cursor: pointer;
+	border-bottom: 1px solid hsl(0, 0%, 0%, 0);
+	justify-self: start;
+	align-self: start;
+	transition: border-color 0.5s ease, transform 0.5s ease, color 0.5s ease;
+	line-height: 2em;
+}
+
+.station-selector .tab:hover, .station-selector .tab:focus {
+	border-bottom: 1px solid var(--color-accent);
+	transform: translateY(-0.2rem);
+	color: var(--color-accent);
+}
+
+.station-selector .active-tab {
+	border-bottom: 1px solid var(--color-strong);
+	color: var(--color-strong);
+}
+
+.pagination {
+	display: flex;
+	align-items: center;
+	align-content: center;
+}
+
+.pagination input {
+	width: 4em;
+	text-align: end;
+}
+
+.pagination button {
+	display: flex;
+	align-items: center;
+	transition: transform .3s ease, color .3s ease;
+}
+
+.pagination button:focus, .pagination button:hover {
+	transform: scale(1.25);
+}
+
+.pagination button:active {
+	transform: scale(.95);
+}
+
+.explorer-exclusive {
+	opacity: 0;
+	transition: opacity 0.5s ease;
+}
+
+.explorer-active .explorer-excluseive {
+	opacity: 1;
+}

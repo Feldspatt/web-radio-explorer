@@ -1,0 +1,149 @@
+button {
+	all: unset;
+}
+
+select {
+	appearance: none;
+}
+
+body {
+	font-family: var(--font-primary), serif;
+	background: var(--color-bg-soft);
+	color: var(--color-text-hard);
+	line-height: 1.5;
+	margin: 0;
+	padding: 0;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-secondary), serif;
+	color: var(--color-text-hard);
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
+}
+
+/* Forms */
+input,
+select {
+	font-family: var(--font-primary), serif;
+	padding: 0.5rem 0.75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: var(--color-text-hard);
+	background-color: var(--color-bg-500);
+	border: 1px solid var(--color-text-soft);
+	border-radius: var(--border-radius-input);
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus, select:focus {
+	outline: 1px solid var(--color-accent);
+}
+
+button:focus {
+	color: var(--color-accent) !important;
+}
+
+/* Tags */
+.tag {
+	display: inline-block;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--tags-text);
+	background-color: var(--tags-bg);
+	border: 1px solid var(--tags-border);
+	border-radius: var(--border-radius-general);
+	margin-right: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+/* State indicators */
+.status {
+	padding: 0.25rem 0.5rem;
+	border-radius: var(--border-radius-general);
+	font-weight: 600;
+	font-size: 0.875rem;
+	display: inline-flex;
+	align-items: center;
+}
+
+/* Header and Navigation */
+.header {
+	background-color: var(--color-bg-hard);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 1rem 0;
+}
+
+.nav {
+	display: flex;
+	gap: 1.5rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.nav-item {
+	display: inline-block;
+}
+
+.nav-link {
+	color: var(--color-text-soft);
+	font-weight: 500;
+	padding: 0.5rem 0;
+}
+
+.nav-link:hover {
+	color: var(--color-strong);
+	text-decoration: none;
+}
+
+.nav-link.active {
+	color: var(--color-strong);
+	border-bottom: 2px solid var(--color-strong);
+}
+
+/* Main content wrapper */
+.container {
+	width: 100%;
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+/* Utility classes */
+.bg-soft {
+	background-color: var(--color-bg-soft);
+}
+
+.bg-hard {
+	background-color: var(--color-bg-hard);
+}
+
+.text-soft {
+	color: var(--color-text-soft);
+}
+
+.text-hard {
+	color: var(--color-text-hard);
+}
+
+.text-inverse {
+	color: var(--color-text-inverse);
+}
+R .rounded {
+	border-radius: var(--border-radius-general);
+}
+
+.shadow {
+	box-shadow: var(--card-box-shadow);
+}
