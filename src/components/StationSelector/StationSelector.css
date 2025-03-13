@@ -107,19 +107,28 @@
 
 .filter-group select {
     width: 100%;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 8px 30px 12px 8px;
     border:  var(--border);
     background-color: var(--color-bg-input);
     color: var(--color-text-primary);
     font-size: 14px;
     outline: none;
     cursor: pointer;
+    border-radius: 25px;
+    appearance: none; /* Removes default browser styling */
+    -webkit-appearance: none; /* Safari */
+    -moz-appearance: none; /* Firefox */
+    position: relative;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
 }
 
 /* For Webkit browsers (Chrome, Safari) */
 .filter-group select option {
-    background-color: blue;
+    background-color: var(--color-bg-panel);
     color: var(--color-text-primary);
 }
 
@@ -128,9 +137,9 @@
 }
 
 .active-filter {
-    border: 2px solid #4a90e2;
-    background-color: rgba(74, 144, 226, 0.1);
-    box-shadow: 0 0 3px rgba(74, 144, 226, 0.5);
+    border: 2px solid var(--color-tag-bg);
+    background-color: var(--color-bg-input-focus);
+    box-shadow: var(--box-shadow);
 }
 
 .error {
