@@ -94,6 +94,16 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         }
     }, [debouncedFavoritesPageInput, favorites.length, stationsPerPage]);
 
+    // Helper function to convert HTTP URLs to HTTPS
+    const convertHttpToHttps = (stations: RadioStation[]): RadioStation[] => {
+        return stations.map(station => {
+            if (station.url && station.url.startsWith('http://')) {
+                return { ...station, url: station.url.replace('http://', 'https://') };
+            }
+            return station;
+        });
+    };
+
     // Fetch station details by UUID
     const fetchStationsByUUIDs = async (uuids: string[]): Promise<RadioStation[]> => {
         if (!uuids || uuids.length === 0) return [];
@@ -104,7 +114,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 throw new Error(`Failed to fetch stations with UUID: ${uuids}`);
             }
 
-            return await stationsPromises.json()
+            const stations = await stationsPromises.json();
+            // Convert HTTP URLs to HTTPS
+            return convertHttpToHttps(stations);
         } catch (err) {
             console.error('Error fetching stations by UUIDs:', err);
             return [];
@@ -300,12 +312,19 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 // If the API returns an array directly, adjust accordingly
                 const stationsData = Array.isArray(data) ? data : (data.stations || data);
 
-                // Filter out stations with invalid URLs
-                const validStations = stationsData.filter((station: RadioStation) =>
-                    station.url &&
-                    station.url.trim() !== '' &&
-                    (station.url.startsWith('http://') || station.url.startsWith('https://'))
-                );
+                // Filter out stations with invalid URLs and convert HTTP to HTTPS
+                const validStations = stationsData
+                    .filter((station: RadioStation) =>
+                        station.url &&
+                        station.url.trim() !== '' &&
+                        (station.url.startsWith('http://') || station.url.startsWith('https://'))
+                    )
+                    .map((station: RadioStation) => {
+                        if (station.url && station.url.startsWith('http://')) {
+                            return { ...station, url: station.url.replace('http://', 'https://') };
+                        }
+                        return station;
+                    });
 
                 setFilteredStations(validStations);
             } catch (err) {
