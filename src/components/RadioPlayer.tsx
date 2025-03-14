@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import RadioVisualizer from './RadioVisualizer.tsx';
+import '../style/RadioPlayer.css'
 
 type RadioStation = {
     url: string;
@@ -23,6 +24,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const safeAudioRef = useRef<HTMLAudioElement>(null);
+
+    const [status, setStatus]= useState<'online' | 'loading' | 'error'>('loading')
 
     // Initialize audio context and analyzer
     useEffect(() => {
@@ -79,7 +82,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
         setIsSafeMode(false);
         setIsLoading(true);
         setPlaybackError(false);
-        if(autoPlay) setIsPlaying(true); // We'll attempt to play automatically when station changes
+        if (autoPlay) setIsPlaying(true); // We'll attempt to play automatically when station changes
 
         if (audioRef.current && safeAudioRef.current) {
 
@@ -318,52 +321,51 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
             });
     }, []);
 
+    useEffect(() => {
+        if(isLoading) setStatus('loading')
+        else if(playbackError) setStatus('error')
+        else setStatus('online')
+    }, [isLoading, isPlaying, playbackError]);
+
     return (
         <div className="radio-player card">
-            <audio
-                ref={audioRef}
-                crossOrigin="anonymous"
-            />
 
-            <audio
-                ref={safeAudioRef}
-            />
+            <audio ref={audioRef} crossOrigin="anonymous" />
+            <audio ref={safeAudioRef} />
 
             {!station ? (
-                <div className="empty-state">
-                    <div className="icon">📻</div>
-                    <h2>Select a station to start listening</h2>
-                    <p>Browse and filter stations from the list above</p>
+                <div className="empty-station bg-hard text-center">
+                    <div className="text-soft">📻</div>
+                    <h2 className="text-hard">Select a station to start listening</h2>
+                    <p className="text-soft">Browse and filter stations from the list above</p>
                 </div>
             ) : (
                 <>
                     <div className="station-header">
-                        <span className="inline">
-                            <div className="station-logo">
-                                {station.favicon ? (
-                                    <img
-                                        src={station.favicon}
-                                        alt={`${station.name} logo`}
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
-                                        }}
-                                    />
-                                ) : (
-                                    <div className="default-logo">📻</div>
-                                )}
-                            </div>
-                            <h2 className="station-name">{station.name}</h2>
-                        </span>
-                        <div className={`status-indicator ${isLoading ? 'loading' : playbackError ? 'error' : isPlaying ? 'online' : 'paused'}`}>
-                            {isLoading ? 'LOADING...' : playbackError ? 'UNAVAILABLE' : isPlaying ? 'ON AIR' : 'PAUSED'}
+                        <div className="station-info">
+                            {station.favicon ? (
+                                <img
+                                    src={station.favicon}
+                                    alt={`${station.name} logo`}
+                                    className="station-favicon"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
+                                    }}
+                                />
+                            ) : (
+                                <div className="text-soft station-favicon-placeholder">📻</div>
+                            )}
+                            <h2 className="strong station-name">{station.name}</h2>
                         </div>
+                        <div className={`tag state-${status}`}>{status.toUpperCase()}</div>
                     </div>
 
-                    <div className="controls">
+                    <div className="player-controls">
                         {playbackError ? (
                             <button
-                                className="play-button retry"
+                                className="button action-retry"
                                 onClick={retryConnection}
+                                aria-label="Retry connection"
                             >
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M21 12a9 9 0 1 1-4.22-7.59" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -372,45 +374,57 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                             </button>
                         ) : (
                             <button
-                                className={`play-button ${isPlaying ? 'play' : 'pause'}`}
+                                className={`button ${isPlaying ? 'action-playing' : 'action-paused'}`}
                                 onClick={togglePlayPause}
+                                aria-label={isPlaying ? 'Pause' : 'Play'}
                             >
-                                {isPlaying ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <rect x="3" y="2" width="8" height="20"/>
-                                        <rect x="13" y="2" width="8" height="20"/>
+                                {isPlaying ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <rect x="6" y="4" width="4" height="16"/>
+                                        <rect x="14" y="4" width="4" height="16"/>
                                     </svg>
-
-                                    : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <polygon points="6,4 20,12 6,20"/>
-                                    </svg>}
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <polygon points="8,4 18,12 8,20"/>
+                                    </svg>
+                                )}
                             </button>
                         )}
 
                         <div className="volume-control">
-                            <span className="volume-icon">🔊</span>
+                            <label htmlFor={"volume"} className="volume-icon text-soft">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
+                                  <path d="M16.5 12c0-1.77-.91-3.33-2.29-4.24l1.07-1.77A7.99 7.99 0 0118.5 12a7.99 7.99 0 01-3.22 6.01l-1.07-1.77A5.99 5.99 0 0016.5 12z" fill="currentColor"/>
+                                  <path d="M19.07 4.93l-1.06 1.06A10.97 10.97 0 0121 12c0 3.03-1.23 5.78-3.21 7.79l1.06 1.06A12.96 12.96 0 0023 12c0-3.6-1.43-6.87-3.93-9.07z" fill="currentColor"/>
+                                </svg>
+                            </label>
                             <input
+                                id="volume"
                                 type="range"
                                 min="0"
                                 max="100"
                                 value={volume}
                                 onChange={handleVolumeChange}
                                 className="volume-slider"
+                                aria-label="Volume control"
                             />
-                            <span className="volume-value">{volume}%</span>
                         </div>
                     </div>
 
                     {/* Radio visualizer */}
-                    <RadioVisualizer
-                        isPlaying={isPlaying}
-                        isSafeMode={isSafeMode}
-                        analyserRef={analyserRef}
-                        station={station}
-                    />
+                    <div className="visualizer-container">
+                        <RadioVisualizer
+                            isPlaying={isPlaying}
+                            isSafeMode={isSafeMode}
+                            analyserRef={analyserRef}
+                            station={station}
+                        />
+                    </div>
                 </>
             )}
         </div>
     );
-};
+}
 
 export default RadioPlayer;

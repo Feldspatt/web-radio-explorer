@@ -51,7 +51,7 @@
 /* Base page styling */
 body {
     font-family: var(--font-primary), serif;
-    background-color: var(--color-bg-soft);
+    background: var(--color-bg-soft);
     color: var(--color-text-hard);
     line-height: 1.5;
     margin: 0;
@@ -73,7 +73,7 @@ p, ul, ol {
 }
 
 code, pre {
-    background-color: var(--color-bg-hard);
+    background: var(--color-bg-hard);
     border-radius: var(--border-radius-general);
     padding: 0.25rem 0.5rem;
 }
@@ -119,23 +119,23 @@ a:active {
 
 .btn-primary {
     color: var(--color-text-inverse);
-    background-color: var(--color-strong);
+    background: var(--color-strong);
     border-color: var(--color-strong);
 }
 
 .btn-primary:hover {
-    background-color: var(--color-hover);
+    background: var(--color-hover);
     border-color: var(--color-hover);
 }
 
 .btn-primary:active {
-    background-color: var(--color-active);
+    background: var(--color-active);
     border-color: var(--color-active);
 }
 
 /* Cards */
 .card {
-    background-color: var(--color-bg-hard);
+    background: var(--color-bg-hard);
     border-radius: var(--border-radius-general);
     box-shadow: var(--card-box-shadow);
     padding: 1.5rem;
@@ -152,7 +152,7 @@ a:active {
 
 /* Forms */
 input, select, textarea {
-    font-family: var(--font-primary);
+    font-family: var(--font-primary), serif;
     padding: 0.5rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
@@ -191,15 +191,6 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.875rem;
     display: inline-flex;
     align-items: center;
-}
-
-.status::before {
-    content: "";
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    margin-right: 0.375rem;
 }
 
 .status-error {

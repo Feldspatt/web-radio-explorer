@@ -1,106 +1,113 @@
 export const darkTheme: Theme = {
-    name: "Dark Theme",
-    symbol: "🌙",
+    name: "Enhanced Dark Theme",
+    symbol: "🌃",
     colors: {
-        // Primary accent colors
+        // Primary accent colors - shifted to a more vibrant blue-purple
         strong: {
             type: "hsla",
-            hue: 220,
-            saturation: 100,
+            hue: 230,
+            saturation: 85,
             lightness: 60,
             alpha: 1
         },
         accent: {
             type: "hsla",
-            hue: 220,
-            saturation: 90,
+            hue: 230,
+            saturation: 75,
             lightness: 65,
             alpha: 1
         },
         hover: {
             type: "hsla",
-            hue: 220,
-            saturation: 85,
+            hue: 230,
+            saturation: 70,
             lightness: 70,
             alpha: 1
         },
         active: {
             type: "hsla",
-            hue: 220,
-            saturation: 100,
+            hue: 230,
+            saturation: 90,
             lightness: 55,
-            alpha: 0.9
+            alpha: 1
         },
 
-        // Background shades
+        // Background shades - deeper, richer dark tones with slightly more saturation
         background: {
             soft: {
                 type: "hsla",
-                hue: 220,
-                saturation: 13,
-                lightness: 18,
+                hue: 225,
+                saturation: 15,
+                lightness: 15,
                 alpha: 1
             },
             hard: {
-                type: "hsla",
-                hue: 220,
-                saturation: 16,
-                lightness: 12,
-                alpha: 1
+                type: "linear-gradient",
+                angle: 45,
+                colors: [
+                    {
+                        color: "hsla(250, 100%, 0%, 1)",
+                        position: 0
+                    },
+                    {
+                        color: "hsla(0, 95%, 50%, 0)",
+                        position: 100
+                    }
+                ]
             }
         },
 
-        // Text colors
+        // Text colors - improved contrast while reducing eye strain
         text: {
             soft: {
                 type: "hsla",
                 hue: 220,
-                saturation: 9,
-                lightness: 78,
+                saturation: 5,
+                lightness: 75,
                 alpha: 1
             },
             hard: {
                 type: "hsla",
                 hue: 220,
-                saturation: 5,
-                lightness: 95,
+                saturation: 3,
+                lightness: 92,
                 alpha: 1
             },
             inverse: {
                 type: "hsla",
                 hue: 220,
                 saturation: 10,
-                lightness: 12,
+                lightness: 10,
                 alpha: 1
             }
         },
 
-        // Tags appearance
+        // Tags appearance - more vibrant and distinguishable
         tags: {
             text: {
                 type: "hsla",
                 hue: 0,
                 saturation: 0,
-                lightness: 98,
+                lightness: 100,
                 alpha: 1
             },
             bg: {
                 type: "hsla",
-                hue: 220,
-                saturation: 80,
-                lightness: 50,
+                hue: 230,
+                saturation: 75,
+                lightness: 45,
                 alpha: 1
             },
             border: {
                 type: "hsla",
-                hue: 220,
-                saturation: 85,
-                lightness: 60,
+                hue: 230,
+                saturation: 80,
+                lightness: 55,
                 alpha: 1
             }
         },
 
-        // State indicators
+        // State indicators - more distinctive colors
         state: {
             error: {
                 text: {
@@ -113,15 +120,15 @@ export const darkTheme: Theme = {
                 bg: {
                     type: "hsla",
                     hue: 0,
-                    saturation: 80,
-                    lightness: 45,
+                    saturation: 85,
+                    lightness: 42,
                     alpha: 1
                 },
                 border: {
                     type: "hsla",
                     hue: 0,
-                    saturation: 85,
-                    lightness: 50,
+                    saturation: 90,
+                    lightness: 48,
                     alpha: 1
                 }
             },
@@ -135,15 +142,15 @@ export const darkTheme: Theme = {
                 },
                 bg: {
                     type: "hsla",
-                    hue: 120,
-                    saturation: 70,
+                    hue: 140,
+                    saturation: 75,
                     lightness: 35,
                     alpha: 1
                 },
                 border: {
                     type: "hsla",
-                    hue: 120,
-                    saturation: 75,
+                    hue: 140,
+                    saturation: 80,
                     lightness: 40,
                     alpha: 1
                 }
@@ -158,22 +165,22 @@ export const darkTheme: Theme = {
                 },
                 bg: {
                     type: "hsla",
-                    hue: 40,
-                    saturation: 90,
-                    lightness: 50,
+                    hue: 45,
+                    saturation: 85,
+                    lightness: 48,
                     alpha: 1
                 },
                 border: {
                     type: "hsla",
-                    hue: 40,
-                    saturation: 95,
-                    lightness: 55,
+                    hue: 45,
+                    saturation: 90,
+                    lightness: 53,
                     alpha: 1
                 }
             }
         },
 
-        // Action button states
+        // Action button states - more dynamic gradients
         action: {
             playing: {
                 text: {
@@ -188,11 +195,11 @@ export const darkTheme: Theme = {
                     angle: 135,
                     colors: [
                         {
-                            color: "hsla(210, 90%, 50%, 1)",
+                            color: "hsla(220, 95%, 50%, 1)",
                             position: 0
                         },
                         {
-                            color: "hsla(240, 90%, 50%, 1)",
+                            color: "hsla(260, 95%, 50%, 1)",
                             position: 100
                         }
                     ]
@@ -208,8 +215,8 @@ export const darkTheme: Theme = {
                 },
                 bg: {
                     type: "hsla",
-                    hue: 240,
-                    saturation: 65,
+                    hue: 250,
+                    saturation: 70,
                     lightness: 45,
                     alpha: 1
                 }
@@ -224,27 +231,27 @@ export const darkTheme: Theme = {
                 },
                 bg: {
                     type: "hsla",
-                    hue: 35,
-                    saturation: 90,
-                    lightness: 55,
+                    hue: 30,
+                    saturation: 85,
+                    lightness: 52,
                     alpha: 1
                 }
             }
         }
     },
 
-    // Typography settings
+    // Typography settings - enhanced readability
     typography: {
         primaryFont: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         secondaryFont: "'JetBrains Mono', 'Fira Code', 'Courier New', monospace"
     },
 
-    // Border radius settings
+    // Border radius settings - slightly more rounded
     borderRadius: {
-        input: "6px",
-        general: "8px"
+        input: "8px",
+        general: "10px"
     },
 
-    // Card shadows
-    cardBoxShadow: "0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3)"
+    // Card shadows - more depth and subtlety
+    cardBoxShadow: "0 6px 16px rgba(0, 0, 0, 0.45), 0 3px 8px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25)"
 };
