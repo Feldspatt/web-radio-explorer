@@ -32,7 +32,6 @@ export const darkTheme: Theme = {
             alpha: 1
         },
 
-        // Background shades - deeper, richer dark tones with slightly more saturation
         background: {
             soft: {
                 type: "hsla",
@@ -46,11 +45,11 @@ export const darkTheme: Theme = {
                 angle: 45,
                 colors: [
                     {
-                        color: "hsla(250, 100%, 0%, 1)",
+                        color: "hsla(250, 0%, 5%, 1)",
                         position: 0
                     },
                     {
-                        color: "hsla(0, 95%, 50%, 0)",
+                        color: "hsla(250, 0%, 12%, 1)",
                         position: 100
                     }
                 ]

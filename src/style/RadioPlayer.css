@@ -1,30 +1,22 @@
 /* RadioPlayer specific styling with tighter spacing and hover effects */
 .radio-player {
-    margin: 0.75rem auto;
     width: 100%;
-    max-width: 700px;
+    padding: 1em; /* Reduce padding for more compact look */
+    background: var(--color-bg-hard);
+    position: fixed;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr ;
+    gap: 3rem;
     box-sizing: border-box;
-    padding: 12px; /* Reduce padding for more compact look */
-}
-
-.empty-station {
-    padding: 2rem 1rem;
-    text-align: center;
-}
-
-.station-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    padding: 0;
+    /*justify-content: space-between;*/
+    /*align-items: center;*/
 }
 
 .station-info {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    overflow: hidden;
 }
 
 .station-favicon, .station-favicon-placeholder {
@@ -46,17 +38,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 75%;
+    max-width: 20em;
 }
 
-.player-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0.75rem 0;
-}
+.player-button {
+    justify-self: center;
 
-.player-controls .button {
     width: 44px;
     height: 44px;
     display: flex;
@@ -68,30 +55,29 @@
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-/* Hover effects for play button */
-.player-controls .button:hover {
+.player-button:hover {
     transform: scale(1.05);
-    background-color: var(--color-hover);
+    background: var(--color-hover);
 }
 
-.player-controls .button:active {
+.player-button:active {
     transform: scale(0.95);
-    background-color: var(--color-active);
+    background: var(--color-active);
 }
 
-.player-controls .button svg {
+.player-button svg {
     width: 22px;
     height: 22px;
     fill: currentColor;
 }
 
+
 .volume-control {
+
     display: flex;
     align-items: center;
+    justify-content: end;
     gap: 0.5rem;
-    flex: 1;
-    margin-left: 1rem;
-    max-width: calc(100% - 60px);
 }
 
 .volume-icon {
@@ -99,21 +85,20 @@
     font-size: 0.9rem;
 }
 
-.volume-icon:hover {
+.volume-control:hover > .volume-icon {
     transform: scale(1.1);
 }
 
 .volume-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 0.5em;
+    width: 1em;
     height: 0;
     background-color: var(--color-bg-soft);
     border-radius: var(--border-radius-input);
     outline: none;
     opacity: 0;
     transition: width 0.2s ease, opacity 0.5s ease;
-
 }
 
 .volume-control:hover > .volume-slider, .volume-slider:focus {
@@ -160,39 +145,7 @@
 }
 
 .visualizer-container {
-    width: 100%;
-    height: auto;
-    max-height: 250px;
+    width: 200px;
+    max-height: 1em;
     overflow: hidden;
-    margin-top: 0.5rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 500px) {
-    .radio-player {
-        padding: 10px;
-    }
-
-    .station-favicon, .station-favicon-placeholder {
-        width: 36px;
-        height: 36px;
-        min-width: 36px;
-    }
-
-    .station-name {
-        font-size: 1rem;
-    }
-
-    .player-controls .button {
-        width: 40px;
-        height: 40px;
-    }
-
-    .volume-control {
-        margin-left: 0.75rem;
-    }
-
-    .volume-value {
-        min-width: 36px;
-    }
 }

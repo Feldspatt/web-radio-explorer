@@ -72,16 +72,17 @@ const App: React.FC = () => {
                             <h1>Web Radio Explorer</h1>
                             <p>Discover and listen to radio stations from around the world</p>
                         </header>
-                        <RadioPlayer station={selectedStation} autoPlay={autoPlay}/>
-                        <StationList
-                            stations={stations}
-                            onStationSelect={handleStationSelect}
-                        />
                         <StationSelector
                             stationsPerPage={20}
                             stationCount={selectedServer.stations}
                             onStationsUpdate={(stations) => setStations(stations)}
                         />
+                        <RadioPlayer station={selectedStation} autoPlay={autoPlay}/>
+                        <StationList
+                            stations={stations}
+                            onStationSelect={handleStationSelect}
+                        />
+
                     </div>
                 </>
             }
