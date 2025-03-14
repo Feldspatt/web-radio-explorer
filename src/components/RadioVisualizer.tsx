@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useContext, useCallback, useLayoutEffect} from 'react';
-import { ThemeContext } from "../../contexts/ThemeContext.tsx";
+import { ThemeContext } from "../contexts/ThemeContext.tsx";
 
 // Define proper types for colors
 interface HSLAColor {

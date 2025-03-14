@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import RadioPlayer from '../RadioPlayer/RadioPlayer.tsx';
-import StationSelector from '../StationSelector/StationSelector.tsx';
-import './App.css';
-import ThemeToggle from "../ThemeToggle/ThemeToggle.tsx";
-import ServerPicker from "../ServerPicker/ServerPicker.tsx";
-import { paths } from "../../services/path.service.ts";
-import StationList from "../StationList/StationList.tsx";
-import { ThemeProvider } from "../ThemeProvider/ThemeProvider.tsx";
+import RadioPlayer from './RadioPlayer.tsx';
+import StationSelector from './StationSelector.tsx';
+import '../style/index.css'
+import ThemeToggle from "./ThemeToggle.tsx";
+import ServerPicker from "./ServerPicker.tsx";
+import { paths } from "../services/path.service.ts";
+import StationList from "./StationList.tsx";
+import { ThemeProvider } from "./ThemeProvider.tsx";
 
 const App: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)

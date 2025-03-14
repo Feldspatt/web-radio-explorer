@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import {paths, serversAddresses} from "../../services/path.service.ts";
-import './ServerPicker.css';
+import {paths, serversAddresses} from "../services/path.service.ts";
 
 interface RadioBrowserServerSelectorProps {
     onServerSelected: (server: Server) => void;

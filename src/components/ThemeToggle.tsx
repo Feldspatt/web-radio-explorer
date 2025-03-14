@@ -1,5 +1,4 @@
-import './ThemeToggle.css';
-import {useTheme} from "../../hooks/useTheme.ts";
+import {useTheme} from "../hooks/useTheme.ts";
 
 const ThemeToggle = () => {
     const { theme, switchToNextTheme, getNextTheme } = useTheme();

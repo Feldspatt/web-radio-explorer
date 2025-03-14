@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './StationSelector.css';
-import { paths } from "../../services/path.service.ts";
+import { paths } from "../services/path.service.ts";
 
 interface StationSelectorProps {
     stationCount: number;

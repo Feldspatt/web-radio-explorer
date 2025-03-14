@@ -1,5 +1,5 @@
-import { ThemeContext } from "../../contexts/ThemeContext.tsx";
-import {useThemeApplier} from "../../hooks/useThemeApplier.ts";
+import { ThemeContext } from "../contexts/ThemeContext.tsx";
+import {useThemeApplier} from "../hooks/useThemeApplier.ts";
 
 /**
  * Creates a Theme Provider component to wrap your application

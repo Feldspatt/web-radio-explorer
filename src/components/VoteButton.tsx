@@ -1,6 +1,6 @@
 // VoteButton.tsx - Separated component for votes
 import React from 'react';
-import { paths } from "../../services/path.service.ts";
+import { paths } from "../services/path.service.ts";
 
 interface VoteButtonProps {
     uuid: string;

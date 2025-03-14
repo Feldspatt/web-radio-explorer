@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import RadioVisualizer from '../RadioVisualizer/RadioVisualizer.tsx';
-import './RadioPlayer.css';
+import RadioVisualizer from './RadioVisualizer.tsx';
 
 type RadioStation = {
     url: string;

@@ -1,0 +1,191 @@
+:root {
+    /* Theme meta information */
+    --theme-name: "Default Theme";
+    --theme-symbol: "🌟";
+
+    /* Main colors */
+    --color-strong: hsla(210, 100%, 50%, 1);
+    --color-accent: hsla(280, 80%, 60%, 1);
+    --color-hover: hsla(210, 90%, 60%, 1);
+    --color-active: hsla(210, 100%, 40%, 1);
+
+    /* Background colors */
+    --color-bg-soft: hsla(0, 0%, 97%, 1);
+    --color-bg-hard: hsla(0, 0%, 100%, 1);
+
+    /* Text colors */
+    --color-text-soft: hsla(0, 0%, 45%, 1);
+    --color-text-hard: hsla(0, 0%, 20%, 1);
+    --color-text-inverse: hsla(0, 0%, 100%, 1);
+
+    /* Tags colors */
+    --tags-text: hsla(210, 70%, 30%, 1);
+    --tags-bg: hsla(210, 70%, 95%, 1);
+    --tags-border: hsla(210, 70%, 80%, 1);
+
+    /* State colors */
+    --state-error-text: hsla(0, 80%, 40%, 1);
+    --state-error-bg: hsla(0, 80%, 97%, 1);
+    --state-error-border: hsla(0, 80%, 90%, 1);
+
+    --state-online-text: hsla(120, 70%, 35%, 1);
+    --state-online-bg: hsla(120, 70%, 95%, 1);
+    --state-online-border: hsla(120, 70%, 85%, 1);
+
+    --state-loading-text: hsla(40, 80%, 35%, 1);
+    --state-loading-bg: hsla(40, 80%, 95%, 1);
+    --state-loading-border: hsla(40, 80%, 85%, 1);
+
+    /* Action colors */
+    --action-playing-text: hsla(150, 70%, 35%, 1);
+    --action-playing-bg: hsla(150, 70%, 95%, 1);
+    --action-playing-border: hsla(150, 70%, 85%, 1);
+
+    --action-paused-text: hsla(200, 70%, 35%, 1);
+    --action-paused-bg: hsla(200, 70%, 95%, 1);
+    --action-paused-border: hsla(200, 70%, 85%, 1);
+
+    --action-retry-text: hsla(350, 70%, 40%, 1);
+    --action-retry-bg: hsla(350, 70%, 95%, 1);
+    --action-retry-border: hsla(350, 70%, 85%, 1);
+
+    /* Typography */
+    --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-secondary: 'Georgia', 'Times New Roman', serif;
+
+    /* Border radius */
+    --border-radius-input: 4px;
+    --border-radius-general: 8px;
+
+    /* Box shadow */
+    --card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply theme transitions to all elements */
+* {
+    transition: background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+/* Special treatment for interactive elements */
+input, button, select, textarea {
+    transition: background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 100ms ease;
+}
+
+/* Apply theme to body */
+body {
+    background-color: var(--color-bg-soft);
+    color: var(--color-text-hard);
+    font-family: var(--font-primary);
+}
+
+/* Basic utility classes */
+.bg-soft {
+    background-color: var(--color-bg-soft);
+}
+
+.bg-hard {
+    background-color: var(--color-bg-hard);
+}
+
+.text-soft {
+    color: var(--color-text-soft);
+}
+
+.text-hard {
+    color: var(--color-text-hard);
+}
+
+.text-inverse {
+    color: var(--color-text-inverse);
+}
+
+.accent {
+    color: var(--color-accent);
+}
+
+.strong {
+    color: var(--color-strong);
+}
+
+/* Card styling */
+.card {
+    background-color: var(--color-bg-hard);
+    border-radius: var(--border-radius-general);
+    box-shadow: var(--card-box-shadow);
+    padding: 16px;
+}
+
+/* Button styling */
+.button {
+    background-color: var(--color-strong);
+    color: var(--color-text-inverse);
+    border-radius: var(--border-radius-input);
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-primary);
+}
+
+.button:hover {
+    background-color: var(--color-hover);
+}
+
+.button:active {
+    background-color: var(--color-active);
+}
+
+/* Tag styling */
+.tag {
+    background-color: var(--tags-bg);
+    color: var(--tags-text);
+    border: 1px solid var(--tags-border);
+    border-radius: var(--border-radius-input);
+    padding: 2px 8px;
+    display: inline-block;
+    font-size: 0.875rem;
+}
+
+/* State styling */
+.state-error {
+    background-color: var(--state-error-bg);
+    color: var(--state-error-text);
+    border: 1px solid var(--state-error-border);
+}
+
+.state-online {
+    background-color: var(--state-online-bg);
+    color: var(--state-online-text);
+    border: 1px solid var(--state-online-border);
+}
+
+.state-loading {
+    background-color: var(--state-loading-bg);
+    color: var(--state-loading-text);
+    border: 1px solid var(--state-loading-border);
+}
+
+/* Action styling */
+.action-playing {
+    background-color: var(--action-playing-bg);
+    color: var(--action-playing-text);
+    border: 1px solid var(--action-playing-border);
+}
+
+.action-paused {
+    background-color: var(--action-paused-bg);
+    color: var(--action-paused-text);
+    border: 1px solid var(--action-paused-border);
+}
+
+.action-retry {
+    background-color: var(--action-retry-bg);
+    color: var(--action-retry-text);
+    border: 1px solid var(--action-retry-border);
+}

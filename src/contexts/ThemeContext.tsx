@@ -1,4 +1,3 @@
-import {Theme} from "../style/themes.ts";
 import {createContext} from "react";
 
 // Updated Theme context type with nextTheme function

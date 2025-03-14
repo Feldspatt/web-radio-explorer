@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import FavoriteButton from "../FavoriteButton/FavoriteButton.tsx";
-import VoteButton from "../VoteButton/VoteButton.tsx";
-import './StationList.css';
+import FavoriteButton from "./FavoriteButton.tsx";
+import VoteButton from "./VoteButton.tsx";
 
 interface StationListProps {
     stations: RadioStation[];
@@ -84,14 +83,14 @@ const StationList: React.FC<StationListProps> = ({
     };
 
     return (
-        <div className="stations-list card">
+        <div className="container">
             {stations.map(station => (
                 <div
                     key={station.stationuuid}
-                    className="station-item"
+                    className="card"
                     onClick={() => handleStationSelect(station)}
                 >
-                    <div className="station-logo">
+                    <div className="card-header">
                         {station.favicon ? (
                             <img
                                 src={station.favicon}
@@ -99,15 +98,16 @@ const StationList: React.FC<StationListProps> = ({
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
                                 }}
+                                className="rounded"
                             />
                         ) : (
-                            <div className="default-logo">📻</div>
+                            <div className="default-logo bg-soft rounded">📻</div>
                         )}
                     </div>
 
-                    <div className="station-info">
-                        <h3 className="station-name">{station.name}</h3>
-                        <div className="station-details">
+                    <div className="card-body">
+                        <h3 className="card-title">{station.name}</h3>
+                        <div className="text-soft">
                             <span>{station.country}</span>
                             {station.language && <span> • {station.language}</span>}
                             {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
@@ -121,17 +121,36 @@ const StationList: React.FC<StationListProps> = ({
                         )}
                     </div>
 
-                    <div className="symbols">
-                        <FavoriteButton
-                            uuid={station.stationuuid}
-                            isFavorite={favoriteStations.includes(station.stationuuid)}
-                            onToggleFavorite={handleToggleFavorite}
-                        />
-                        <VoteButton uuid={station.stationuuid} votes={station.votes} />
+                    <div className="card-footer">
+                        <div className="button-container">
+                            <button
+                                className={`btn ${favoriteStations.includes(station.stationuuid) ? 'btn-primary' : ''}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleFavorite(station)
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 21l-1-1c-5-5-8-8-8-13a6 6 0 0 1 12 0c0 5-3 8-8 13z" />
+                                </svg>
+                            </button>
+                            <button
+                                className="btn btn-vote"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // handle vote action here
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v20m-7-7l7 7 7-7" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             ))}
         </div>
+
     );
 };
 
