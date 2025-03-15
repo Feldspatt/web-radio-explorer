@@ -396,7 +396,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                     className="volume-slider"
                     aria-label="Volume control"
                 />
-                <label htmlFor={"volume"} className="volume-icon text-soft">
+                <label htmlFor={"volume"} className="volume-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
                         <path d="M16.5 12c0-1.77-.91-3.33-2.29-4.24l1.07-1.77A7.99 7.99 0 0118.5 12a7.99 7.99 0 01-3.22 6.01l-1.07-1.77A5.99 5.99 0 0016.5 12z" fill="currentColor"/>

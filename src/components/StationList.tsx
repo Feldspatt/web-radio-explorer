@@ -109,9 +109,9 @@ const StationList: React.FC<StationListProps> = ({
                     <div className="card-body">
                         <h4 className="card-title">{cut(station.name, 35)}</h4>
                         <div className="text-soft">
-                            <span>{cut(station.country, 25)}</span>
-                            {station.language && <span> • {cut(station.language, 20)}</span>}
-                            {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
+                            {station.bitrate > 0 && <span>{station.bitrate} kbps • </span>}
+                            <span>{cut(station.country, 15)}</span>
+                            {station.language && <span> • {cut(station.language, 15)}</span>}
                         </div>
                         {/*{station.tags && (*/}
                         {/*    <div className="station-tags">*/}
