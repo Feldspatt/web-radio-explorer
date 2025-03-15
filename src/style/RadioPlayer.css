@@ -9,8 +9,6 @@
     grid-template-columns: 1fr 1fr 1fr ;
     gap: 3rem;
     box-sizing: border-box;
-    /*justify-content: space-between;*/
-    /*align-items: center;*/
 }
 
 .station-info {
@@ -43,7 +41,6 @@
 
 .player-button {
     justify-self: center;
-
     width: 44px;
     height: 44px;
     display: flex;
@@ -112,7 +109,7 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background-color: var(--color-strong);
+    background-color: var(--color-text-soft);
     cursor: pointer;
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
@@ -121,7 +118,7 @@
     width: 14px;
     height: 4px;
     border-radius: 50%;
-    background-color: var(--color-strong);
+    background-color: var(--color-text-soft);
     cursor: pointer;
     border: none;
     transition: transform 0.2s ease, background-color 0.2s ease;

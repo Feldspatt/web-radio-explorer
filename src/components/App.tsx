@@ -1,8 +1,8 @@
+import '../style/index.css'
+import '../style/App.css'
 import React, { useState, useEffect } from 'react';
 import RadioPlayer from './RadioPlayer.tsx';
 import StationSelector from './StationSelector.tsx';
-import '../style/index.css'
-import ThemeToggle from "./ThemeToggle.tsx";
 import ServerPicker from "./ServerPicker.tsx";
 import { paths } from "../services/path.service.ts";
 import StationList from "./StationList.tsx";
@@ -67,11 +67,11 @@ const App: React.FC = () => {
             {!selectedServer ? <ServerPicker onServerSelected={(server) => onNewServerSelected(server)}></ServerPicker> :
                 <>
                     <div className="radio-app">
-                        <ThemeToggle />
-                        <header className="app-header">
-                            <h1>Web Radio Explorer</h1>
-                            <p>Discover and listen to radio stations from around the world</p>
-                        </header>
+                        {/*<ThemeToggle />*/}
+                        {/*<header className="app-header">*/}
+                        {/*    <h1>Web Radio Explorer</h1>*/}
+                        {/*    <p>Discover and listen to radio stations from around the world</p>*/}
+                        {/*</header>*/}
                         <StationSelector
                             stationsPerPage={20}
                             stationCount={selectedServer.stations}

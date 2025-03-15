@@ -1,0 +1,55 @@
+.station-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    min-width: 20em;
+    gap: 1em
+}
+
+.filter-group > label {
+    padding: 0.4em 1em;
+}
+
+.hidden-input-group > label {
+    border: 1px solid var(--color-text-hard);
+    border-radius: var(--border-radius-input);
+    transition: border-color ease .5s;
+}
+
+.hidden-input-group:hover > label, .hidden-input-group.active-filter > label {
+    text-wrap: nowrap;
+    flex: 0;
+    transform: scale(1);
+    border-color: transparent;
+    transition: transform 0.5s ease;
+}
+
+.hidden-input-group > select {
+    opacity: 0;
+    transition: opacity 0.5s ease, flex 0.5s ease;
+    flex: 0;
+    width: 0
+}
+
+.hidden-input-group:hover > select, .hidden-input-group>select:focus, .hidden-input-group.active-filter> select  {
+    opacity: 1;
+    flex: 1
+
+}
+
+.hidden-input-group>select:focus, .hidden-input-group.active-filter> select  {
+    border-color: var(--color-strong);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.divider {
+    width: 100%;
+    margin: 0.5em 0;
+    border-bottom: 1px solid var(--color-text-soft);
+}

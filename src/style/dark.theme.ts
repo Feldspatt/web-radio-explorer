@@ -247,7 +247,7 @@ export const darkTheme: Theme = {
 
     // Border radius settings - slightly more rounded
     borderRadius: {
-        input: "8px",
+        input: "25px",
         general: "10px"
     },
 

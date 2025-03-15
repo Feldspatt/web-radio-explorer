@@ -294,7 +294,7 @@ input:focus, select:focus, textarea:focus {
 
 .text-inverse {
     color: var(--color-text-inverse);
-}
+}R
 
 .rounded {
     border-radius: var(--border-radius-general);

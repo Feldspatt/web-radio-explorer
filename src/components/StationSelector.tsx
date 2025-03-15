@@ -1,3 +1,4 @@
+import '../style/StationSelector.css'
 import React, { useState, useEffect } from 'react';
 import { paths } from "../services/path.service.ts";
 
@@ -436,46 +437,60 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     return (
         <div className="station-selector card">
-            <div className="tabs">
-                <button
-                    className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}
-                    onClick={() => handleTabChange('explore')}
-                >
-                    Explore
-                </button>
-                <button
-                    className={`tab ${activeTab === 'favorites' ? 'active-tab' : ''}`}
-                    onClick={() => handleTabChange('favorites')}
-                >
-                    Favorites {favorites.length > 0 && `(${favorites.length})`}
-                </button>
-                <button
-                    className={`tab ${activeTab === 'recent' ? 'active-tab' : ''}`}
-                    onClick={() => handleTabChange('recent')}
-                >
-                    Last Listened {recentlyListened.length > 0 && `(${recentlyListened.length})`}
-                </button>
-            </div>
+            {/*<div className="tabs">*/}
+            {/*    <button*/}
+            {/*        className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}*/}
+            {/*        onClick={() => handleTabChange('explore')}*/}
+            {/*    >*/}
+            {/*        Explore*/}
+            {/*    </button>*/}
+            {/*    <button*/}
+            {/*        className={`tab ${activeTab === 'favorites' ? 'active-tab' : ''}`}*/}
+            {/*        onClick={() => handleTabChange('favorites')}*/}
+            {/*    >*/}
+            {/*        Favorites {favorites.length > 0 && `(${favorites.length})`}*/}
+            {/*    </button>*/}
+            {/*    <button*/}
+            {/*        className={`tab ${activeTab === 'recent' ? 'active-tab' : ''}`}*/}
+            {/*        onClick={() => handleTabChange('recent')}*/}
+            {/*    >*/}
+            {/*        Last Listened {recentlyListened.length > 0 && `(${recentlyListened.length})`}*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
-            {activeTab === 'explore' && (
-                <>
-                    <div className="search-bar">
+
+            {/*{activeTab === 'explore' && (*/}
+            {/*    <>*/}
+
+            <h2>Radionaut</h2>
+
+            <div className="divider"></div>
+
+            <div>favorites</div>
+                        <div>last listened</div>
+
+                        <div className="divider"></div>
+
+                        <div className="search-bar">
                         <input
                             type="text"
-                            placeholder="Search stations..."
+                            placeholder="Search"
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             className={`search-input ${activeFilter === 'search' ? 'active-filter' : ''}`}
                         />
                     </div>
 
-                    <div className="filters">
-                        <div className="filter-group">
-                            <label>Country:</label>
+                        <div className="divider"></div>
+
+
+                        <div className={`filter-group hidden-input-group ${activeFilter === 'country' ? 'active-filter' : ''}`}>
+                            <label htmlFor="country">Country</label>
                             <select
+                                id="country"
                                 value={selectedCountry}
                                 onChange={(e) => handleCountryChange(e.target.value)}
-                                className={activeFilter === 'country' ? 'active-filter' : ''}
+
                             >
                                 <option value="all">All</option>
                                 {countries.filter(country => country.name !== 'all').map(country => (
@@ -486,12 +501,12 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                             </select>
                         </div>
 
-                        <div className="filter-group">
-                            <label>Language:</label>
+                        <div className={`filter-group hidden-input-group ${activeFilter === 'language' ? 'active-filter' : ''}`}>
+                            <label htmlFor="language">Language</label>
                             <select
+                                id="language"
                                 value={selectedLanguage}
                                 onChange={(e) => handleLanguageChange(e.target.value)}
-                                className={activeFilter === 'language' ? 'active-filter' : ''}
                             >
                                 <option value="all">All</option>
                                 {languages.filter(language => language.name !== 'all').map(language => (
@@ -502,9 +517,10 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                             </select>
                         </div>
 
-                        <div className="filter-group">
-                            <label>Genre:</label>
+                        <div className="filter-group hidden-input-group">
+                            <label htmlFor="genre">Genre</label>
                             <select
+                                id="genre"
                                 value={selectedTag}
                                 onChange={(e) => handleTagChange(e.target.value)}
                                 className={activeFilter === 'tag' ? 'active-filter' : ''}
@@ -518,8 +534,10 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                             </select>
                         </div>
 
+                        <div className="divider"></div>
+
                         <div className="filter-group">
-                            <label>Sort by:</label>
+                            <label>Sort by</label>
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value as 'name' | 'votes' | 'clickcount')}
@@ -528,100 +546,99 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                                 <option value="name">Name</option>
                                 <option value="clickcount">Listeners</option>
                             </select>
-                        </div>
                     </div>
-                </>
-            )}
+            {/*    </>*/}
+            {/*)}*/}
 
-            {(activeTab === 'favorites' || activeTab === 'recent') && (
-                <div className="saved-stations-header">
-                    <h3>{activeTab === 'favorites' ? 'Your Favorite Stations' : 'Recently Listened Stations'}</h3>
-                </div>
-            )}
+            {/*{(activeTab === 'favorites' || activeTab === 'recent') && (*/}
+            {/*    <div className="saved-stations-header">*/}
+            {/*        <h3>{activeTab === 'favorites' ? 'Your Favorite Stations' : 'Recently Listened Stations'}</h3>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {activeTab === 'favorites' && favorites.length === 0 && !loadingFavorites && (
-                <div className="empty-state">
-                    <p>You haven't added any favorite stations yet.</p>
-                    <p>Browse the Explore tab and click the heart icon to add favorites.</p>
-                </div>
-            )}
+            {/*{activeTab === 'favorites' && favorites.length === 0 && !loadingFavorites && (*/}
+            {/*    <div className="empty-state">*/}
+            {/*        <p>You haven't added any favorite stations yet.</p>*/}
+            {/*        <p>Browse the Explore tab and click the heart icon to add favorites.</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {activeTab === 'favorites' && loadingFavorites && (
-                <div className="loading-state">
-                    <p>Loading your favorite stations...</p>
-                </div>
-            )}
+            {/*{activeTab === 'favorites' && loadingFavorites && (*/}
+            {/*    <div className="loading-state">*/}
+            {/*        <p>Loading your favorite stations...</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {activeTab === 'recent' && recentlyListened.length === 0 && !loadingRecent && (
-                <div className="empty-state">
-                    <p>Your recently listened stations will appear here.</p>
-                    <p>Start listening to stations from the Explore tab.</p>
-                </div>
-            )}
+            {/*{activeTab === 'recent' && recentlyListened.length === 0 && !loadingRecent && (*/}
+            {/*    <div className="empty-state">*/}
+            {/*        <p>Your recently listened stations will appear here.</p>*/}
+            {/*        <p>Start listening to stations from the Explore tab.</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {activeTab === 'recent' && loadingRecent && (
-                <div className="loading-state">
-                    <p>Loading your recently listened stations...</p>
-                </div>
-            )}
+            {/*{activeTab === 'recent' && loadingRecent && (*/}
+            {/*    <div className="loading-state">*/}
+            {/*        <p>Loading your recently listened stations...</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {/* Pagination for Explore tab - Always render but conditionally show */}
-            {activeTab === 'explore' && (
-                <div className="pagination" style={{ display: filteredStations.length > 0 ? 'flex' : 'none' }}>
-                    <button
-                        onClick={() => paginate(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="page-button"
-                    >
-                        &laquo; Prev
-                    </button>
+            {/*/!* Pagination for Explore tab - Always render but conditionally show *!/*/}
+            {/*{activeTab === 'explore' && (*/}
+            {/*    <div className="pagination" style={{ display: filteredStations.length > 0 ? 'flex' : 'none' }}>*/}
+            {/*        <button*/}
+            {/*            onClick={() => paginate(currentPage - 1)}*/}
+            {/*            disabled={currentPage === 1}*/}
+            {/*            className="page-button"*/}
+            {/*        >*/}
+            {/*            &laquo; Prev*/}
+            {/*        </button>*/}
 
-                    <span className="page-info">
-                        <input
-                            type="text"
-                            onChange={(ev) => setCurrentPageInput(ev.target.value)}
-                            value={currentPageInput}
-                        /> of {Math.ceil(totalFilteredStations / stationsPerPage)}
-                    </span>
+            {/*        <span className="page-info">*/}
+            {/*            <input*/}
+            {/*                type="text"*/}
+            {/*                onChange={(ev) => setCurrentPageInput(ev.target.value)}*/}
+            {/*                value={currentPageInput}*/}
+            {/*            /> of {Math.ceil(totalFilteredStations / stationsPerPage)}*/}
+            {/*        </span>*/}
 
-                    <button
-                        onClick={() => paginate(currentPage + 1)}
-                        disabled={currentPage >= Math.ceil(totalFilteredStations / stationsPerPage)}
-                        className="page-button"
-                    >
-                        Next &raquo;
-                    </button>
-                </div>
-            )}
+            {/*        <button*/}
+            {/*            onClick={() => paginate(currentPage + 1)}*/}
+            {/*            disabled={currentPage >= Math.ceil(totalFilteredStations / stationsPerPage)}*/}
+            {/*            className="page-button"*/}
+            {/*        >*/}
+            {/*            Next &raquo;*/}
+            {/*        </button>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {/* Pagination for Favorites tab - Always render but conditionally show */}
-            {activeTab === 'favorites' && !loadingFavorites && (
-                <div className="pagination" style={{ display: favorites.length > stationsPerPage ? 'flex' : 'none' }}>
-                    <button
-                        onClick={() => paginateFavorites(favoritesPage - 1)}
-                        disabled={favoritesPage === 1}
-                        className="page-button"
-                    >
-                        &laquo; Prev
-                    </button>
+            {/*/!* Pagination for Favorites tab - Always render but conditionally show *!/*/}
+            {/*{activeTab === 'favorites' && !loadingFavorites && (*/}
+            {/*    <div className="pagination" style={{ display: favorites.length > stationsPerPage ? 'flex' : 'none' }}>*/}
+            {/*        <button*/}
+            {/*            onClick={() => paginateFavorites(favoritesPage - 1)}*/}
+            {/*            disabled={favoritesPage === 1}*/}
+            {/*            className="page-button"*/}
+            {/*        >*/}
+            {/*            &laquo; Prev*/}
+            {/*        </button>*/}
 
-                    <span className="page-info">
-                        <input
-                            type="text"
-                            onChange={(ev) => setFavoritesPageInput(ev.target.value)}
-                            value={favoritesPageInput}
-                        /> of {Math.ceil(favorites.length / stationsPerPage)}
-                    </span>
+            {/*        <span className="page-info">*/}
+            {/*            <input*/}
+            {/*                type="text"*/}
+            {/*                onChange={(ev) => setFavoritesPageInput(ev.target.value)}*/}
+            {/*                value={favoritesPageInput}*/}
+            {/*            /> of {Math.ceil(favorites.length / stationsPerPage)}*/}
+            {/*        </span>*/}
 
-                    <button
-                        onClick={() => paginateFavorites(favoritesPage + 1)}
-                        disabled={favoritesPage >= Math.ceil(favorites.length / stationsPerPage)}
-                        className="page-button"
-                    >
-                        Next &raquo;
-                    </button>
-                </div>
-            )}
+            {/*        <button*/}
+            {/*            onClick={() => paginateFavorites(favoritesPage + 1)}*/}
+            {/*            disabled={favoritesPage >= Math.ceil(favorites.length / stationsPerPage)}*/}
+            {/*            className="page-button"*/}
+            {/*        >*/}
+            {/*            Next &raquo;*/}
+            {/*        </button>*/}
+            {/*    </div>*/}
+            {/*)}*/}
         </div>
     );
 };

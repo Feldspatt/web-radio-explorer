@@ -25,8 +25,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
     const audioRef = useRef<HTMLAudioElement>(null);
     const safeAudioRef = useRef<HTMLAudioElement>(null);
 
-    const [status, setStatus]= useState<'online' | 'loading' | 'error'>('loading')
-
     // Initialize audio context and analyzer
     useEffect(() => {
         if (audioRef.current === null) return;
@@ -320,12 +318,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                     });
             });
     }, []);
-
-    useEffect(() => {
-        if(isLoading) setStatus('loading')
-        else if(playbackError) setStatus('error')
-        else setStatus('online')
-    }, [isLoading, isPlaying, playbackError]);
 
     return (
         <div className="radio-player">
