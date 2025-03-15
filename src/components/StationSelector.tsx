@@ -9,8 +9,6 @@ interface StationSelectorProps {
     onStationsUpdate: (stations: RadioStation[]) => void;
 }
 
-
-
 const StationSelector: React.FC<StationSelectorProps> = ({
                                                              stationCount, stationsPerPage, onStationsUpdate
                                                          }) => {
@@ -448,7 +446,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
             {/*{activeTab === 'explore' && (*/}
             {/*    <>*/}
 
-            <h2>Radionaut</h2>
+
+            <div className={"title"}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                    <rect width="64" height="64" rx="12" fill="#2E3440"/>
+                    <circle cx="32" cy="32" r="24" fill="none" stroke="#88C0D0" stroke-width="2.5" stroke-dasharray="4 4"/>
+                    <path d="M 22,16 L 22,48 L 50,32 Z" fill="#ECEFF4"/>
+                </svg>
+                <h2>Radio Explorer</h2>
+            </div>
 
             <div className="divider"></div>
 

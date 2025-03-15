@@ -1,39 +1,24 @@
 .station-list {
-    /*display: flex;*/
-    justify-content: center;
-    align-content: center;
-    justify-items: center;
+    display: grid;
+    /*align-content: center;*/
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     align-items: center;
 
+    background: linear-gradient(45deg, hsl(0, 0%, 10%), hsl(0, 0%, 17%));
 
-    /*flex-wrap: wrap;*/
-    /*display: grid;*/
-    /*grid-template-columns: minmax(min-content, max-content);*/
-    /*grid-template-rows: min-content;*/
-    background: linear-gradient(45deg, hsl(0, 0%, 11%), hsl(0, 0%, 29%));
+    overflow: auto;
+}
+
+.station-list-wrapper {
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
 
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min-content,30em));
     grid-template-rows: repeat(auto-fill, 6em);
 
-    /*align-self: center;*/
-    /*justify-self: center;*/
-
-    overflow: auto; /* handles overflow if needed */
-    gap: 1.5rem;
-    padding: 1.5rem;
-}
-
-.station-list-wrapper {
-    /*display: flex;*/
-    /*align-content: center;*/
-    /*flex-wrap: wrap;*/
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, auto);
-    grid-template-rows: repeat(auto-fit, auto);
-
-    overflow: auto; /* handles overflow if needed */
     gap: 1.5rem;
     padding: 1.5rem;
 }
@@ -41,7 +26,7 @@
 /* Cards */
 .card {
     cursor: pointer;
-    background: var(--color-bg-hard);
+    background-color: hsla(0, 0%, 100%, 0.05);
     border-radius: var(--border-radius-general);
     box-shadow: var(--card-box-shadow);
     display: flex;
@@ -56,15 +41,29 @@
     transform: scale(1.05) translateY(-0.5em);
 }
 
-.card img {
+.card .station-logo {
     display: block;
     aspect-ratio: 1;
     height: 100%;
     object-fit: contain;
 }
 
+.card .default-logo {
+    font-size: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .card-body {
+    flex: 1;
     padding: 0.5em;
     display: flex;
     flex-direction: column;
+    /*align-items: center;*/
+    justify-content: center;
+}
+
+.card-body > h4 {
+    margin: 0;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../style/StationList.css'
+import {cut} from "../services/cut.ts";
 
 interface StationListProps {
     stations: RadioStation[];
@@ -83,14 +84,14 @@ const StationList: React.FC<StationListProps> = ({
 
     return (
         <div className="station-list">
-            {/*<div className="station-list-wrapper">*/}
+            <div className="station-list-wrapper">
             {stations.map(station => (
                 <div
                     key={station.stationuuid}
                     className="card"
                     onClick={() => handleStationSelect(station)}
                 >
-                    <div className="card-header">
+                    {/*<div className="card-header">*/}
                         {station.favicon ? (
                             <img
                                 src={station.favicon}
@@ -98,18 +99,18 @@ const StationList: React.FC<StationListProps> = ({
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
                                 }}
-                                className="rounded"
+                                className="station-logo"
                             />
                         ) : (
-                            <div className="default-logo bg-soft rounded">📻</div>
+                            <div className="station-logo default-logo">📻</div>
                         )}
-                    </div>
+                    {/*</div>*/}
 
                     <div className="card-body">
-                        <h4 className="card-title">{station.name}</h4>
+                        <h4 className="card-title">{cut(station.name, 35)}</h4>
                         <div className="text-soft">
-                            <span>{station.country}</span>
-                            {station.language && <span> • {station.language}</span>}
+                            <span>{cut(station.country, 25)}</span>
+                            {station.language && <span> • {cut(station.language, 20)}</span>}
                             {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
                         </div>
                         {/*{station.tags && (*/}
@@ -149,7 +150,7 @@ const StationList: React.FC<StationListProps> = ({
                     {/*</div>*/}
                 </div>
             ))}
-            {/*</div>*/}
+            </div>
         </div>
 
     );

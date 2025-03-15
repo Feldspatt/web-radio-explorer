@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import RadioVisualizer from './RadioVisualizer.tsx';
 import '../style/RadioPlayer.css'
+import useAudioMetadata from "../hooks/useAudioMetaData.ts";
 
 type RadioStation = {
     url: string;
@@ -24,6 +25,9 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const safeAudioRef = useRef<HTMLAudioElement>(null);
+
+    const { title, artist } = useAudioMetadata(audioRef);
+
 
     // Initialize audio context and analyzer
     useEffect(() => {
