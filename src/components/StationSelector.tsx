@@ -1,6 +1,7 @@
 import '../style/StationSelector.css'
 import React, { useState, useEffect } from 'react';
 import { paths } from "../services/path.service.ts";
+import {useDebounce} from "../hooks/useDebounce.ts";
 
 interface StationSelectorProps {
     stationCount: number;
@@ -8,22 +9,7 @@ interface StationSelectorProps {
     onStationsUpdate: (stations: RadioStation[]) => void;
 }
 
-// Custom hook for debounce
-const useDebounce = <T extends any>(value: T, delay: number): T => {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [value, delay]);
-
-    return debouncedValue;
-};
 
 const StationSelector: React.FC<StationSelectorProps> = ({
                                                              stationCount, stationsPerPage, onStationsUpdate
@@ -436,7 +422,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     }
 
     return (
-        <div className="station-selector card">
+        <div className="station-selector">
             {/*<div className="tabs">*/}
             {/*    <button*/}
             {/*        className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}*/}

@@ -3,6 +3,8 @@
     flex-direction: column;
     gap: 0.5rem;
     flex-wrap: wrap;
+    padding: 1em;
+    background: var(--color-bg-hard);
 }
 
 .station-selector > h2 {

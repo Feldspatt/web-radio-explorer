@@ -1,6 +1,8 @@
 import '../style/default.css'
 import '../style/index.css'
 import '../style/App.css'
+import '../style/scrollbar.css'
+
 
 import React, { useState, useEffect } from 'react';
 import RadioPlayer from './RadioPlayer.tsx';
@@ -75,15 +77,15 @@ const App: React.FC = () => {
                         {/*    <p>Discover and listen to radio stations from around the world</p>*/}
                         {/*</header>*/}
                         <StationSelector
-                            stationsPerPage={20}
+                            stationsPerPage={24}
                             stationCount={selectedServer.stations}
                             onStationsUpdate={(stations) => setStations(stations)}
                         />
-                        <RadioPlayer station={selectedStation} autoPlay={autoPlay}/>
                         <StationList
                             stations={stations}
                             onStationSelect={handleStationSelect}
                         />
+                        <RadioPlayer station={selectedStation} autoPlay={autoPlay}/>
 
                     </div>
                 </>

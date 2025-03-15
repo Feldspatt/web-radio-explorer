@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import '../style/StationList.css'
 
 interface StationListProps {
     stations: RadioStation[];
@@ -81,7 +82,8 @@ const StationList: React.FC<StationListProps> = ({
     };
 
     return (
-        <div className="container">
+        <div className="station-list">
+            {/*<div className="station-list-wrapper">*/}
             {stations.map(station => (
                 <div
                     key={station.stationuuid}
@@ -104,49 +106,50 @@ const StationList: React.FC<StationListProps> = ({
                     </div>
 
                     <div className="card-body">
-                        <h3 className="card-title">{station.name}</h3>
+                        <h4 className="card-title">{station.name}</h4>
                         <div className="text-soft">
                             <span>{station.country}</span>
                             {station.language && <span> • {station.language}</span>}
                             {station.bitrate > 0 && <span> • {station.bitrate} kbps</span>}
                         </div>
-                        {station.tags && (
-                            <div className="station-tags">
-                                {station.tags.split(',').slice(0, 3).map(tag => (
-                                    <span key={tag} className="tag">{tag.trim()}</span>
-                                ))}
-                            </div>
-                        )}
+                        {/*{station.tags && (*/}
+                        {/*    <div className="station-tags">*/}
+                        {/*        {station.tags.split(',').slice(0, 3).map(tag => (*/}
+                        {/*            <span key={tag} className="tag">{tag.trim()}</span>*/}
+                        {/*        ))}*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                     </div>
 
-                    <div className="card-footer">
-                        <div className="button-container">
-                            <button
-                                className={`btn ${favoriteStations.includes(station.stationuuid) ? 'btn-primary' : ''}`}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleToggleFavorite(station)
-                                }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 21l-1-1c-5-5-8-8-8-13a6 6 0 0 1 12 0c0 5-3 8-8 13z" />
-                                </svg>
-                            </button>
-                            <button
-                                className="btn btn-vote"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    // handle vote action here
-                                }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2v20m-7-7l7 7 7-7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                    {/*<div className="card-footer">*/}
+                    {/*    <div className="button-container">*/}
+                    {/*        <button*/}
+                    {/*            className={`btn ${favoriteStations.includes(station.stationuuid) ? 'btn-primary' : ''}`}*/}
+                    {/*            onClick={(e) => {*/}
+                    {/*                e.stopPropagation();*/}
+                    {/*                handleToggleFavorite(station)*/}
+                    {/*            }}*/}
+                    {/*        >*/}
+                    {/*            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">*/}
+                    {/*                <path d="M12 21l-1-1c-5-5-8-8-8-13a6 6 0 0 1 12 0c0 5-3 8-8 13z" />*/}
+                    {/*            </svg>*/}
+                    {/*        </button>*/}
+                    {/*        <button*/}
+                    {/*            className="btn btn-vote"*/}
+                    {/*            onClick={(e) => {*/}
+                    {/*                e.stopPropagation();*/}
+                    {/*                // handle vote action here*/}
+                    {/*            }}*/}
+                    {/*        >*/}
+                    {/*            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">*/}
+                    {/*                <path d="M12 2v20m-7-7l7 7 7-7" />*/}
+                    {/*            </svg>*/}
+                    {/*        </button>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
             ))}
+            {/*</div>*/}
         </div>
 
     );

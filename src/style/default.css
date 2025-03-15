@@ -104,14 +104,6 @@ body {
     color: var(--color-strong);
 }
 
-/* Card styling */
-.card {
-    background-color: var(--color-bg-hard);
-    border-radius: var(--border-radius-general);
-    box-shadow: var(--card-box-shadow);
-    padding: 16px;
-}
-
 /* Button styling */
 .button {
     background-color: var(--color-strong);

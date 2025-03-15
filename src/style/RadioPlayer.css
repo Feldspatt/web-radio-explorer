@@ -1,17 +1,15 @@
-/* RadioPlayer specific styling with tighter spacing and hover effects */
 .radio-player {
-    width: 100%;
     padding: 1em; /* Reduce padding for more compact look */
     background: var(--color-bg-hard);
-    position: fixed;
-    bottom: 0;
     display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr auto 1fr;
     gap: 3rem;
     box-sizing: border-box;
     align-content: center;
     justify-content: center;
     align-items: center;
+
+    grid-column: span 2;
 }
 
 .station-info {
@@ -146,7 +144,7 @@
 
 .visualizer-wrapper {
     overflow: hidden;
-    height: 5em;
+    height: 3em;
 }
 
 .visualizer-wrapper > canvas {

@@ -341,14 +341,14 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                         </div>
                 }
 
-                <div className="visualizer-wrapper">
-                    <RadioVisualizer
-                        isPlaying={isPlaying}
-                        isSafeMode={isSafeMode}
-                        analyserRef={analyserRef}
-                        station={station}
-                    />
-                </div>
+                {/*<div className="visualizer-wrapper">*/}
+                {/*    <RadioVisualizer*/}
+                {/*        isPlaying={isPlaying}*/}
+                {/*        isSafeMode={isSafeMode}*/}
+                {/*        analyserRef={analyserRef}*/}
+                {/*        station={station}*/}
+                {/*    />*/}
+                {/*</div>*/}
 
 
                         {playbackError ? (

@@ -1,0 +1,70 @@
+.station-list {
+    /*display: flex;*/
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+
+
+    /*flex-wrap: wrap;*/
+    /*display: grid;*/
+    /*grid-template-columns: minmax(min-content, max-content);*/
+    /*grid-template-rows: min-content;*/
+    background: linear-gradient(45deg, hsl(0, 0%, 11%), hsl(0, 0%, 29%));
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min-content,30em));
+    grid-template-rows: repeat(auto-fill, 6em);
+
+    /*align-self: center;*/
+    /*justify-self: center;*/
+
+    overflow: auto; /* handles overflow if needed */
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.station-list-wrapper {
+    /*display: flex;*/
+    /*align-content: center;*/
+    /*flex-wrap: wrap;*/
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, auto);
+    grid-template-rows: repeat(auto-fit, auto);
+
+    overflow: auto; /* handles overflow if needed */
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+/* Cards */
+.card {
+    cursor: pointer;
+    background: var(--color-bg-hard);
+    border-radius: var(--border-radius-general);
+    box-shadow: var(--card-box-shadow);
+    display: flex;
+    gap: 0.5em;
+    height: 6em;
+    width: 30em;
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: scale(1.05) translateY(-0.5em);
+}
+
+.card img {
+    display: block;
+    aspect-ratio: 1;
+    height: 100%;
+    object-fit: contain;
+}
+
+.card-body {
+    padding: 0.5em;
+    display: flex;
+    flex-direction: column;
+}
