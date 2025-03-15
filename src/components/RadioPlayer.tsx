@@ -340,6 +340,17 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                             <h2 className="strong station-name">{station.name}</h2>
                         </div>
                 }
+
+                <div className="visualizer-wrapper">
+                    <RadioVisualizer
+                        isPlaying={isPlaying}
+                        isSafeMode={isSafeMode}
+                        analyserRef={analyserRef}
+                        station={station}
+                    />
+                </div>
+
+
                         {playbackError ? (
                             <button
                                 className="player-button action-retry"
@@ -370,15 +381,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                             </button>
                         )}
 
-            {/*<div className="visualizer-container">*/}
-            {/*    <RadioVisualizer*/}
-            {/*        isPlaying={isPlaying}*/}
-            {/*        isSafeMode={isSafeMode}*/}
-            {/*        analyserRef={analyserRef}*/}
-            {/*        station={station}*/}
-            {/*    />*/}
-            {/*</div>*/}
-
             <div className="volume-control">
                 <input
                     id="volume"
@@ -397,7 +399,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                         <path d="M19.07 4.93l-1.06 1.06A10.97 10.97 0 0121 12c0 3.03-1.23 5.78-3.21 7.79l1.06 1.06A12.96 12.96 0 0023 12c0-3.6-1.43-6.87-3.93-9.07z" fill="currentColor"/>
                     </svg>
                 </label>
-
 
             </div>
         </div>

@@ -9,6 +9,9 @@
     --color-hover: hsla(210, 90%, 60%, 1);
     --color-active: hsla(210, 100%, 40%, 1);
 
+    --color-visualizer-start: hsla(84, 59%, 53%);
+    --color-visualizer-end: hsla(7, 75%, 45%);
+
     /* Background colors */
     --color-bg-soft: hsla(0, 0%, 97%, 1);
     --color-bg-hard: hsla(0, 0%, 100%, 1);
@@ -22,19 +25,6 @@
     --tags-text: hsla(210, 70%, 30%, 1);
     --tags-bg: hsla(210, 70%, 95%, 1);
     --tags-border: hsla(210, 70%, 80%, 1);
-
-    /* State colors */
-    --state-error-text: hsla(0, 80%, 40%, 1);
-    --state-error-bg: hsla(0, 80%, 97%, 1);
-    --state-error-border: hsla(0, 80%, 90%, 1);
-
-    --state-online-text: hsla(120, 70%, 35%, 1);
-    --state-online-bg: hsla(120, 70%, 95%, 1);
-    --state-online-border: hsla(120, 70%, 85%, 1);
-
-    --state-loading-text: hsla(40, 80%, 35%, 1);
-    --state-loading-bg: hsla(40, 80%, 95%, 1);
-    --state-loading-border: hsla(40, 80%, 85%, 1);
 
     /* Action colors */
     --action-playing-text: hsla(150, 70%, 35%, 1);
@@ -150,25 +140,6 @@ body {
     padding: 2px 8px;
     display: inline-block;
     font-size: 0.875rem;
-}
-
-/* State styling */
-.state-error {
-    background-color: var(--state-error-bg);
-    color: var(--state-error-text);
-    border: 1px solid var(--state-error-border);
-}
-
-.state-online {
-    background-color: var(--state-online-bg);
-    color: var(--state-online-text);
-    border: 1px solid var(--state-online-border);
-}
-
-.state-loading {
-    background-color: var(--state-loading-bg);
-    color: var(--state-loading-text);
-    border: 1px solid var(--state-loading-border);
 }
 
 /* Action styling */

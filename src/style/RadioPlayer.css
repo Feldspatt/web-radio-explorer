@@ -6,9 +6,12 @@
     position: fixed;
     bottom: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr ;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr;
     gap: 3rem;
     box-sizing: border-box;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .station-info {
@@ -141,8 +144,12 @@
     font-size: 0.9rem;
 }
 
-.visualizer-container {
-    width: 200px;
-    max-height: 1em;
+.visualizer-wrapper {
     overflow: hidden;
+    height: 5em;
+}
+
+.visualizer-wrapper > canvas {
+    /*height: 3em;*/
+    height: 100%;
 }

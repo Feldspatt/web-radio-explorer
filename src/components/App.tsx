@@ -1,5 +1,7 @@
+import '../style/default.css'
 import '../style/index.css'
 import '../style/App.css'
+
 import React, { useState, useEffect } from 'react';
 import RadioPlayer from './RadioPlayer.tsx';
 import StationSelector from './StationSelector.tsx';

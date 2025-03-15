@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import FavoriteButton from "./FavoriteButton.tsx";
-import VoteButton from "./VoteButton.tsx";
 
 interface StationListProps {
     stations: RadioStation[];
