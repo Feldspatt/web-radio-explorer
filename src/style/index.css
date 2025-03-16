@@ -22,67 +22,6 @@ p, ul, ol {
     margin-bottom: 1rem;
 }
 
-code, pre {
-    background: var(--color-bg-hard);
-    border-radius: var(--border-radius-general);
-    padding: 0.25rem 0.5rem;
-}
-
-pre {
-    padding: 1rem;
-    overflow-x: auto;
-}
-
-/* Links */
-a {
-    color: var(--color-strong);
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-a:hover {
-    color: var(--color-hover);
-    text-decoration: underline;
-}
-
-a:active {
-    color: var(--color-active);
-}
-
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-input);
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.btn-primary {
-    color: var(--color-text-inverse);
-    background: var(--color-strong);
-    border-color: var(--color-strong);
-}
-
-.btn-primary:hover {
-    background: var(--color-hover);
-    border-color: var(--color-hover);
-}
-
-.btn-primary:active {
-    background: var(--color-active);
-    border-color: var(--color-active);
-}
-
 /* Forms */
 input, select, textarea {
     font-family: var(--font-primary), serif;
@@ -90,7 +29,7 @@ input, select, textarea {
     font-size: 1rem;
     line-height: 1.5;
     color: var(--color-text-hard);
-    background-color: var(--color-bg-hard);
+    background-color: var(--color-bg-500);
     border: 1px solid var(--color-text-soft);
     border-radius: var(--border-radius-input);
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -124,43 +63,6 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.875rem;
     display: inline-flex;
     align-items: center;
-}
-
-.status-error {
-    color: var(--state-error-text);
-    background-color: var(--state-error-bg);
-    border: 1px solid var(--state-error-border);
-}
-
-.status-online {
-    color: var(--state-online-text);
-    background-color: var(--state-online-bg);
-    border: 1px solid var(--state-online-border);
-}
-
-.status-loading {
-    color: var(--state-loading-text);
-    background-color: var(--state-loading-bg);
-    border: 1px solid var(--state-loading-border);
-}
-
-/* Action buttons */
-.btn-playing {
-    color: var(--action-playing-text);
-    background: var(--action-playing-bg);
-    border: none;
-}
-
-.btn-paused {
-    color: var(--action-paused-text);
-    background-color: var(--action-paused-bg);
-    border: none;
-}
-
-.btn-retry {
-    color: var(--action-retry-text);
-    background-color: var(--action-retry-bg);
-    border: none;
 }
 
 /* Header and Navigation */

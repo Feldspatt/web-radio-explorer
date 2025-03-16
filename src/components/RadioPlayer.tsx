@@ -204,22 +204,17 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
         <div className="radio-player">
             <audio ref={audioRef} crossOrigin="anonymous" />
 
-            {station && <div className="station-info">
-                {station.favicon ? (
-                    <img
+            <div className="station-info">
+                {station?.favicon ? <img
                         src={station.favicon}
                         alt={`${station.name} logo`}
                         className="station-favicon"
                         onError={(e) => {
                             (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>';
                         }}
-                    />
-                ) : (
-                    <div className="text-soft station-favicon-placeholder">📻</div>
-                )}
-                <h2 className="strong station-name">{station.name}</h2>
+                /> : <span>📻</span> }
+                <span className="strong station-name">{station?.name ?? "Select a station."}</span>
             </div>
-            }
 
             <PlayButton
                 state={state}
@@ -239,10 +234,10 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                     aria-label="Volume control"
                 />
                 <label htmlFor={"volume"} className="volume-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/>
-                        <path d="M16.5 12c0-1.77-.91-3.33-2.29-4.24l1.07-1.77A7.99 7.99 0 0118.5 12a7.99 7.99 0 01-3.22 6.01l-1.07-1.77A5.99 5.99 0 0016.5 12z" fill="currentColor"/>
-                        <path d="M19.07 4.93l-1.06 1.06A10.97 10.97 0 0121 12c0 3.03-1.23 5.78-3.21 7.79l1.06 1.06A12.96 12.96 0 0023 12c0-3.6-1.43-6.87-3.93-9.07z" fill="currentColor"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M7,9 L10.5,6 L10.5,18 L7,15 L4,15 L4,9 L7,9" fill="currentColor"/>
+                        <path d="M13,8 Q15.5,12 13,16" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <path d="M15,6 Q19,12 15,18" stroke="currentColor" stroke-width="1.5" fill="none"/>
                     </svg>
                 </label>
             </div>

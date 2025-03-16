@@ -6,7 +6,6 @@
     /* Main colors */
     --color-strong: hsl(193.33deg 43.37% 67.45%);
     --color-accent: hsla(280, 80%, 60%, 1);
-    --color-hover: hsla(210, 90%, 60%, 1);
     --color-active: hsla(210, 100%, 40%, 1);
 
     --color-visualizer-start: hsla(84, 59%, 53%);
@@ -27,18 +26,13 @@
     --tags-bg: hsla(210, 70%, 95%, 1);
     --tags-border: hsla(210, 70%, 80%, 1);
 
-    /* Action colors */
+
+    /*--color-action-hover-bg: hsla(210, 70%, 90%, 1);*/
+    --color-action-bg: hsla(0, 0%, 100%, 0.71);
     --action-playing-text: hsla(150, 70%, 35%, 1);
-    --action-playing-bg: hsla(150, 70%, 95%, 1);
-    --action-playing-border: hsla(150, 70%, 85%, 1);
-
     --action-paused-text: hsla(200, 70%, 35%, 1);
-    --action-paused-bg: hsla(200, 70%, 95%, 1);
-    --action-paused-border: hsla(200, 70%, 85%, 1);
-
     --action-retry-text: hsla(350, 70%, 40%, 1);
-    --action-retry-bg: hsla(350, 70%, 95%, 1);
-    --action-retry-border: hsla(350, 70%, 85%, 1);
+    --action-loading-text: hsl(41, 52%, 54%);
 
     /* Typography */
     --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -123,23 +117,4 @@ body {
     padding: 2px 8px;
     display: inline-block;
     font-size: 0.875rem;
-}
-
-/* Action styling */
-.action-playing {
-    background-color: var(--action-playing-bg);
-    color: var(--action-playing-text);
-    border: 1px solid var(--action-playing-border);
-}
-
-.action-paused {
-    background-color: var(--action-paused-bg);
-    color: var(--action-paused-text);
-    border: 1px solid var(--action-paused-border);
-}
-
-.action-retry {
-    background-color: var(--action-retry-bg);
-    color: var(--action-retry-text);
-    border: 1px solid var(--action-retry-border);
 }
