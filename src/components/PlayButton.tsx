@@ -1,5 +1,7 @@
-import React, { useCallback, useMemo } from "react";
+import type React from "react";
+import { useCallback, useMemo } from "react";
 import "../style/PlayButton.css";
+import { SvgSpinner } from "./SvgSpinner.tsx";
 
 enum PlayerState {
 	PLAYING = "PLAYING",
@@ -32,22 +34,19 @@ const PlayButton: React.FC<PlayButtonProps> = ({ state, onClick, onRetry }) => {
 
 	const handleCLick = useCallback(() => {
 		switch (state) {
-			// @ts-ignore
 			case PlayerState.PLAYING:
 			case PlayerState.PAUSED:
 				return onClick();
 			case PlayerState.ERROR:
 				return onRetry?.();
-			case PlayerState.LOADING:
 			default:
 				console.log(`Pressing playing button while ${state}.`);
 		}
-	}, [state]);
-
-	// Render retry button for error state
+	}, [state, onClick, onRetry]);
 
 	return (
 		<button
+			type={"button"}
 			className={`play-button ${activeClass}`}
 			onClick={handleCLick}
 			aria-label="Play button"
@@ -60,6 +59,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ state, onClick, onRetry }) => {
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
 				>
+					<title>Error</title>
 					<path
 						d="M21 12a9 9 0 1 1-4.22-7.59"
 						stroke="currentColor"
@@ -76,32 +76,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ state, onClick, onRetry }) => {
 					/>
 				</svg>
 			)}
-			{state === PlayerState.LOADING && (
-				<svg
-					viewBox="0 0 24 24"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<circle
-						cx="12"
-						cy="12"
-						r="10"
-						stroke-width="1"
-						opacity="0.3"
-					/>
-
-					<path
-						d="M12 2A10 10 0 0 1 22 12"
-						stroke-width="2.5"
-						stroke-linecap="round"
-					/>
-
-					<circle cx="12" cy="12" r="1" />
-					<circle cx="12" cy="6" r="0.8" opacity="0.8" />
-					<circle cx="18" cy="12" r="0.8" opacity="0.8" />
-					<circle cx="12" cy="18" r="0.8" opacity="0.8" />
-					<circle cx="6" cy="12" r="0.8" opacity="0.8" />
-				</svg>
-			)}
+			{state === PlayerState.LOADING && <SvgSpinner />}
 			{state === PlayerState.PAUSED && (
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -109,6 +84,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ state, onClick, onRetry }) => {
 					height="24"
 					viewBox="0 0 24 24"
 				>
+					<title>Paused</title>
 					<polygon points="8,4 18,12 8,20" />
 				</svg>
 			)}
@@ -119,6 +95,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ state, onClick, onRetry }) => {
 					height="24"
 					viewBox="0 0 24 24"
 				>
+					<title>Playing</title>
 					<rect x="6" y="4" width="4" height="16" />
 					<rect x="14" y="4" width="4" height="16" />
 				</svg>

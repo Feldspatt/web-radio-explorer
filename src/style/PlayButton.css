@@ -26,7 +26,7 @@
 	border-color: var(--color-strong);
 }
 
-.play-button:focus {
+.play-button:active {
 	transform: scale(0.95);
 }
 
@@ -45,14 +45,4 @@
 .action-loading {
 	color: var(--action-loading-text);
 	border-color: var(--action-loading-text);
-	animation: spin 1.2s linear infinite;
-}
-
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
 }

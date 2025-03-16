@@ -10,6 +10,7 @@ import StationSelector from "./StationSelector.tsx";
 import ServerPicker from "./ServerPicker.tsx";
 import { paths } from "../services/path.service.ts";
 import StationList from "./StationList.tsx";
+import { FavoritesProvider } from "./FavoritesProvider.tsx";
 // import { ThemeProvider } from "./ThemeProvider.tsx";
 
 const App: React.FC = () => {
@@ -73,40 +74,46 @@ const App: React.FC = () => {
 
 	return (
 		<>
-			{/*<ThemeProvider initialTheme={'nordic'} transitionDuration={100}>*/}
-			{!selectedServer ? (
-				<ServerPicker
-					onServerSelected={(server) =>
-						onNewServerSelected(server)
-					}
-				/>
-			) : (
-				<>
-					<div className="radio-app">
-						{/*<ThemeToggle />*/}
-						{/*<header className="app-header">*/}
-						{/*    <h1>Web Radio Explorer</h1>*/}
-						{/*    <p>Discover and listen to radio stations from around the world</p>*/}
-						{/*</header>*/}
-						<StationSelector
-							stationsPerPage={24}
-							stationCount={selectedServer.stations}
-							onStationsUpdate={(stations) =>
-								setStations(stations)
-							}
-						/>
-						<StationList
-							stations={stations}
-							onStationSelect={handleStationSelect}
-						/>
-						<RadioPlayer
-							station={selectedStation}
-							autoPlay={autoPlay}
-						/>
-					</div>
-				</>
-			)}
-			{/*</ThemeProvider>*/}
+			<FavoritesProvider>
+				{/*<ThemeProvider initialTheme={'nordic'} transitionDuration={100}>*/}
+				{!selectedServer ? (
+					<ServerPicker
+						onServerSelected={(server) =>
+							onNewServerSelected(server)
+						}
+					/>
+				) : (
+					<>
+						<div className="radio-app">
+							{/*<ThemeToggle />*/}
+							{/*<header className="app-header">*/}
+							{/*    <h1>Web Radio Explorer</h1>*/}
+							{/*    <p>Discover and listen to radio stations from around the world</p>*/}
+							{/*</header>*/}
+							<StationSelector
+								stationsPerPage={24}
+								stationCount={
+									selectedServer.stations
+								}
+								onStationsUpdate={(stations) =>
+									setStations(stations)
+								}
+							/>
+							<StationList
+								stations={stations}
+								onStationSelect={
+									handleStationSelect
+								}
+							/>
+							<RadioPlayer
+								station={selectedStation}
+								autoPlay={autoPlay}
+							/>
+						</div>
+					</>
+				)}
+				{/*</ThemeProvider>*/}
+			</FavoritesProvider>
 		</>
 	);
 };

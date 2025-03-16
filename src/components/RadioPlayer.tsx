@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import type React from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import PlayButton from "./PlayButton"; // Import the new component
 import "../style/RadioPlayer.css";
 
@@ -49,7 +50,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
 		// Load saved volume from localStorage
 		try {
 			const savedVolume = window.localStorage.getItem("volume");
-			if (savedVolume) setVolume(parseInt(savedVolume));
+			if (savedVolume) setVolume(Number.parseInt(savedVolume));
 		} catch (error) {
 			console.error(
 				"Error reading volume from localStorage:",
@@ -200,7 +201,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
 	// Handle volume change
 	const handleVolumeChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const newVolume = parseInt(e.target.value);
+			const newVolume = Number.parseInt(e.target.value);
 			setVolume(newVolume);
 			try {
 				window.localStorage.setItem("volume", e.target.value);
@@ -250,7 +251,30 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
 						}}
 					/>
 				) : (
-					<span>📻</span>
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<title>Radio svg</title>
+						<rect
+							x="2"
+							y="8"
+							width="20"
+							height="12"
+							rx="2"
+						/>
+						<path d="M6 15h.01" />
+						<circle cx="16" cy="14" r="2" />
+						<path d="M4 8 16 3" />
+						<path d="M8 8v4" />
+					</svg>
 				)}
 				<span className="strong station-name">
 					{station?.name ?? "Select a station."}

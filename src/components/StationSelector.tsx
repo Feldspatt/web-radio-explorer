@@ -3,12 +3,26 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { paths } from "../services/path.service.ts";
 import { useDebounce } from "../hooks/useDebounce.ts";
+import { useFavorites } from "../hooks/useFavorites.ts";
 
 interface StationSelectorProps {
 	stationCount: number;
 	stationsPerPage: number;
 	onStationsUpdate: (stations: RadioStation[]) => void;
 }
+
+// Helper function to convert HTTP URLs to HTTPS
+const convertHttpToHttps = (stations: RadioStation[]): RadioStation[] => {
+	return stations.map((station) => {
+		if (station.url?.startsWith("http:")) {
+			return {
+				...station,
+				url: station.url.replace("http:", "https:"),
+			};
+		}
+		return station;
+	});
+};
 
 const StationSelector: React.FC<StationSelectorProps> = ({
 	stationCount,
@@ -26,8 +40,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 	const [totalFilteredStations, setTotalFilteredStations] =
 		useState(stationCount);
 
-	// Favorites and recently listened stations
-	const [favorites, setFavorites] = useState<RadioStation[]>([]);
+	const { favorites } = useFavorites();
 	const [recentlyListened, setRecentlyListened] = useState<RadioStation[]>(
 		[],
 	);
@@ -91,19 +104,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 		}
 	}, [debouncedFavoritesPageInput, favorites.length, stationsPerPage]);
 
-	// Helper function to convert HTTP URLs to HTTPS
-	const convertHttpToHttps = (stations: RadioStation[]): RadioStation[] => {
-		return stations.map((station) => {
-			if (station.url && station.url.startsWith("http:")) {
-				return {
-					...station,
-					url: station.url.replace("http:", "https:"),
-				};
-			}
-			return station;
-		});
-	};
-
 	// Fetch station details by UUID
 	const fetchStationsByUUIDs = async (
 		uuids: string[],
@@ -124,28 +124,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 		} catch (err) {
 			console.error("Error fetching stations by UUIDs:", err);
 			return [];
-		}
-	};
-
-	// Load favorite stations from localStorage UUIDs
-	const loadFavoriteStations = async () => {
-		try {
-			// Get favorite UUIDs from localStorage
-			const favoriteUUIDs = JSON.parse(
-				localStorage.getItem("favorites") || "[]",
-			);
-
-			if (favoriteUUIDs.length > 0) {
-				// Fetch station details for each UUID
-				const favoriteStations =
-					await fetchStationsByUUIDs(favoriteUUIDs);
-				setFavorites(favoriteStations);
-			} else {
-				setFavorites([]);
-			}
-		} catch (err) {
-			console.error("Error loading favorite stations:", err);
-			setFavorites([]);
 		}
 	};
 
@@ -189,14 +167,14 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 	const handleTabChange = (tab: "explore" | "favorites" | "recent") => {
 		setActiveTab(tab);
 
+		setCurrentPage(1);
+		setCurrentPageInput("1");
+
 		// Reset pagination when changing tabs
 		if (tab === "explore") {
-			setCurrentPage(1);
-			setCurrentPageInput("1");
 		} else if (tab === "favorites") {
 			setFavoritesPage(1);
 			setFavoritesPageInput("1");
-			loadFavoriteStations().then();
 		} else if (tab === "recent") {
 			loadRecentlyListenedStations().then();
 		}
@@ -207,13 +185,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 		if (activeTab === "explore") {
 			onStationsUpdate(filteredStations);
 		} else if (activeTab === "favorites") {
-			// Get paginated favorites
-			const startIndex = (favoritesPage - 1) * stationsPerPage;
-			const paginatedFavorites = favorites.slice(
-				startIndex,
-				startIndex + stationsPerPage,
-			);
-			onStationsUpdate(paginatedFavorites);
+			onStationsUpdate(favorites);
 		} else if (activeTab === "recent") {
 			onStationsUpdate(recentlyListened);
 		}
@@ -298,8 +270,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 				]);
 			} catch (err) {
 				console.error(
-					"Failed to load filter options. Please try again later. " +
-						err,
+					`Failed to load filter options. Please try again later. ${err}`,
 				);
 			}
 		};
@@ -379,10 +350,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 								)),
 					)
 					.map((station: RadioStation) => {
-						if (
-							station.url &&
-							station.url.startsWith("http:")
-						) {
+						if (station.url?.startsWith("http:")) {
 							return {
 								...station,
 								url: station.url.replace(
@@ -411,27 +379,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 		stationsPerPage,
 		searchTerm,
 		activeTab,
-	]);
-
-	// Update page input when page changes
-	useEffect(() => {
-		setCurrentPageInput(currentPage.toString());
-	}, [currentPage]);
-
-	useEffect(() => {
-		setFavoritesPageInput(favoritesPage.toString());
-	}, [favoritesPage]);
-
-	// Reset to first page when filter changes
-	useEffect(() => {
-		setCurrentPage(1);
-		setCurrentPageInput("1");
-	}, [
-		activeFilter,
-		selectedCountry,
-		selectedLanguage,
-		selectedTag,
-		searchTerm,
 	]);
 
 	// Apply country filter
@@ -520,16 +467,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 		}
 	};
 
-	// Favorites pagination
-	// const paginateFavorites = (pageNumber: number) => {
-	// 	if (
-	// 		pageNumber >= 1 &&
-	// 		pageNumber <= Math.ceil(favorites.length / stationsPerPage)
-	// 	) {
-	// 		setFavoritesPage(pageNumber);
-	// 	}
-	// };
-
 	return (
 		<div className="station-selector">
 			<div className={"title"}>
@@ -537,6 +474,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 64 64"
 				>
+					<title>Radio Explorer Logo</title>
 					<rect
 						width="64"
 						height="64"
@@ -560,28 +498,31 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 				<h2>Radio Explorer</h2>
 			</div>
 
-			<div className="divider"></div>
+			<div className="divider" />
 
 			<button
+				type="button"
 				className={`tab ${activeTab === "favorites" ? "active-tab" : ""}`}
 				onClick={() => handleTabChange("favorites")}
 			>
 				Favorites
 			</button>
 			<button
+				type="button"
 				className={`tab ${activeTab === "recent" ? "active-tab" : ""}`}
 				onClick={() => handleTabChange("recent")}
 			>
 				Last listened
 			</button>
 			<button
+				type="button"
 				className={`tab ${activeTab === "explore" ? "active-tab" : ""}`}
 				onClick={() => handleTabChange("explore")}
 			>
 				Explore
 			</button>
 
-			<div className="divider"></div>
+			<div className="divider" />
 
 			<div className="search-bar">
 				<input
@@ -593,7 +534,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 				/>
 			</div>
 
-			<div className="divider"></div>
+			<div className="divider" />
 
 			<div
 				className={`filter-group hidden-input-group ${activeFilter === "country" ? "active-filter" : ""}`}
@@ -675,11 +616,12 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 				</select>
 			</div>
 
-			<div className="divider"></div>
+			<div className="divider" />
 
 			<div className="filter-group">
-				<label>Sort by</label>
+				<label htmlFor="sort-by">Sort by</label>
 				<select
+					id="sort-by"
 					value={sortBy}
 					onChange={(e) =>
 						setSortBy(
@@ -697,42 +639,49 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 			</div>
 
 			{activeTab === "explore" && (
-				<div
-					className="pagination"
-					style={{
-						display:
-							filteredStations.length > 0
-								? "flex"
-								: "none",
-					}}
-				>
-					<label>Page</label>
+				<div className="pagination">
+					<label htmlFor="current-page">Page</label>
 					<button
+						type="button"
 						onClick={() => paginate(currentPage - 1)}
 						disabled={currentPage === 1}
 						className="page-button"
 					>
-						&laquo; Prev
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<title>chevron left</title>
+							<polyline
+								points="14 6 8 12 14 18"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
 					</button>
 
 					<span className="page-info">
 						<input
+							id="current-page"
 							type="text"
 							onChange={(ev) =>
-								setCurrentPageInput(
-									ev.target.value,
+								paginate(
+									Number.parseInt(
+										ev.target.value,
+									),
 								)
 							}
 							value={currentPageInput}
-						/>{" "}
-						of{" "}
-						{Math.ceil(
-							totalFilteredStations /
-								stationsPerPage,
-						)}
+						/>
 					</span>
 
 					<button
+						type="button"
 						onClick={() => paginate(currentPage + 1)}
 						disabled={
 							currentPage >=
@@ -743,39 +692,34 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 						}
 						className="page-button"
 					>
-						Next &raquo;
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<title>chevron right</title>
+							<polyline
+								points="10 6 16 12 10 18"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
 					</button>
+
+					<span>
+						{" "}
+						of{" "}
+						{Math.ceil(
+							totalFilteredStations /
+								stationsPerPage,
+						)}
+					</span>
 				</div>
 			)}
-
-			{/*/!* Pagination for Favorites tab - Always render but conditionally show *!/*/}
-			{/*{activeTab === 'favorites' && !loadingFavorites && (*/}
-			{/*    <div className="pagination" style={{ display: favorites.length > stationsPerPage ? 'flex' : 'none' }}>*/}
-			{/*        <button*/}
-			{/*            onClick={() => paginateFavorites(favoritesPage - 1)}*/}
-			{/*            disabled={favoritesPage === 1}*/}
-			{/*            className="page-button"*/}
-			{/*        >*/}
-			{/*            &laquo; Prev*/}
-			{/*        </button>*/}
-
-			{/*        <span className="page-info">*/}
-			{/*            <input*/}
-			{/*                type="text"*/}
-			{/*                onChange={(ev) => setFavoritesPageInput(ev.target.value)}*/}
-			{/*                value={favoritesPageInput}*/}
-			{/*            /> of {Math.ceil(favorites.length / stationsPerPage)}*/}
-			{/*        </span>*/}
-
-			{/*        <button*/}
-			{/*            onClick={() => paginateFavorites(favoritesPage + 1)}*/}
-			{/*            disabled={favoritesPage >= Math.ceil(favorites.length / stationsPerPage)}*/}
-			{/*            className="page-button"*/}
-			{/*        >*/}
-			{/*            Next &raquo;*/}
-			{/*        </button>*/}
-			{/*    </div>*/}
-			{/*)}*/}
 		</div>
 	);
 };
