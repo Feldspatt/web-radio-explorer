@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import "../style/StationList.css";
 import { cut } from "../services/cut.ts";
 
@@ -12,14 +13,15 @@ const StationList: React.FC<StationListProps> = ({
 	onStationSelect,
 }) => {
 	// State to store favorite station UUIDs
-	const [favoriteStations, setFavoriteStations] = useState<string[]>([]);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_favoriteStations, set_favoriteStations] = useState<string[]>([]);
 
 	// Load favorite stations from localStorage on component mount
 	useEffect(() => {
 		try {
 			const savedFavorites = localStorage.getItem("favorites");
 			if (savedFavorites) {
-				setFavoriteStations(JSON.parse(savedFavorites));
+				set_favoriteStations(JSON.parse(savedFavorites));
 			}
 		} catch (error) {
 			console.error(
@@ -27,41 +29,41 @@ const StationList: React.FC<StationListProps> = ({
 				error,
 			);
 			// Initialize with empty array if there's an error
-			setFavoriteStations([]);
+			set_favoriteStations([]);
 		}
 	}, []);
 
 	// Handle toggling a station as favorite
-	const handleToggleFavorite = (uuid: string) => {
-		try {
-			// Create a new array based on current state
-			let updatedFavorites: string[];
-
-			if (favoriteStations.includes(uuid)) {
-				// Remove from favorites if already present
-				updatedFavorites = favoriteStations.filter(
-					(id) => id !== uuid,
-				);
-			} else {
-				// Add to favorites if not present
-				updatedFavorites = [...favoriteStations, uuid];
-			}
-
-			// Update state
-			setFavoriteStations(updatedFavorites);
-
-			// Save to localStorage
-			localStorage.setItem(
-				"favorites",
-				JSON.stringify(updatedFavorites),
-			);
-		} catch (error) {
-			console.error(
-				"Error updating favorites in localStorage:",
-				error,
-			);
-		}
-	};
+	// const handleToggleFavorite = (uuid: string) => {
+	// 	try {
+	// 		// Create a new array based on current state
+	// 		let updatedFavorites: string[];
+	//
+	// 		if (favoriteStations.includes(uuid)) {
+	// 			// Remove from favorites if already present
+	// 			updatedFavorites = favoriteStations.filter(
+	// 				(id) => id !== uuid,
+	// 			);
+	// 		} else {
+	// 			// Add to favorites if not present
+	// 			updatedFavorites = [...favoriteStations, uuid];
+	// 		}
+	//
+	// 		// Update state
+	// 		setFavoriteStations(updatedFavorites);
+	//
+	// 		// Save to localStorage
+	// 		localStorage.setItem(
+	// 			"favorites",
+	// 			JSON.stringify(updatedFavorites),
+	// 		);
+	// 	} catch (error) {
+	// 		console.error(
+	// 			"Error updating favorites in localStorage:",
+	// 			error,
+	// 		);
+	// 	}
+	// };
 
 	// Handle station selection and update recently listened
 	const handleStationSelect = (station: RadioStation) => {

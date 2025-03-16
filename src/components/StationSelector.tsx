@@ -1,5 +1,6 @@
 import "../style/StationSelector.css";
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { paths } from "../services/path.service.ts";
 import { useDebounce } from "../hooks/useDebounce.ts";
 
@@ -73,14 +74,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 	}, [debouncedSearchTerm]);
 
 	useEffect(() => {
-		const pageNumber = parseInt(debouncedCurrentPageInput) || 1;
+		const pageNumber = Number.parseInt(debouncedCurrentPageInput) || 1;
 		if (pageNumber >= 1) {
 			setCurrentPage(pageNumber);
 		}
 	}, [debouncedCurrentPageInput]);
 
 	useEffect(() => {
-		const pageNumber = parseInt(debouncedFavoritesPageInput) || 1;
+		const pageNumber =
+			Number.parseInt(debouncedFavoritesPageInput) || 1;
 		if (
 			pageNumber >= 1 &&
 			pageNumber <= Math.ceil(favorites.length / stationsPerPage)
@@ -519,14 +521,14 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 	};
 
 	// Favorites pagination
-	const paginateFavorites = (pageNumber: number) => {
-		if (
-			pageNumber >= 1 &&
-			pageNumber <= Math.ceil(favorites.length / stationsPerPage)
-		) {
-			setFavoritesPage(pageNumber);
-		}
-	};
+	// const paginateFavorites = (pageNumber: number) => {
+	// 	if (
+	// 		pageNumber >= 1 &&
+	// 		pageNumber <= Math.ceil(favorites.length / stationsPerPage)
+	// 	) {
+	// 		setFavoritesPage(pageNumber);
+	// 	}
+	// };
 
 	return (
 		<div className="station-selector">

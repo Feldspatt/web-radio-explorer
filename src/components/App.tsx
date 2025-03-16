@@ -3,13 +3,14 @@ import "../style/index.css";
 import "../style/App.css";
 import "../style/scrollbar.css";
 
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import RadioPlayer from "./RadioPlayer.tsx";
 import StationSelector from "./StationSelector.tsx";
 import ServerPicker from "./ServerPicker.tsx";
 import { paths } from "../services/path.service.ts";
 import StationList from "./StationList.tsx";
-import { ThemeProvider } from "./ThemeProvider.tsx";
+// import { ThemeProvider } from "./ThemeProvider.tsx";
 
 const App: React.FC = () => {
 	const [selectedStation, setSelectedStation] =
@@ -78,7 +79,7 @@ const App: React.FC = () => {
 					onServerSelected={(server) =>
 						onNewServerSelected(server)
 					}
-				></ServerPicker>
+				/>
 			) : (
 				<>
 					<div className="radio-app">
