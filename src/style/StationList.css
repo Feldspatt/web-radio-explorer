@@ -1,70 +1,69 @@
 .station-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    align-items: center;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr;
+	align-items: center;
 
-    background: linear-gradient(45deg, hsl(0, 0%, 10%), hsl(0, 0%, 17%));
+	background: linear-gradient(45deg, hsl(0, 0%, 10%), hsl(0, 0%, 17%));
 
-    overflow: auto;
+	overflow: auto;
 }
 
 .station-list-wrapper {
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
+	justify-content: center;
+	justify-items: center;
+	align-items: center;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 30em);
-    grid-template-rows: repeat(auto-fill, minmax(min-content,6em));
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 30em);
+	grid-template-rows: repeat(auto-fill, minmax(min-content, 6em));
 
-    gap: 1.5rem;
-    padding: 1.5rem;
-
+	gap: 1.5rem;
+	padding: 1.5rem;
 }
 
 /* Cards */
 .card {
-    cursor: pointer;
-    background-color: hsla(0, 0%, 100%, 0.05);
-    border-radius: var(--border-radius-general);
-    box-shadow: var(--card-box-shadow);
-    display: flex;
-    gap: 0.5em;
-    height: 6em;
-    width: 30em;
-    transition: transform 0.2s ease;
-    overflow: hidden;
+	cursor: pointer;
+	background-color: hsla(0, 0%, 100%, 0.05);
+	border-radius: var(--border-radius-general);
+	box-shadow: var(--card-box-shadow);
+	display: flex;
+	gap: 0.5em;
+	height: 6em;
+	width: 30em;
+	transition: transform 0.2s ease;
+	overflow: hidden;
 }
 
 .card:hover {
-    transform: scale(1.05) translateY(-0.5em);
+	transform: scale(1.05) translateY(-0.5em);
 }
 
 .card .station-logo {
-    display: block;
-    aspect-ratio: 1;
-    height: 100%;
-    object-fit: contain;
+	display: block;
+	aspect-ratio: 1;
+	height: 100%;
+	object-fit: contain;
 }
 
 .card .default-logo {
-    font-size: 3em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	font-size: 3em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .card-body {
-    flex: 1;
-    padding: 0.5em;
-    display: flex;
-    flex-direction: column;
-    /*align-items: center;*/
-    justify-content: center;
-    text-wrap: nowrap;
+	flex: 1;
+	padding: 0.5em;
+	display: flex;
+	flex-direction: column;
+	/*align-items: center;*/
+	justify-content: center;
+	text-wrap: nowrap;
 }
 
 .card-body > h4 {
-    margin: 0;
+	margin: 0;
 }

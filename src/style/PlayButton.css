@@ -1,54 +1,58 @@
 .play-button {
-    justify-self: center;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border-radius: 50%;
-    flex-shrink: 0;
+	justify-self: center;
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border-radius: 50%;
+	flex-shrink: 0;
 
-    border-width: 2px;
-    border-style: solid;
+	border-width: 2px;
+	border-style: solid;
 
+	color: var(--color-text-hard);
+	border-color: var(--color-text-hard);
+	background-color: var(--color-bg-500);
 
-    color: var(--color-text-hard);
-    border-color: var(--color-text-hard);
-    background-color: var(--color-bg-500);
-
-    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s
+		ease, border-color 0.2s ease;
 }
 
 .play-button:hover {
-    transform: scale(1.1);
-    color: var(--color-strong);
-    border-color: var(--color-strong);
+	transform: scale(1.1);
+	color: var(--color-strong);
+	border-color: var(--color-strong);
 }
 
 .play-button:focus {
-    transform: scale(0.95);
+	transform: scale(0.95);
 }
 
 .play-button svg {
-    width: 22px;
-    height: 22px;
-    fill: currentColor;
-    transition: fill 0.2s ease;
+	width: 22px;
+	height: 22px;
+	fill: currentColor;
+	transition: fill 0.2s ease;
 }
 
 .action-retry {
-    color: var(--action-retry-text);
-    border-color: var(--action-retry-text);
+	color: var(--action-retry-text);
+	border-color: var(--action-retry-text);
 }
 
 .action-loading {
-    color: var(--action-loading-text);
-    border-color: var(--action-loading-text);
-    animation: spin 1.2s linear infinite;
+	color: var(--action-loading-text);
+	border-color: var(--action-loading-text);
+	animation: spin 1.2s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }

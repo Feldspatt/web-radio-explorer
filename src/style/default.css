@@ -1,120 +1,122 @@
 :root {
-    /* Theme meta information */
-    --theme-name: "Default Theme";
-    --theme-symbol: "🌟";
+	/* Theme meta information */
+	--theme-name: "Default Theme";
+	--theme-symbol: "🌟";
 
-    /* Main colors */
-    --color-strong: hsl(193.33deg 43.37% 67.45%);
-    --color-accent: hsla(280, 80%, 60%, 1);
-    --color-active: hsla(210, 100%, 40%, 1);
+	/* Main colors */
+	--color-strong: hsl(193.33deg 43.37% 67.45%);
+	--color-accent: hsla(280, 80%, 60%, 1);
+	--color-active: hsla(210, 100%, 40%, 1);
 
-    --color-visualizer-start: hsla(84, 59%, 53%);
-    --color-visualizer-end: hsla(7, 75%, 45%);
+	--color-visualizer-start: hsla(84, 59%, 53%);
+	--color-visualizer-end: hsla(7, 75%, 45%);
 
-    /* Background colors */
-    --color-bg-500: hsla(0, 0%, 15%, 1);
-    --color-bg-600: hsla(0, 0%, 10%, 1);
-    --color-bg-700: hsla(0, 0%, 5%, 1);
+	/* Background colors */
+	--color-bg-500: hsla(0, 0%, 15%, 1);
+	--color-bg-600: hsla(0, 0%, 10%, 1);
+	--color-bg-700: hsla(0, 0%, 5%, 1);
 
-    /* Text colors */
-    --color-text-soft: hsla(0, 0%, 45%, 1);
-    --color-text-hard: hsl(0, 0%, 92%);
-    --color-text-inverse: hsla(0, 0%, 100%, 1);
+	/* Text colors */
+	--color-text-soft: hsla(0, 0%, 45%, 1);
+	--color-text-hard: hsl(0, 0%, 92%);
+	--color-text-inverse: hsla(0, 0%, 100%, 1);
 
-    /* Tags colors */
-    --tags-text: hsla(210, 70%, 30%, 1);
-    --tags-bg: hsla(210, 70%, 95%, 1);
-    --tags-border: hsla(210, 70%, 80%, 1);
+	/* Tags colors */
+	--tags-text: hsla(210, 70%, 30%, 1);
+	--tags-bg: hsla(210, 70%, 95%, 1);
+	--tags-border: hsla(210, 70%, 80%, 1);
 
+	/*--color-action-hover-bg: hsla(210, 70%, 90%, 1);*/
+	--color-action-bg: hsla(0, 0%, 100%, 0.71);
+	--action-playing-text: hsla(150, 70%, 35%, 1);
+	--action-paused-text: hsla(200, 70%, 35%, 1);
+	--action-retry-text: hsla(350, 70%, 40%, 1);
+	--action-loading-text: hsl(41, 52%, 54%);
 
-    /*--color-action-hover-bg: hsla(210, 70%, 90%, 1);*/
-    --color-action-bg: hsla(0, 0%, 100%, 0.71);
-    --action-playing-text: hsla(150, 70%, 35%, 1);
-    --action-paused-text: hsla(200, 70%, 35%, 1);
-    --action-retry-text: hsla(350, 70%, 40%, 1);
-    --action-loading-text: hsl(41, 52%, 54%);
+	/* Typography */
+	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+		sans-serif;
+	--font-secondary: "Courier New", monospace;
 
-    /* Typography */
-    --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-secondary: 'Courier New', monospace;
+	/* Border radius */
+	--border-radius-input: 25px;
+	--border-radius-general: 8px;
 
-    /* Border radius */
-    --border-radius-input: 25px;
-    --border-radius-general: 8px;
-
-    /* Box shadow */
-    --card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	/* Box shadow */
+	--card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Apply theme transitions to all elements */
 * {
-    transition: background-color 300ms ease,
-    color 300ms ease,
-    border-color 300ms ease,
-    box-shadow 300ms ease;
+	transition: background-color 300ms ease, color 300ms ease, border-color
+		300ms ease, box-shadow 300ms ease;
 }
 
 /* Special treatment for interactive elements */
-input, button, select, textarea {
-    transition: background-color 300ms ease,
-    color 300ms ease,
-    border-color 300ms ease,
-    box-shadow 300ms ease,
-    transform 100ms ease;
+input,
+button,
+select,
+textarea {
+	transition:
+		background-color 300ms ease,
+		color 300ms ease,
+		border-color 300ms ease,
+		box-shadow 300ms ease,
+		transform 100ms ease;
 }
 
 /* Apply theme to body */
 body {
-    background-color: var(--color-bg-700);
-    color: var(--color-text-hard);
-    font-family: var(--font-primary);
+	background-color: var(--color-bg-700);
+	color: var(--color-text-hard);
+	font-family: var(--font-primary);
 }
 .text-soft {
-    color: var(--color-text-soft);
+	color: var(--color-text-soft);
 }
 
 .text-hard {
-    color: var(--color-text-hard);
+	color: var(--color-text-hard);
 }
 
 .text-inverse {
-    color: var(--color-text-inverse);
+	color: var(--color-text-inverse);
 }
 
 .accent {
-    color: var(--color-accent);
+	color: var(--color-accent);
 }
 
 .strong {
-    color: var(--color-strong);
+	color: var(--color-strong);
 }
 
 /* Button styling */
 .button {
-    background-color: var(--color-strong);
-    color: var(--color-text-inverse);
-    border-radius: var(--border-radius-input);
-    padding: 8px 16px;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-primary);
+	background-color: var(--color-strong);
+	color: var(--color-text-inverse);
+	border-radius: var(--border-radius-input);
+	padding: 8px 16px;
+	border: none;
+	cursor: pointer;
+	font-family: var(--font-primary);
 }
 
 .button:hover {
-    background-color: var(--color-hover);
+	background-color: var(--color-hover);
 }
 
 .button:active {
-    background-color: var(--color-active);
+	background-color: var(--color-active);
 }
 
 /* Tag styling */
 .tag {
-    background-color: var(--tags-bg);
-    color: var(--tags-text);
-    border: 1px solid var(--tags-border);
-    border-radius: var(--border-radius-input);
-    padding: 2px 8px;
-    display: inline-block;
-    font-size: 0.875rem;
+	background-color: var(--tags-bg);
+	color: var(--tags-text);
+	border: 1px solid var(--tags-border);
+	border-radius: var(--border-radius-input);
+	padding: 2px 8px;
+	display: inline-block;
+	font-size: 0.875rem;
 }
