@@ -14,7 +14,7 @@ interface AudioMetadata {
  * @param {RefObject<HTMLAudioElement> | null} audioRef - Reference to an HTML audio element (can be null)
  * @returns {AudioMetadata} Object containing song title, artist information, and loading state
  */
-const useAudioMetadata = (audioRef: RefObject<HTMLAudioElement> | null): AudioMetadata => {
+const useAudioMetadata = (audioRef: RefObject<HTMLAudioElement | null>): AudioMetadata => {
     const [metadata, setMetadata] = useState<AudioMetadata>({
         title: '',
         artist: '',

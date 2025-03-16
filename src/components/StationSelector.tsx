@@ -22,10 +22,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [favorites, setFavorites] = useState<RadioStation[]>([]);
     const [recentlyListened, setRecentlyListened] = useState<RadioStation[]>([]);
 
-    // Loading states
-    const [loadingFavorites, setLoadingFavorites] = useState(false);
-    const [loadingRecent, setLoadingRecent] = useState(false);
-
     // Filter states with station counts
     const [countries, setCountries] = useState<FilterOption[]>([]);
     const [languages, setLanguages] = useState<FilterOption[]>([]);
@@ -54,7 +50,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     const [searchTerm, setSearchTerm] = useState('');
     const [searchInput, setSearchInput] = useState('');
 
-    // Apply debounce to search and pagination
     const debouncedSearchTerm = useDebounce(searchInput, 500);
     const debouncedCurrentPageInput = useDebounce(currentPageInput, 500);
     const debouncedFavoritesPageInput = useDebounce(favoritesPageInput, 500);
@@ -81,8 +76,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Helper function to convert HTTP URLs to HTTPS
     const convertHttpToHttps = (stations: RadioStation[]): RadioStation[] => {
         return stations.map(station => {
-            if (station.url && station.url.startsWith('http://')) {
-                return { ...station, url: station.url.replace('http://', 'https://') };
+            if (station.url && station.url.startsWith('http:')) {
+                return { ...station, url: station.url.replace('http:', 'https:') };
             }
             return station;
         });
@@ -110,8 +105,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
     // Load favorite stations from localStorage UUIDs
     const loadFavoriteStations = async () => {
         try {
-            setLoadingFavorites(true);
-
             // Get favorite UUIDs from localStorage
             const favoriteUUIDs = JSON.parse(localStorage.getItem('favorites') || '[]');
 
@@ -125,16 +118,12 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         } catch (err) {
             console.error('Error loading favorite stations:', err);
             setFavorites([]);
-        } finally {
-            setLoadingFavorites(false);
         }
     };
 
     // Load recently listened stations from localStorage UUIDs
     const loadRecentlyListenedStations = async () => {
         try {
-            setLoadingRecent(true);
-
             // Get recently listened UUIDs from localStorage
             const recentUUIDs = JSON.parse(localStorage.getItem('last_listened') || '[]');
 
@@ -157,8 +146,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
         } catch (err) {
             console.error('Error loading recently listened stations:', err);
             setRecentlyListened([]);
-        } finally {
-            setLoadingRecent(false);
         }
     };
 
@@ -288,7 +275,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                 const data = await response.json();
 
                 // Check if the API returns the total stations count
-                if (data.hasOwnProperty('totalStationCount')) {
+                if (data.totalStationCount) {
                     setTotalFilteredStations(data.totalStationCount);
                 }
 
@@ -301,11 +288,11 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                     .filter((station: RadioStation) =>
                         station.url &&
                         station.url.trim() !== '' &&
-                        (station.url.startsWith('http://') || station.url.startsWith('https://'))
+                        (station.url.startsWith('http:') || station.url.startsWith('https:'))
                     )
                     .map((station: RadioStation) => {
-                        if (station.url && station.url.startsWith('http://')) {
-                            return { ...station, url: station.url.replace('http://', 'https://') };
+                        if (station.url && station.url.startsWith('http:')) {
+                            return { ...station, url: station.url.replace('http:', 'https:') };
                         }
                         return station;
                     });
@@ -421,32 +408,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
     return (
         <div className="station-selector">
-            {/*<div className="tabs">*/}
-            {/*    <button*/}
-            {/*        className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}*/}
-            {/*        onClick={() => handleTabChange('explore')}*/}
-            {/*    >*/}
-            {/*        Explore*/}
-            {/*    </button>*/}
-            {/*    <button*/}
-            {/*        className={`tab ${activeTab === 'favorites' ? 'active-tab' : ''}`}*/}
-            {/*        onClick={() => handleTabChange('favorites')}*/}
-            {/*    >*/}
-            {/*        Favorites {favorites.length > 0 && `(${favorites.length})`}*/}
-            {/*    </button>*/}
-            {/*    <button*/}
-            {/*        className={`tab ${activeTab === 'recent' ? 'active-tab' : ''}`}*/}
-            {/*        onClick={() => handleTabChange('recent')}*/}
-            {/*    >*/}
-            {/*        Last Listened {recentlyListened.length > 0 && `(${recentlyListened.length})`}*/}
-            {/*    </button>*/}
-            {/*</div>*/}
-
-
-            {/*{activeTab === 'explore' && (*/}
-            {/*    <>*/}
-
-
             <div className={"title"}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
                     <rect width="64" height="64" rx="12" fill="#2E3440"/>
@@ -458,8 +419,18 @@ const StationSelector: React.FC<StationSelectorProps> = ({
 
             <div className="divider"></div>
 
-            <div>favorites</div>
-                        <div>last listened</div>
+            <button
+                className={`tab ${activeTab === 'favorites' ? 'active-tab' : ''}`}
+                onClick={() => handleTabChange('favorites')}
+            >Favorites</button>
+            <button
+                className={`tab ${activeTab === 'recent' ? 'active-tab' : ''}`}
+                onClick={() => handleTabChange('recent')}
+            >Last listened</button>
+            <button
+                className={`tab ${activeTab === 'explore' ? 'active-tab' : ''}`}
+                onClick={() => handleTabChange('explore')}
+            >Explore</button>
 
                         <div className="divider"></div>
 
@@ -539,69 +510,35 @@ const StationSelector: React.FC<StationSelectorProps> = ({
                                 <option value="clickcount">Listeners</option>
                             </select>
                     </div>
-            {/*    </>*/}
-            {/*)}*/}
 
-            {/*{(activeTab === 'favorites' || activeTab === 'recent') && (*/}
-            {/*    <div className="saved-stations-header">*/}
-            {/*        <h3>{activeTab === 'favorites' ? 'Your Favorite Stations' : 'Recently Listened Stations'}</h3>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+            {activeTab === 'explore' && (
+                <div className="pagination" style={{ display: filteredStations.length > 0 ? 'flex' : 'none' }}>
+                    <label>Page</label>
+                    <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="page-button"
+                    >
+                        &laquo; Prev
+                    </button>
 
-            {/*{activeTab === 'favorites' && favorites.length === 0 && !loadingFavorites && (*/}
-            {/*    <div className="empty-state">*/}
-            {/*        <p>You haven't added any favorite stations yet.</p>*/}
-            {/*        <p>Browse the Explore tab and click the heart icon to add favorites.</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+                    <span className="page-info">
+                        <input
+                            type="text"
+                            onChange={(ev) => setCurrentPageInput(ev.target.value)}
+                            value={currentPageInput}
+                        /> of {Math.ceil(totalFilteredStations / stationsPerPage)}
+                    </span>
 
-            {/*{activeTab === 'favorites' && loadingFavorites && (*/}
-            {/*    <div className="loading-state">*/}
-            {/*        <p>Loading your favorite stations...</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-
-            {/*{activeTab === 'recent' && recentlyListened.length === 0 && !loadingRecent && (*/}
-            {/*    <div className="empty-state">*/}
-            {/*        <p>Your recently listened stations will appear here.</p>*/}
-            {/*        <p>Start listening to stations from the Explore tab.</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-
-            {/*{activeTab === 'recent' && loadingRecent && (*/}
-            {/*    <div className="loading-state">*/}
-            {/*        <p>Loading your recently listened stations...</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-
-            {/*/!* Pagination for Explore tab - Always render but conditionally show *!/*/}
-            {/*{activeTab === 'explore' && (*/}
-            {/*    <div className="pagination" style={{ display: filteredStations.length > 0 ? 'flex' : 'none' }}>*/}
-            {/*        <button*/}
-            {/*            onClick={() => paginate(currentPage - 1)}*/}
-            {/*            disabled={currentPage === 1}*/}
-            {/*            className="page-button"*/}
-            {/*        >*/}
-            {/*            &laquo; Prev*/}
-            {/*        </button>*/}
-
-            {/*        <span className="page-info">*/}
-            {/*            <input*/}
-            {/*                type="text"*/}
-            {/*                onChange={(ev) => setCurrentPageInput(ev.target.value)}*/}
-            {/*                value={currentPageInput}*/}
-            {/*            /> of {Math.ceil(totalFilteredStations / stationsPerPage)}*/}
-            {/*        </span>*/}
-
-            {/*        <button*/}
-            {/*            onClick={() => paginate(currentPage + 1)}*/}
-            {/*            disabled={currentPage >= Math.ceil(totalFilteredStations / stationsPerPage)}*/}
-            {/*            className="page-button"*/}
-            {/*        >*/}
-            {/*            Next &raquo;*/}
-            {/*        </button>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+                    <button
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage >= Math.ceil(totalFilteredStations / stationsPerPage)}
+                        className="page-button"
+                    >
+                        Next &raquo;
+                    </button>
+                </div>
+            )}
 
             {/*/!* Pagination for Favorites tab - Always render but conditionally show *!/*/}
             {/*{activeTab === 'favorites' && !loadingFavorites && (*/}

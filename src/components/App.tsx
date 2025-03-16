@@ -66,8 +66,8 @@ const App: React.FC = () => {
         }
     }
 
-    return (
-        <ThemeProvider initialTheme={'nordic'} transitionDuration={100}>
+    return (<>
+        {/*<ThemeProvider initialTheme={'nordic'} transitionDuration={100}>*/}
             {!selectedServer ? <ServerPicker onServerSelected={(server) => onNewServerSelected(server)}></ServerPicker> :
                 <>
                     <div className="radio-app">
@@ -90,8 +90,8 @@ const App: React.FC = () => {
                     </div>
                 </>
             }
-        </ThemeProvider>
-    );
+        {/*</ThemeProvider>*/}
+    </>);
 };
 
 export default App;

@@ -4,7 +4,7 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     padding: 1em;
-    background: var(--color-bg-hard);
+    background: var(--color-bg-500);
 }
 
 .station-selector > .title {
@@ -51,4 +51,25 @@
     width: 100%;
     margin: 0.5em 0;
     border-bottom: 1px solid var(--color-text-soft);
+}
+
+.station-selector .tab {
+    all: unset;
+    cursor: pointer;
+    border-bottom: 1px solid hsl(0, 0%, 0%, 0);
+    /*padding: 0 1em;*/
+    justify-self: start;
+    align-self: start;
+    transition: border-color 0.5s ease, transform 0.5s ease, color 0.5s ease;
+    line-height: 2em;
+}
+
+.station-selector .tab:hover:not(.active-tab) {
+    border-bottom: 1px solid var(--color-text-hard);
+    transform: translateY(-0.2rem);
+}
+
+.station-selector .active-tab {
+    border-bottom: 1px solid var(--color-strong);
+    color: var(--color-strong);
 }

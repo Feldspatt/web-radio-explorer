@@ -4,7 +4,7 @@
     --theme-symbol: "🌟";
 
     /* Main colors */
-    --color-strong: hsla(210, 100%, 50%, 1);
+    --color-strong: hsl(193.33deg 43.37% 67.45%);
     --color-accent: hsla(280, 80%, 60%, 1);
     --color-hover: hsla(210, 90%, 60%, 1);
     --color-active: hsla(210, 100%, 40%, 1);
@@ -13,12 +13,13 @@
     --color-visualizer-end: hsla(7, 75%, 45%);
 
     /* Background colors */
-    --color-bg-soft: hsla(0, 0%, 97%, 1);
-    --color-bg-hard: hsla(0, 0%, 100%, 1);
+    --color-bg-500: hsla(0, 0%, 15%, 1);
+    --color-bg-600: hsla(0, 0%, 10%, 1);
+    --color-bg-700: hsla(0, 0%, 5%, 1);
 
     /* Text colors */
     --color-text-soft: hsla(0, 0%, 45%, 1);
-    --color-text-hard: hsla(0, 0%, 20%, 1);
+    --color-text-hard: hsl(0, 0%, 92%);
     --color-text-inverse: hsla(0, 0%, 100%, 1);
 
     /* Tags colors */
@@ -41,10 +42,10 @@
 
     /* Typography */
     --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-secondary: 'Georgia', 'Times New Roman', serif;
+    --font-secondary: 'Courier New', monospace;
 
     /* Border radius */
-    --border-radius-input: 4px;
+    --border-radius-input: 25px;
     --border-radius-general: 8px;
 
     /* Box shadow */
@@ -70,20 +71,10 @@ input, button, select, textarea {
 
 /* Apply theme to body */
 body {
-    background-color: var(--color-bg-soft);
+    background-color: var(--color-bg-700);
     color: var(--color-text-hard);
     font-family: var(--font-primary);
 }
-
-/* Basic utility classes */
-.bg-soft {
-    background-color: var(--color-bg-soft);
-}
-
-.bg-hard {
-    background-color: var(--color-bg-hard);
-}
-
 .text-soft {
     color: var(--color-text-soft);
 }

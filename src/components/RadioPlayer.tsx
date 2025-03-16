@@ -26,7 +26,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
     const audioRef = useRef<HTMLAudioElement>(null);
     const safeAudioRef = useRef<HTMLAudioElement>(null);
 
-    const { title, artist } = useAudioMetadata(audioRef);
+    // const { title, artist } = useAudioMetadata(audioRef);
 
 
     // Initialize audio context and analyzer
@@ -342,7 +342,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
                                 <div className="text-soft station-favicon-placeholder">📻</div>
                             )}
                             <h2 className="strong station-name">{station.name}</h2>
-                        </div>
+                </div>
                 }
 
                 {/*<div className="visualizer-wrapper">*/}
