@@ -1,4 +1,4 @@
 type FilterOption = {
-	name: string;
-	stationCount: number;
-};
+	name: string
+	stationCount: number
+}

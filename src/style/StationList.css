@@ -33,12 +33,12 @@
 	gap: 0.5em;
 	height: 6em;
 	width: 30em;
-	transition: transform 0.5s ease;
+	transition: transform 0.3s ease;
 	overflow: hidden;
 }
 
 .card:hover {
-	transform: scale(1.05) translateY(-0.5em);
+	transform: scale(1.05);
 }
 
 .card .station-logo {
@@ -79,7 +79,7 @@
 }
 
 .station-list .actions button {
-	transition: transform 0.5s ease;
+	transition: transform 0.3s ease;
 }
 .station-list .actions button:hover {
 	color: var(--color-text-hard);

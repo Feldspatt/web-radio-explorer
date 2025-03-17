@@ -6,5 +6,5 @@ export const Nav = () => {
 				<button>last listened</button>
 			</div>
 		</>
-	);
-};
+	)
+}

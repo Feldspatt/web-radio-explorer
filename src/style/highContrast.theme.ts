@@ -7,28 +7,28 @@ export const highContrastTheme: Theme = {
 			hue: 220,
 			saturation: 100,
 			lightness: 50,
-			alpha: 1,
+			alpha: 1
 		},
 		accent: {
 			type: "hsla",
 			hue: 220,
 			saturation: 100,
 			lightness: 60,
-			alpha: 1,
+			alpha: 1
 		},
 		hover: {
 			type: "hsla",
 			hue: 220,
 			saturation: 100,
 			lightness: 45,
-			alpha: 1,
+			alpha: 1
 		},
 		active: {
 			type: "hsla",
 			hue: 220,
 			saturation: 100,
 			lightness: 40,
-			alpha: 1,
+			alpha: 1
 		},
 		background: {
 			soft: {
@@ -36,15 +36,15 @@ export const highContrastTheme: Theme = {
 				hue: 0,
 				saturation: 0,
 				lightness: 95,
-				alpha: 1,
+				alpha: 1
 			},
 			hard: {
 				type: "hsla",
 				hue: 0,
 				saturation: 0,
 				lightness: 100,
-				alpha: 1,
-			},
+				alpha: 1
+			}
 		},
 		text: {
 			soft: {
@@ -52,22 +52,22 @@ export const highContrastTheme: Theme = {
 				hue: 0,
 				saturation: 0,
 				lightness: 20,
-				alpha: 1,
+				alpha: 1
 			},
 			hard: {
 				type: "hsla",
 				hue: 0,
 				saturation: 0,
 				lightness: 0,
-				alpha: 1,
+				alpha: 1
 			},
 			inverse: {
 				type: "hsla",
 				hue: 0,
 				saturation: 0,
 				lightness: 100,
-				alpha: 1,
-			},
+				alpha: 1
+			}
 		},
 		tags: {
 			text: {
@@ -75,22 +75,22 @@ export const highContrastTheme: Theme = {
 				hue: 0,
 				saturation: 0,
 				lightness: 100,
-				alpha: 1,
+				alpha: 1
 			},
 			bg: {
 				type: "hsla",
 				hue: 220,
 				saturation: 100,
 				lightness: 50,
-				alpha: 1,
+				alpha: 1
 			},
 			border: {
 				type: "hsla",
 				hue: 220,
 				saturation: 100,
 				lightness: 40,
-				alpha: 1,
-			},
+				alpha: 1
+			}
 		},
 		state: {
 			error: {
@@ -99,15 +99,15 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 100,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 0,
 					saturation: 85,
 					lightness: 45,
-					alpha: 1,
-				},
+					alpha: 1
+				}
 			},
 			online: {
 				text: {
@@ -115,15 +115,15 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 100,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 120,
 					saturation: 75,
 					lightness: 35,
-					alpha: 1,
-				},
+					alpha: 1
+				}
 			},
 			loading: {
 				text: {
@@ -131,16 +131,16 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 100,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 40,
 					saturation: 100,
 					lightness: 45,
-					alpha: 1,
-				},
-			},
+					alpha: 1
+				}
+			}
 		},
 		action: {
 			playing: {
@@ -149,15 +149,15 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 100,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 120,
 					saturation: 75,
 					lightness: 35,
-					alpha: 1,
-				},
+					alpha: 1
+				}
 			},
 			paused: {
 				text: {
@@ -165,15 +165,15 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 0,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 40,
 					saturation: 100,
 					lightness: 60,
-					alpha: 1,
-				},
+					alpha: 1
+				}
 			},
 			retry: {
 				text: {
@@ -181,25 +181,25 @@ export const highContrastTheme: Theme = {
 					hue: 0,
 					saturation: 0,
 					lightness: 100,
-					alpha: 1,
+					alpha: 1
 				},
 				bg: {
 					type: "hsla",
 					hue: 0,
 					saturation: 85,
 					lightness: 45,
-					alpha: 1,
-				},
-			},
-		},
+					alpha: 1
+				}
+			}
+		}
 	},
 	typography: {
 		primaryFont: '"Fira Sans", "Segoe UI", Roboto, sans-serif',
-		secondaryFont: '"Roboto Slab", Georgia, serif',
+		secondaryFont: '"Roboto Slab", Georgia, serif'
 	},
 	borderRadius: {
 		input: "4px",
-		general: "4px",
+		general: "4px"
 	},
-	cardBoxShadow: "0 4px 8px rgba(0, 0, 0, 0.25)",
-};
+	cardBoxShadow: "0 4px 8px rgba(0, 0, 0, 0.25)"
+}

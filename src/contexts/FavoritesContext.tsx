@@ -1,11 +1,9 @@
-import { createContext } from "react";
+import { createContext } from "react"
 
 export type FavoriteContextProps = {
-	favorites: string[];
-	toggleFavorite: (uuid: string) => void;
-	isFavorite: (uuid: string) => boolean;
-};
+	favorites: string[]
+	toggleFavorite: (uuid: string) => void
+	isFavorite: (uuid: string) => boolean
+}
 
-export const FavoritesContext = createContext<FavoriteContextProps | undefined>(
-	undefined,
-);
+export const FavoritesContext = createContext<FavoriteContextProps | undefined>(undefined)

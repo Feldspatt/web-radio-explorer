@@ -34,8 +34,7 @@
 	--action-loading-text: hsl(41, 52%, 54%);
 
 	/* Typography */
-	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-		sans-serif;
+	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 	--font-secondary: "Courier New", monospace;
 
 	/* Border radius */
@@ -48,8 +47,7 @@
 
 /* Apply theme transitions to all elements */
 * {
-	transition: background-color 300ms ease, color 300ms ease, border-color
-		300ms ease, box-shadow 300ms ease;
+	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
 
 /* Special treatment for interactive elements */
@@ -57,12 +55,8 @@ input,
 button,
 select,
 textarea {
-	transition:
-		background-color 300ms ease,
-		color 300ms ease,
-		border-color 300ms ease,
-		box-shadow 300ms ease,
-		transform 100ms ease;
+	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, transform
+		100ms ease;
 }
 
 /* Apply theme to body */
