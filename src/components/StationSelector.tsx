@@ -382,7 +382,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 				<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
 					<title>Radio Explorer Logo</title>
 					<rect width='64' height='64' rx='12' fill='#2E3440' />
-					<circle cx='32' cy='32' r='24' fill='none' stroke='#88C0D0' stroke-width='2.5' stroke-dasharray='4 4' />
+					<circle cx='32' cy='32' r='24' fill='none' stroke='#88C0D0' strokeWidth='2.5' strokeDasharray='4 4' />
 					<path d='M 22,16 L 22,48 L 50,32 Z' fill='#ECEFF4' />
 				</svg>
 				<h2>Radio Explorer</h2>
@@ -499,9 +499,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 								points='14 6 8 12 14 18'
 								fill='none'
 								stroke='currentColor'
-								stroke-width='2'
-								stroke-linecap='round'
-								stroke-linejoin='round'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
 							/>
 						</svg>
 					</button>
@@ -527,9 +527,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 								points='10 6 16 12 10 18'
 								fill='none'
 								stroke='currentColor'
-								stroke-width='2'
-								stroke-linecap='round'
-								stroke-linejoin='round'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
 							/>
 						</svg>
 					</button>

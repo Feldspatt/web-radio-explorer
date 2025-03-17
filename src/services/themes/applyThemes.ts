@@ -6,16 +6,13 @@
  * @param element The element to apply the CSS variables to (defaults to document.documentElement)
  * @param transitionDuration The duration of the transition in milliseconds (defaults to 300ms)
  */
-export function applyTheme(
-	theme: Theme,
-	element: HTMLElement = document.documentElement,
-	transitionDuration: number = 300
-) {
+export function applyTheme(theme: Theme, element: HTMLElement = document.documentElement, transitionDuration = 300) {
 	// Helper function to convert a ColorValue to a CSS string
 	const colorToCSS = (color: ColorValue): string => {
 		if (color.type === "hsla") {
 			return `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`
-		} else if (color.type === "linear-gradient") {
+		}
+		if (color.type === "linear-gradient") {
 			const gradientColors = color.colors
 				.map((c) => {
 					if (c.position !== undefined) {

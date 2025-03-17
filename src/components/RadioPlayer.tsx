@@ -220,7 +220,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 						className='station-favicon'
 						onError={(e) => {
 							;(e.target as HTMLImageElement).src =
-								'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>'
+								'data:image/svg+xml;utf8,<svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 16.3c2.1-1.4 4.5-2.2 7-2.2s4.9.8 7 2.2"/></svg>'
 						}}
 					/>
 				) : (
@@ -231,9 +231,9 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 						xmlns='http://www.w3.org/2000/svg'
 						fill='none'
 						stroke='currentColor'
-						stroke-width='2'
-						stroke-linecap='round'
-						stroke-linejoin='round'
+						strokeWidth='2'
+						strokeLinecap='round'
+						strokeLinejoin='round'
 					>
 						<title>Radio svg</title>
 						<rect x='2' y='8' width='20' height='12' rx='2' />
@@ -261,9 +261,10 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 				/>
 				<label htmlFor={"volume"} className='volume-icon'>
 					<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
+						<title>Volume icon</title>
 						<path d='M7,9 L10.5,6 L10.5,18 L7,15 L4,15 L4,9 L7,9' fill='currentColor' />
-						<path d='M13,8 Q15.5,12 13,16' stroke='currentColor' stroke-width='1.5' fill='none' />
-						<path d='M15,6 Q19,12 15,18' stroke='currentColor' stroke-width='1.5' fill='none' />
+						<path d='M13,8 Q15.5,12 13,16' stroke='currentColor' strokeWidth='1.5' fill='none' />
+						<path d='M15,6 Q19,12 15,18' stroke='currentColor' strokeWidth='1.5' fill='none' />
 					</svg>
 				</label>
 			</div>
