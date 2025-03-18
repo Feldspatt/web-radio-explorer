@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import { paths } from "../services/path.service.ts"
 import { useDebounce } from "../hooks/useDebounce.ts"
 import { useFavorites } from "../hooks/useFavorites.ts"
+import { useFilters } from "../hooks/useFilters.ts"
+import { useStationFetch } from "../hooks/useStationFetch.ts"
+import { useLastListened } from "../hooks/useLastListened.ts"
 
 interface StationSelectorProps {
 	stationCount: number
@@ -11,33 +14,18 @@ interface StationSelectorProps {
 	onStationsUpdate: (stations: RadioStation[]) => void
 }
 
-// Helper function to convert HTTP URLs to HTTPS
-const convertHttpToHttps = (stations: RadioStation[]): RadioStation[] => {
-	return stations.map((station) => {
-		if (station.url?.startsWith("http:")) {
-			return {
-				...station,
-				url: station.url.replace("http:", "https:")
-			}
-		}
-		return station
-	})
-}
-
 const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, stationsPerPage, onStationsUpdate }) => {
 	// Tab state
 	const [activeTab, setActiveTab] = useState<"explore" | "favorites" | "recent">("explore")
 
+	const { recentlyListened, addToRecentlyListened } = useLastListened()
+	const { favorites, toggleFavorite } = useFavorites()
+
 	const [filteredStations, setFilteredStations] = useState<RadioStation[]>([])
 	const [totalFilteredStations, setTotalFilteredStations] = useState(stationCount)
 
-	const { favorites } = useFavorites()
-	const [recentlyListened, setRecentlyListened] = useState<RadioStation[]>([])
-
 	// Filter states with station counts
-	const [countries, setCountries] = useState<FilterOption[]>([])
-	const [languages, setLanguages] = useState<FilterOption[]>([])
-	const [tags, setTags] = useState<FilterOption[]>([])
+	const { countries, languages, tags } = useFilters()
 
 	// Active filter
 	const [activeFilter, setActiveFilter] = useState<"country" | "language" | "tag" | "search" | "favorite" | null>(null)
@@ -85,53 +73,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 		}
 	}, [debouncedFavoritesPageInput, favorites.length, stationsPerPage])
 
-	// Fetch station details by UUID
-	const fetchStationsByUUIDs = async (uuids: string[]): Promise<RadioStation[]> => {
-		if (!uuids || uuids.length === 0) return []
-
-		try {
-			const stationsPromises = await fetch(paths.getByUUID(uuids))
-			if (!stationsPromises.ok) {
-				throw new Error(`Failed to fetch stations with UUID: ${uuids}`)
-			}
-
-			const stations = await stationsPromises.json()
-			// Convert HTTP URLs to HTTPS
-			return convertHttpToHttps(stations)
-		} catch (err) {
-			console.error("Error fetching stations by UUIDs:", err)
-			return []
-		}
-	}
-
-	// Load recently listened stations from localStorage UUIDs
-	const loadRecentlyListenedStations = async () => {
-		try {
-			// Get recently listened UUIDs from localStorage
-			const recentUUIDs = JSON.parse(localStorage.getItem("last_listened") || "[]")
-
-			// Limit to stationsPerPage
-			const limitedUUIDs = recentUUIDs.slice(0, stationsPerPage)
-
-			if (limitedUUIDs.length > 0) {
-				// Fetch station details for each UUID
-				const recentStations = await fetchStationsByUUIDs(limitedUUIDs)
-				const orderedStations = []
-				for (const uuid of limitedUUIDs) {
-					const station = recentStations.find((station) => station.stationuuid === uuid)
-					if (station) orderedStations.push(station)
-				}
-
-				setRecentlyListened(orderedStations)
-			} else {
-				setRecentlyListened([])
-			}
-		} catch (err) {
-			console.error("Error loading recently listened stations:", err)
-			setRecentlyListened([])
-		}
-	}
-
 	// Handle tab change and reset pagination
 	const handleTabChange = (tab: "explore" | "favorites" | "recent") => {
 		setActiveTab(tab)
@@ -159,56 +100,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 			onStationsUpdate(recentlyListened)
 		}
 	}, [filteredStations, favorites, recentlyListened, activeTab, favoritesPage, onStationsUpdate])
-
-	// Fetch countries, languages, and tags on mount
-	useEffect(() => {
-		const fetchMetadata = async () => {
-			try {
-				const [countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
-					fetch(paths.getCountries()),
-					fetch(paths.getLanguages()),
-					fetch(paths.getTags())
-				])
-
-				// Fetch countries
-				const countriesData = await countriesResponse.json()
-				const countryOptions = countriesData
-					.filter((item: any) => item.name && item.stationcount > 5)
-					.map((item: any) => ({
-						name: item.name,
-						stationCount: item.stationcount
-					}))
-					.sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name))
-				setCountries([{ name: "all", stationCount: stationCount }, ...countryOptions])
-
-				// Fetch languages
-				const languagesData = await languagesResponse.json()
-				const languageOptions = languagesData
-					.filter((item: any) => item.name && item.stationcount > 5)
-					.map((item: any) => ({
-						name: item.name,
-						stationCount: item.stationcount
-					}))
-					.sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name))
-				setLanguages([{ name: "all", stationCount: stationCount }, ...languageOptions])
-
-				// Fetch tags
-				const tagsData = await tagsResponse.json()
-				const tagOptions = tagsData
-					.filter((item: any) => item.name && item.stationcount > 10)
-					.map((item: any) => ({
-						name: item.name,
-						stationCount: item.stationcount
-					}))
-					.sort((a: FilterOption, b: FilterOption) => a.name.localeCompare(b.name))
-				setTags([{ name: "all", stationCount: stationCount }, ...tagOptions])
-			} catch (err) {
-				console.error(`Failed to load filter options. Please try again later. ${err}`)
-			}
-		}
-
-		fetchMetadata().then()
-	}, [stationCount])
 
 	// Fetch stations based on the active filter and pagination
 	useEffect(() => {

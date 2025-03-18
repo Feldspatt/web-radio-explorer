@@ -67,13 +67,6 @@ const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) 
 								<span>{cut(station.country, 15)}</span>
 								{station.language && <span> • {cut(station.language, 15)}</span>}
 							</div>
-							{/*{station.tags && (*/}
-							{/*    <div className="station-tags">*/}
-							{/*        {station.tags.split(',').slice(0, 3).map(tag => (*/}
-							{/*            <span key={tag} className="tag">{tag.trim()}</span>*/}
-							{/*        ))}*/}
-							{/*    </div>*/}
-							{/*)}*/}
 						</div>
 
 						<div className={"actions"}>
