@@ -12,9 +12,9 @@
 	--color-visualizer-end: hsla(7, 75%, 45%);
 
 	/* Background colors */
-	--color-bg-500: hsla(0, 0%, 15%, 1);
-	--color-bg-600: hsla(0, 0%, 10%, 1);
-	--color-bg-700: hsla(0, 0%, 5%, 1);
+	--color-bg-500: hsla(200, 50%, 15%, 1);
+	--color-bg-600: hsla(0, 50%, 10%, 1);
+	--color-bg-700: hsla(100, 50%, 5%, 1);
 
 	/* Text colors */
 	--color-text-soft: hsla(0, 0%, 45%, 1);

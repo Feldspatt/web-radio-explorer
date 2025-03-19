@@ -3,9 +3,6 @@
 	grid-template-columns: 1fr;
 	grid-template-rows: 1fr;
 	align-items: center;
-
-	background: linear-gradient(45deg, hsl(0, 0%, 10%), hsl(0, 0%, 17%));
-
 	overflow: auto;
 }
 

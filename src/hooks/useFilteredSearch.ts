@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
+import { paths } from "../services/path.service"
 
 type Filter = {
 	country?: string
@@ -25,11 +26,20 @@ export const useFilteredSearch = () => {
 	const [currentFilter, setCurrentFilter] = useState<Filter>()
 	const [stations, setStations] = useState<RadioStation[]>([])
 
+	useEffect(() => {
+		try {
+			const se
+			const response = await fetch(paths.getStationSearch, 
+		} catch (error){
+			
+		}
+	}, [currentFilter])
+
 	const resetFilter = useCallback((filter?: Filter) => {
 		setCurrentFilter(filter ?? {})
 	}, [])
 
-	const updateFilter = useCallback((filter: Filter) => {
-		setCurrentFilter({ currentFilter, ...filter })
-	}, [])
+	const updateFilter = (filter: Filter) => {
+		setCurrentFilter({ ...currentFilter, ...filter })
+	}
 }

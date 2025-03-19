@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { paths } from "../services/path.service"
 
 interface RadioMetadata {
 	tags: FilterOption[]
@@ -22,9 +23,9 @@ export const useFilters = (): RadioMetadata => {
 
 				// Make all API requests in parallel
 				const [tagsResponse, countriesResponse, languagesResponse] = await Promise.all([
-					fetch("https://de1.api.radio-browser.info/json/tags"),
-					fetch("https://de1.api.radio-browser.info/json/countries"),
-					fetch("https://de1.api.radio-browser.info/json/languages")
+					fetch(paths.getCountries()),
+					fetch(paths.getTags()),
+					fetch(paths.getLanguages())
 				])
 
 				// Check if any of the responses failed

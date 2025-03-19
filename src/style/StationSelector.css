@@ -4,7 +4,7 @@
 	gap: 0.5rem;
 	flex-wrap: wrap;
 	padding: 1em;
-	background: var(--color-bg-500);
+	background-color: hsl(255, 0%, 50%, 0.1);
 }
 
 .station-selector > .title {
