@@ -5,7 +5,6 @@ import { paths } from "../services/path.service.ts"
 import { useDebounce } from "../hooks/useDebounce.ts"
 import { useFavorites } from "../hooks/useFavorites.ts"
 import { useFilters } from "../hooks/useFilters.ts"
-import { useStationFetch } from "../hooks/useStationFetch.ts"
 import { useLastListened } from "../hooks/useLastListened.ts"
 
 interface StationSelectorProps {
@@ -40,11 +39,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 
 	// Pagination
 	const [currentPage, setCurrentPage] = useState(1)
-	const [favoritesPage, setFavoritesPage] = useState(1)
 
 	// Pagination input values (for debouncing)
 	const [currentPageInput, setCurrentPageInput] = useState<string>("1")
-	const [favoritesPageInput, setFavoritesPageInput] = useState<string>("1")
 
 	// Search term
 	const [searchTerm, setSearchTerm] = useState("")
@@ -52,7 +49,6 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 
 	const debouncedSearchTerm = useDebounce(searchInput, 500)
 	const debouncedCurrentPageInput = useDebounce(currentPageInput, 500)
-	const debouncedFavoritesPageInput = useDebounce(favoritesPageInput, 500)
 
 	// Update actual values when debounced values change
 	useEffect(() => {
@@ -66,28 +62,11 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 		}
 	}, [debouncedCurrentPageInput])
 
-	useEffect(() => {
-		const pageNumber = Number.parseInt(debouncedFavoritesPageInput) || 1
-		if (pageNumber >= 1 && pageNumber <= Math.ceil(favorites.length / stationsPerPage)) {
-			setFavoritesPage(pageNumber)
-		}
-	}, [debouncedFavoritesPageInput, favorites.length, stationsPerPage])
-
 	// Handle tab change and reset pagination
 	const handleTabChange = (tab: "explore" | "favorites" | "recent") => {
 		setActiveTab(tab)
-
 		setCurrentPage(1)
 		setCurrentPageInput("1")
-
-		// Reset pagination when changing tabs
-		if (tab === "explore") {
-		} else if (tab === "favorites") {
-			setFavoritesPage(1)
-			setFavoritesPageInput("1")
-		} else if (tab === "recent") {
-			loadRecentlyListenedStations().then()
-		}
 	}
 
 	// Update parent component with stations based on active tab
@@ -99,7 +78,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ stationCount, station
 		} else if (activeTab === "recent") {
 			onStationsUpdate(recentlyListened)
 		}
-	}, [filteredStations, favorites, recentlyListened, activeTab, favoritesPage, onStationsUpdate])
+	}, [filteredStations, favorites, recentlyListened, activeTab, onStationsUpdate])
 
 	// Fetch stations based on the active filter and pagination
 	useEffect(() => {

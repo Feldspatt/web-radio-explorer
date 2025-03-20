@@ -61,7 +61,7 @@ const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) 
 						)}
 
 						<div className='card-body'>
-							<h4 className='card-title'>{cut(station.name, 35)}</h4>
+							<h4 className='card-title'>{cut(station.name, 30)}</h4>
 							<div className='text-soft'>
 								{station.bitrate > 0 && <span>{station.bitrate} kbps • </span>}
 								<span>{cut(station.country, 15)}</span>

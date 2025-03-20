@@ -23,7 +23,7 @@
 .card {
 	position: relative;
 	cursor: pointer;
-	background-color: hsla(0, 0%, 100%, 0.05);
+	background-color: hsla(0, 0%, 80%, 0.1);
 	border-radius: var(--border-radius-general);
 	box-shadow: var(--card-box-shadow);
 	display: flex;
@@ -66,6 +66,10 @@
 	margin: 0;
 }
 
+.card-title {
+	overflow: hidden;
+}
+
 .station-list .actions {
 	display: flex;
 	flex-direction: column;
@@ -85,4 +89,8 @@
 
 .station-list .actions button.isFavorite {
 	color: var(--color-accent);
+}
+
+.station-list .actions svg {
+	transition: fill 0.3s ease, stroke 0.3s ease;
 }

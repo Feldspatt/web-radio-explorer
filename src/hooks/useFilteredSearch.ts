@@ -7,32 +7,49 @@ type Filter = {
 	language?: string
 	offset?: string
 	limit?: string
-	reverse?: boolean
+	reverse?: string
+	order?: "clickcount" | "vote" | "name"
 }
 
 const buildFilterRequest = (filter: Filter): URLSearchParams => {
 	const searchParams = new URLSearchParams()
 
-	for (const key in filter) {
-		const value = filter[key]
-		if (filter[key]) searchParams.set(key, filter[key])
+	for (const [key, value] of Object.entries(filter)) {
+		searchParams.set(key, value)
 	}
-	if (filter.tag) searchParams
+
+	searchParams.set("hidebroken", "true")
+
+	if ((filter.reverse === "true" && filter.order === "clickcount") || filter.order === "vote") {
+		searchParams.set("reverse", "false")
+	}
 
 	return searchParams
 }
 
 export const useFilteredSearch = () => {
-	const [currentFilter, setCurrentFilter] = useState<Filter>()
+	const [currentFilter, setCurrentFilter] = useState<Filter>({})
 	const [stations, setStations] = useState<RadioStation[]>([])
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	useEffect(() => {
-		try {
-			const se
-			const response = await fetch(paths.getStationSearch, 
-		} catch (error){
-			
+		const fetchSearch = async () => {
+			setIsLoading(true)
+			try {
+				const searchParams = buildFilterRequest(currentFilter)
+				const response = await fetch(paths.getStationSearch(searchParams))
+
+				if (response.ok) {
+					setStations(await response.json())
+				}
+			} catch (error) {
+				console.error(`Fetching station by search filter failed: ${error}`)
+			} finally {
+				setIsLoading(false)
+			}
 		}
+
+		fetchSearch()
 	}, [currentFilter])
 
 	const resetFilter = useCallback((filter?: Filter) => {
@@ -42,4 +59,6 @@ export const useFilteredSearch = () => {
 	const updateFilter = (filter: Filter) => {
 		setCurrentFilter({ ...currentFilter, ...filter })
 	}
+
+	return { stations, updateFilter, resetFilter, isLoading }
 }
