@@ -2,35 +2,35 @@ import type React from "react"
 import "../style/StationList.css"
 import { cut } from "../services/cut.ts"
 import { SvgRadio } from "./SvgRadio.tsx"
-import { useFavorites } from "../hooks/useFavorites.ts"
+import { getFavoritesList, toggleFavorite } from "../services/storage.ts"
+import { useEffect, useState } from "react"
+import { fetchStations } from "../services/fetchStations"
 
 interface StationListProps {
-	stations: RadioStation[]
+	source: StationSource
+	filter?: Partial<Filter>
 	onStationSelect: (station: RadioStation) => void
 }
 
-const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) => {
-	const { toggleFavorite, isFavorite } = useFavorites()
+const StationList: React.FC<StationListProps> = ({ source, filter, onStationSelect }) => {
+	const [stations, setStations] = useState<RadioStation[]>([])
+
+	const [favorites, setFavorites] = useState<string[]>([])
+
+	useEffect(() => {
+		const getStations = async () => {
+			console.log("fetching stations list...")
+			const newStations = await fetchStations({ source, filter })
+			setStations(newStations)
+		}
+
+		getStations().then(() => console.log("stations list fetched."))
+
+		setFavorites(getFavoritesList())
+	}, [source, filter])
 
 	const handleStationSelect = (station: RadioStation) => {
-		try {
-			onStationSelect(station)
-
-			let recentlyListened: string[] = JSON.parse(localStorage.getItem("last_listened") ?? "[]")
-
-			recentlyListened = recentlyListened.filter((id) => id !== station.stationuuid)
-
-			recentlyListened.unshift(station.stationuuid)
-
-			if (recentlyListened.length > 10) {
-				recentlyListened = recentlyListened.slice(0, 10)
-			}
-
-			localStorage.setItem("last_listened", JSON.stringify(recentlyListened))
-		} catch (error) {
-			console.error("Error updating recently listened in localStorage:", error)
-			onStationSelect(station)
-		}
+		onStationSelect(station)
 	}
 
 	return (
@@ -38,12 +38,11 @@ const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) 
 			<div className='station-list-wrapper'>
 				{stations.map((station) => (
 					<div
-						key={station.stationuuid}
+						key={`station-list-${station.stationuuid}`}
 						className='card'
 						onKeyDown={() => handleStationSelect(station)}
 						onClick={() => handleStationSelect(station)}
 					>
-						{/*<div className="card-header">*/}
 						{station.favicon ? (
 							<img
 								src={station.favicon}
@@ -76,7 +75,7 @@ const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) 
 									e.stopPropagation()
 									toggleFavorite(station.stationuuid)
 								}}
-								className={isFavorite(station.stationuuid) ? "isFavorite" : ""}
+								className={""}
 							>
 								<svg
 									width='24'
@@ -97,9 +96,10 @@ const StationList: React.FC<StationListProps> = ({ stations, onStationSelect }) 
 
 							<button
 								type='button'
+								className={favorites.includes(station.stationuuid) ? "favorite" : ""}
 								onClick={(e) => {
 									e.stopPropagation()
-									// handle vote action here
+									toggleFavorite(station.stationuuid)
 								}}
 							>
 								<svg

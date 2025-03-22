@@ -4,20 +4,20 @@ import "../style/App.css"
 import "../style/scrollbar.css"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import RadioPlayer from "./RadioPlayer.tsx"
 import StationSelector from "./StationSelector.tsx"
 import ServerPicker from "./ServerPicker.tsx"
 import { paths } from "../services/path.service.ts"
 import StationList from "./StationList.tsx"
-import { FavoritesProvider } from "./FavoritesProvider.tsx"
-// import { ThemeProvider } from "./ThemeProvider.tsx";
+import { addLastListened } from "../services/storage.ts"
 
 const App: React.FC = () => {
 	const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
 	const [autoPlay, setAutoPlay] = useState<boolean>(false)
-	const [stations, setStations] = useState<RadioStation[]>([])
 	const [selectedServer, setSelectedServer] = useState<Server | null>(null)
+
+	const [stationSelector, setStationSelector] = useState<StationSelector>({ source: "search" })
 
 	// Load saved station and server from localStorage on component mount
 	useEffect(() => {
@@ -59,40 +59,35 @@ const App: React.FC = () => {
 	const handleStationSelect = (station: RadioStation) => {
 		setSelectedStation(station)
 		setAutoPlay(true)
-		// Save selected station to localStorage
 		try {
-			localStorage.setItem("lastStation", JSON.stringify(station))
+			addLastListened(station.stationuuid)
 		} catch (error) {
 			console.error("Error saving station to localStorage:", error)
 		}
 	}
 
+	const handleStationList = useCallback((stationSelector: StationSelector) => {
+		setStationSelector(stationSelector)
+	}, [])
+
 	return (
 		<>
-			<FavoritesProvider>
-				{/*<ThemeProvider initialTheme={'nordic'} transitionDuration={100}>*/}
-				{!selectedServer ? (
-					<ServerPicker onServerSelected={(server) => onNewServerSelected(server)} />
-				) : (
-					<>
-						<div className='radio-app'>
-							{/*<ThemeToggle />*/}
-							{/*<header className="app-header">*/}
-							{/*    <h1>Web Radio Explorer</h1>*/}
-							{/*    <p>Discover and listen to radio stations from around the world</p>*/}
-							{/*</header>*/}
-							<StationSelector
-								stationsPerPage={24}
-								stationCount={selectedServer.stations}
-								onStationsUpdate={(stations) => setStations(stations)}
-							/>
-							<StationList stations={stations} onStationSelect={handleStationSelect} />
-							<RadioPlayer station={selectedStation} autoPlay={autoPlay} />
-						</div>
-					</>
-				)}
-				{/*</ThemeProvider>*/}
-			</FavoritesProvider>
+			{!selectedServer ? (
+				<ServerPicker onServerSelected={(server) => onNewServerSelected(server)} />
+			) : (
+				<>
+					<div className='radio-app'>
+						<StationSelector stationsPerPage={24} onStationsUpdate={handleStationList} />
+						<StationList
+							source={stationSelector.source}
+							filter={stationSelector.filter}
+							onStationSelect={handleStationSelect}
+						/>
+						<RadioPlayer station={selectedStation} autoPlay={autoPlay} />
+					</div>
+				</>
+			)}
+			{/*</ThemeProvider>*/}
 		</>
 	)
 }

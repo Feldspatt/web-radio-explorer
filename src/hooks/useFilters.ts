@@ -9,6 +9,16 @@ interface RadioMetadata {
 	error: Error | null
 }
 
+function distinctFilterOption(options: FilterOption[]) {
+	const optionSet = new Set<string>()
+
+	return options.filter((option: FilterOption) => {
+		if (optionSet.has(option.name)) return false
+		optionSet.add(option.name)
+		return true
+	})
+}
+
 export const useFilters = (): RadioMetadata => {
 	const [tags, setTags] = useState<FilterOption[]>([])
 	const [countries, setCountries] = useState<FilterOption[]>([])
@@ -19,10 +29,11 @@ export const useFilters = (): RadioMetadata => {
 	useEffect(() => {
 		const fetchMetadata = async () => {
 			try {
+				console.info("fetching filters...")
 				setIsLoading(true)
 
 				// Make all API requests in parallel
-				const [tagsResponse, countriesResponse, languagesResponse] = await Promise.all([
+				const [countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
 					fetch(paths.getCountries()),
 					fetch(paths.getTags()),
 					fetch(paths.getLanguages())
@@ -40,29 +51,29 @@ export const useFilters = (): RadioMetadata => {
 					languagesResponse.json()
 				])
 
-				setTags(
-					tagsData.map((tag: { name: string; stationcount: number }) => ({
+				const tags: FilterOption[] = tagsData
+					.map((tag: { name: string; stationcount: number }) => ({
 						name: tag.name,
-						stationcount: tag.stationcount
+						stationCount: tag.stationcount
 					}))
-				)
+					.filter((tag) => tag.stationcount > 20)
 
-				setCountries(
-					countriesData.map((country: { name: string; stationcount: number }) => ({
-						name: country.name,
-						stationcount: country.stationcount
-					}))
-				)
+				setTags(distinctFilterOption(tags))
 
-				setLanguages(
-					languagesData.map((language: { name: string; stationcount: number }) => ({
-						name: language.name,
-						stationcount: language.stationcount
-					}))
-				)
+				const countries = countriesData.map((country: { name: string; stationcount: number }) => ({
+					name: country.name,
+					stationCount: country.stationcount
+				}))
+				setCountries(distinctFilterOption(countries))
+
+				const languages = languagesData.map((language: { name: string; stationcount: number }) => ({
+					name: language.name,
+					stationCount: language.stationcount
+				}))
+				setLanguages(distinctFilterOption(languages))
 			} catch (err) {
 				setError(err instanceof Error ? err : new Error("An unknown error occurred"))
-				console.error("Error fetching radio metadata:", err)
+				console.error(`Error fetching radio metadata: ${JSON.stringify(err)}`)
 			} finally {
 				setIsLoading(false)
 			}

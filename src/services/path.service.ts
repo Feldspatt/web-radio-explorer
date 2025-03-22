@@ -11,7 +11,7 @@ export const paths = {
 	setServer: (ip: string) => {
 		radioServerUrl = `${ip}/json`
 	},
-	getCountries: () => `${radioServerUrl}:/countries`,
+	getCountries: () => `${radioServerUrl}/countries`,
 	getLanguages: () => `${radioServerUrl}/languages`,
 	getTags: () => `${radioServerUrl}/tags`,
 	getVote: (uuid: string) => `${radioServerUrl}/vote/${uuid}`,
