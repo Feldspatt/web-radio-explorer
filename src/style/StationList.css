@@ -34,8 +34,9 @@
 	overflow: hidden;
 }
 
-.card:hover {
+.card:hover, .card:focus, .card:focus-within {
 	transform: scale(1.05);
+	outline: 1px solid var(--color-accent);
 }
 
 .card .station-logo {
@@ -47,9 +48,15 @@
 
 .card .default-logo {
 	font-size: 3em;
+	color: var(--color-text-soft);
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.card .default-logo svg {
+	width: 80%;
+	height: 80%;
 }
 
 .card-body {
@@ -77,20 +84,4 @@
 	gap: 0.5em;
 	padding: 0.5em;
 	color: var(--color-text-soft);
-}
-
-.station-list .actions button {
-	transition: transform 0.3s ease;
-}
-.station-list .actions button:hover {
-	color: var(--color-text-hard);
-	transform: scale(1.2);
-}
-
-.station-list .actions button.isFavorite {
-	color: var(--color-accent);
-}
-
-.station-list .actions svg {
-	transition: fill 0.3s ease, stroke 0.3s ease;
 }

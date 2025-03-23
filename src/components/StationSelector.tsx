@@ -3,6 +3,7 @@ import type React from "react"
 import { useState, useCallback, useEffect } from "react"
 import { useFilters } from "../hooks/useFilters.ts"
 import { SvgDelete } from "./SvgCancel.tsx"
+import { IconButton } from "./IconButton.tsx"
 
 type StationSelectorProps = {
 	stationsPerPage: number
@@ -28,7 +29,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 	const handleFilterChange = useCallback((newFilter: Partial<Filter>) => {
 		setSource("search")
 		setPage(1)
-		setFilter((prevFilter) => ({ ...prevFilter, ...newFilter }))
+		setFilter((prevFilter) => ({ ...prevFilter, ...newFilter, offset: undefined }))
 	}, [])
 
 	const handlePageChange = useCallback(
@@ -185,7 +186,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 			<div className='pagination filter-group'>
 				<label htmlFor='current-page'>Page</label>
 				<div className='visible-group'>
-					<button type='button' disabled={page === 0} onClick={() => handlePageChange(page - 1)} className='page-button'>
+					<IconButton disabled={page === 0} handleClick={() => handlePageChange(page - 1)}>
 						<svg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
 							<title>chevron left</title>
 							<polyline
@@ -197,7 +198,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 								strokeLinejoin='round'
 							/>
 						</svg>
-					</button>
+					</IconButton>
 
 					<span className='page-info'>
 						<input
@@ -208,7 +209,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 						/>
 					</span>
 
-					<button type='button' onClick={() => handlePageChange(page + 1)} className='page-button'>
+					<IconButton handleClick={() => handlePageChange(page + 1)}>
 						<svg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
 							<title>chevron right</title>
 							<polyline
@@ -220,7 +221,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 								strokeLinejoin='round'
 							/>
 						</svg>
-					</button>
+					</IconButton>
 				</div>
 			</div>
 		</div>

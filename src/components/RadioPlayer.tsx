@@ -160,7 +160,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({ station, autoPlay = false }: 
 		const handleKeyDown = (event: KeyboardEvent) => {
 			// Only handle space if the active element is not an input or textarea
 			if (
-				event.code === "Space" &&
+				event.code === "Enter" &&
 				document.activeElement?.tagName &&
 				!["INPUT", "TEXTAREA"].includes(document.activeElement.tagName) &&
 				document.activeElement.getAttribute("contenteditable") !== "true"

@@ -1,5 +1,5 @@
-import "../style/default.css"
 import "../style/index.css"
+import "../style/default.css"
 import "../style/App.css"
 import "../style/scrollbar.css"
 

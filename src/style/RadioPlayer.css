@@ -44,7 +44,6 @@
 }
 
 .volume-icon {
-	/*flex-shrink: 0;*/
 	aspect-ratio: 1;
 	height: 2em;
 	font-size: 0.9rem;
@@ -72,6 +71,7 @@
 .volume-slider:focus {
 	width: 10em;
 	opacity: 1;
+	outline: 1px solid var(--color-accent);
 }
 
 .volume-slider::-webkit-slider-thumb {

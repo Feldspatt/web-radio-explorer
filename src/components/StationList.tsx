@@ -5,6 +5,7 @@ import { SvgRadio } from "./SvgRadio.tsx"
 import { getFavoritesList, toggleFavorite } from "../services/storage.ts"
 import { useCallback, useEffect, useState } from "react"
 import { fetchStations } from "../services/fetchStations"
+import { IconButton } from "./IconButton.tsx"
 
 interface StationListProps {
 	source: StationSource
@@ -41,12 +42,19 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 
 	return (
 		<div className='station-list'>
-			<div className='station-list-wrapper'>
+			<ul className='station-list-wrapper'>
 				{stations.map((station) => (
-					<button
-						type='button'
+					<li
 						key={`station-list-${station.stationuuid}`}
+						tabIndex={0}
+						role='button'
 						className='card'
+						onKeyDown={(ev) => {
+							if (ev.key === "Enter") {
+								handleStationSelect(station)
+								ev.preventDefault()
+							}
+						}}
 						onClick={() => handleStationSelect(station)}
 					>
 						{station.favicon ? (
@@ -75,13 +83,7 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 						</div>
 
 						<div className={"actions"}>
-							<button
-								type='button'
-								onClick={(e) => {
-									e.stopPropagation()
-									toggleFavorite(station.stationuuid)
-								}}
-							>
+							<IconButton handleClick={() => {}}>
 								<svg
 									width='24'
 									height='24'
@@ -97,22 +99,17 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 									<path d='M14 9V5a3 3 0 0 0-3-3L7 11v9h10a3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3h-3z' />
 									<path d='M7 11H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3' />
 								</svg>
-							</button>
+							</IconButton>
 
-							<button
-								type='button'
-								className={favorites.includes(station.stationuuid) ? "isFavorite" : ""}
-								onClick={(e) => {
-									e.stopPropagation()
-									handleFavoriteClick(station.stationuuid)
-								}}
+							<IconButton
+								handleClick={() => handleFavoriteClick(station.stationuuid)}
+								isFilled={favorites.includes(station.stationuuid)}
 							>
 								<svg
 									width='24'
 									height='24'
 									viewBox='0 0 24 24'
 									xmlns='http://www.w3.org/2000/svg'
-									fill='none'
 									stroke='currentColor'
 									strokeWidth='2'
 									strokeLinecap='round'
@@ -121,11 +118,11 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 									<title>Favorite logo</title>
 									<polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21 12 17.77 5.82 21 7 14.14 2 9.27 8.91 8.26 12 2' />
 								</svg>
-							</button>
+							</IconButton>
 						</div>
-					</button>
+					</li>
 				))}
-			</div>
+			</ul>
 		</div>
 	)
 }

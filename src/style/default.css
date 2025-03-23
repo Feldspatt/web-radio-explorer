@@ -46,10 +46,6 @@
 	--card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-button {
-	all: unset;
-}
-
 /* Apply theme transitions to all elements */
 * {
 	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
@@ -69,53 +65,4 @@ body {
 	background-color: var(--color-bg-700);
 	color: var(--color-text-hard);
 	font-family: var(--font-primary);
-}
-.text-soft {
-	color: var(--color-text-soft);
-}
-
-.text-hard {
-	color: var(--color-text-hard);
-}
-
-.text-inverse {
-	color: var(--color-text-inverse);
-}
-
-.accent {
-	color: var(--color-accent);
-}
-
-.strong {
-	color: var(--color-strong);
-}
-
-/* Button styling */
-.button {
-	background-color: var(--color-strong);
-	color: var(--color-text-inverse);
-	border-radius: var(--border-radius-input);
-	padding: 8px 16px;
-	border: none;
-	cursor: pointer;
-	font-family: var(--font-primary);
-}
-
-.button:hover {
-	background-color: var(--color-hover);
-}
-
-.button:active {
-	background-color: var(--color-active);
-}
-
-/* Tag styling */
-.tag {
-	background-color: var(--tags-bg);
-	color: var(--tags-text);
-	border: 1px solid var(--tags-border);
-	border-radius: var(--border-radius-input);
-	padding: 2px 8px;
-	display: inline-block;
-	font-size: 0.875rem;
 }
