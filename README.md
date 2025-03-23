@@ -14,4 +14,4 @@ I wanted to explore audio streams handling.
 
 ## Thanks
 
-It relies on public api described here: https://api.radio-browser.info/
+It relies on a public api described here: https://api.radio-browser.info/
