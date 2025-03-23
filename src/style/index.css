@@ -48,6 +48,10 @@ button {
 	all: unset;
 }
 
+select {
+	appearance: none;
+}
+
 *:focus {
 	border-color: var(--color-strong);
 	outline: 0;

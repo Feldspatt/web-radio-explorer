@@ -14,6 +14,8 @@ export function toggleFavorite(stationuuid: string) {
 	else favorites.unshift(stationuuid)
 
 	storeFavorites(favorites)
+
+	return favorites
 }
 
 export function storeFavorites(uuids: string[]) {
@@ -26,6 +28,8 @@ export function getLastListenedList(): string[] {
 
 export function addLastListened(stationuuid: string) {
 	const lastListened = getLastListenedList()
+	const index = lastListened.indexOf(stationuuid)
+	if (index !== -1) lastListened.splice(index, 1)
 	lastListened.unshift(stationuuid)
 	if (lastListened.length > 20) lastListened.pop()
 	storeLastListened(lastListened)

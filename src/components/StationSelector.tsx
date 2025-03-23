@@ -1,29 +1,55 @@
 import "../style/StationSelector.css"
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useFilters } from "../hooks/useFilters.ts"
+import { SvgDelete } from "./SvgCancel.tsx"
 
 type StationSelectorProps = {
 	stationsPerPage: number
 	onStationsUpdate: (stationSelector: StationSelector) => void
 }
 
-const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate }) => {
+const getDefaultFilter = (): Partial<Filter> => ({ order: "votes" })
+
+const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, stationsPerPage }) => {
 	const [source, setSource] = useState<StationSource>("search")
-	const [filter, setFilter] = useState<Partial<Filter>>({ order: "votes" })
+	const [filter, setFilter] = useState<Partial<Filter>>(getDefaultFilter())
+	const [page, setPage] = useState<number>(1)
 	const { countries, languages, tags } = useFilters()
 
-	const handleTabChange = (source: StationSource) => {
-		setSource(source)
-	}
+	const handleSourceChange = useCallback(
+		(newSource: StationSource) => {
+			if (source !== "search") setFilter(getDefaultFilter())
+			setSource(newSource)
+		},
+		[source]
+	)
 
-	const handleFilterChange = (filterUpdate: Partial<Filter>) => {
-		setFilter((prevFilter) => ({ ...prevFilter, ...filterUpdate }))
-	}
+	const handleFilterChange = useCallback((newFilter: Partial<Filter>) => {
+		setSource("search")
+		setPage(1)
+		setFilter((prevFilter) => ({ ...prevFilter, ...newFilter }))
+	}, [])
+
+	const handlePageChange = useCallback(
+		(rawPage: number) => {
+			const newPage: number = Number.isNaN(rawPage) || rawPage < 1 ? 1 : rawPage
+			if (page === newPage) return
+
+			setPage(newPage)
+			if (newPage === 1) {
+				filter.offset = undefined
+				setFilter({ ...filter })
+				return
+			}
+			setFilter({ ...filter, offset: ((newPage - 1) * stationsPerPage).toString() })
+		},
+		[stationsPerPage, filter, page]
+	)
 
 	useEffect(() => {
-		console.log("station selection updated")
-		onStationsUpdate({ source, filter })
+		console.log(`station selection updated, source: ${source}, filter: ${JSON.stringify(filter, null, 2)}`)
+		onStationsUpdate({ source, filter: filter })
 	}, [source, filter, onStationsUpdate])
 
 	return (
@@ -43,21 +69,21 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate }) =
 			<button
 				type='button'
 				className={`tab ${source === "favorite" ? "active-tab" : ""}`}
-				onClick={() => handleTabChange("favorite")}
+				onClick={() => handleSourceChange("favorite")}
 			>
 				Favorites
 			</button>
 			<button
 				type='button'
 				className={`tab ${source === "recent" ? "active-tab" : ""}`}
-				onClick={() => handleTabChange("recent")}
+				onClick={() => handleSourceChange("recent")}
 			>
 				Last listened
 			</button>
 			<button
 				type='button'
 				className={`tab ${source === "search" ? "active-tab" : ""}`}
-				onClick={() => handleTabChange("search")}
+				onClick={() => handleSourceChange("search")}
 			>
 				Explore
 			</button>
@@ -78,65 +104,88 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate }) =
 
 			<div className={`filter-group hidden-input-group ${filter.country ? "active-filter" : ""}`}>
 				<label htmlFor='country'>Country</label>
-				<select id='country' value={filter.country} onChange={(e) => handleFilterChange({ country: e.target.value })}>
-					<option value=''>All</option>
-					{countries
-						.filter((country) => country.name !== "all")
-						.map((country) => (
+				<div>
+					<select
+						id='country'
+						value={filter.country ?? ""}
+						onChange={(e) => handleFilterChange({ country: e.target.value })}
+					>
+						<option value=''>All</option>
+						{countries.map((country) => (
 							<option key={`country-filter-${country.name}`} value={country.name}>
 								{country.name} ({country.stationCount})
 							</option>
 						))}
-				</select>
+					</select>
+					<button className={"filter-group-delete"} type='button' onClick={() => handleFilterChange({ country: undefined })}>
+						<SvgDelete />
+					</button>
+				</div>
 			</div>
 
 			<div className={`filter-group hidden-input-group ${filter.language ? "active-filter" : ""}`}>
 				<label htmlFor='language'>Language</label>
-				<select id='language' value={filter.language} onChange={(e) => handleFilterChange({ language: e.target.value })}>
-					<option value=''>All</option>
-					{languages
-						.filter((language) => language.name !== "all")
-						.map((language) => (
+				<div>
+					<select
+						id='language'
+						value={filter.language ?? ""}
+						onChange={(e) => handleFilterChange({ language: e.target.value })}
+					>
+						<option value=''>All</option>
+						{languages.map((language) => (
 							<option key={`language-filter-${language.name}`} value={language.name}>
 								{language.name} ({language.stationCount})
 							</option>
 						))}
-				</select>
+					</select>
+					<button
+						className={"filter-group-delete"}
+						type='button'
+						onClick={() => handleFilterChange({ language: undefined })}
+					>
+						<SvgDelete />
+					</button>
+				</div>
 			</div>
 
 			<div className={`filter-group hidden-input-group ${filter.tag ? "active-filter" : ""}`}>
 				<label htmlFor='genre'>Genre</label>
-				<select id='genre' value={filter.tag} onChange={(e) => handleFilterChange({ tag: e.target.value })}>
-					<option value=''>All</option>
-					{tags
-						.filter((tag) => tag.name !== "all")
-						.map((tag) => (
+				<div>
+					<select id='genre' value={filter.tag ?? ""} onChange={(e) => handleFilterChange({ tag: e.target.value })}>
+						<option value=''>All</option>
+						{tags.map((tag) => (
 							<option key={`tag-filter-${tag.name}`} value={tag.name}>
 								{tag.name} ({tag.stationCount})
 							</option>
 						))}
-				</select>
+					</select>
+					<button className={"filter-group-delete"} type='button' onClick={() => handleFilterChange({ tag: undefined })}>
+						<SvgDelete />
+					</button>
+				</div>
 			</div>
 
 			<div className='divider' />
 
 			<div className='filter-group'>
 				<label htmlFor='sort-by'>Sort by</label>
-				<select
-					id='sort-by'
-					value={filter.order}
-					onChange={(e) => handleFilterChange({ order: e.target.value as "name" | "votes" | "clickcount" })}
-				>
-					<option value='votes'>Popularity</option>
-					<option value='name'>Name</option>
-					<option value='clickcount'>Listeners</option>
-				</select>
+				<div className='visible-group'>
+					<select
+						id='sort-by'
+						value={filter.order}
+						onChange={(e) => handleFilterChange({ order: e.target.value as "name" | "votes" | "clickcount" })}
+					>
+						<option value='votes'>Popularity</option>
+						<option value='name'>Name</option>
+						<option value='clickcount'>Listeners</option>
+					</select>
+				</div>
 			</div>
 
-			{source === "search" && (
-				<div className='pagination'>
-					<label htmlFor='current-page'>Page</label>
-					<button type='button' onClick={() => console.log("page -1")} className='page-button'>
+			<div className='pagination filter-group'>
+				<label htmlFor='current-page'>Page</label>
+				<div className='visible-group'>
+					<button type='button' disabled={page === 0} onClick={() => handlePageChange(page - 1)} className='page-button'>
 						<svg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
 							<title>chevron left</title>
 							<polyline
@@ -151,10 +200,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate }) =
 					</button>
 
 					<span className='page-info'>
-						<input id='current-page' type='text' onChange={() => console.log("page input")} value={filter.offset ?? "1"} />
+						<input
+							id='current-page'
+							type='text'
+							onChange={(event) => handlePageChange(Number.parseInt(event.target.value))}
+							value={page}
+						/>
 					</span>
 
-					<button type='button' onClick={() => console.log("page + 1 ")} className='page-button'>
+					<button type='button' onClick={() => handlePageChange(page + 1)} className='page-button'>
 						<svg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
 							<title>chevron right</title>
 							<polyline
@@ -168,7 +222,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate }) =
 						</svg>
 					</button>
 				</div>
-			)}
+			</div>
 		</div>
 	)
 }

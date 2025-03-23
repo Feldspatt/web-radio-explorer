@@ -35,7 +35,8 @@
 
 	/* Typography */
 	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-	--font-secondary: "Courier New", monospace;
+	--font-secondary: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
 
 	/* Border radius */
 	--border-radius-input: 25px;
@@ -43,6 +44,10 @@
 
 	/* Box shadow */
 	--card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+button {
+	all: unset;
 }
 
 /* Apply theme transitions to all elements */

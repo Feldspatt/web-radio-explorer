@@ -1,4 +1,4 @@
-import { getFavoritesList, getLastListenedList as getRecentList } from "../services/storage"
+import { getFavoritesList, getLastListenedList } from "../services/storage"
 import { paths } from "./path.service"
 
 export async function fetchStations({ source, filter }: StationSelector): Promise<RadioStation[]> {
@@ -13,7 +13,7 @@ export async function fetchStations({ source, filter }: StationSelector): Promis
 				break
 			}
 			case "recent": {
-				const recent = getRecentList()
+				const recent = getLastListenedList()
 				const unsortedStations = await fetchStationsByUUIDs(recent)
 				newStations = sortByOrderOfAppearance(unsortedStations, recent)
 				break
@@ -42,7 +42,7 @@ function sortByOrderOfAppearance(stations: RadioStation[], appearance: string[])
 const buildFilterRequest = (filter: Partial<Filter>): URLSearchParams => {
 	const searchParams = new URLSearchParams()
 	for (const [key, value] of Object.entries(filter)) {
-		searchParams.set(key, value)
+		if (value !== undefined) searchParams.set(key, value)
 	}
 
 	searchParams.set("reverse", setReverse(filter.order, filter.reverse))
@@ -75,6 +75,11 @@ async function fetchStationsByFilter(filter: Partial<Filter>): Promise<RadioStat
 }
 
 async function fetchStationsByUUIDs(uuids: string[]): Promise<RadioStation[]> {
+	if (uuids.length === 0) {
+		console.info("uuids list is empty, skipping fetch and returning empty array...")
+		return []
+	}
+
 	const response = await fetch(paths.getByUUID(uuids))
 
 	if (!response.ok) {

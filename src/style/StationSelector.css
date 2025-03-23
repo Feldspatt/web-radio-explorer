@@ -28,22 +28,58 @@
 	align-items: center;
 }
 
-.hidden-input-group > select {
+.filter-group label {
+	width: 4em;
+}
+
+.filter-group-delete {
+	display: flex;
+	aspect-ratio: 1;
+	width: 1.5rem;
+	transition: transform 0.5s ease, opacity 0.5s ease;
 	opacity: 0;
-	transition: opacity 0.5s ease, flex 0.5s ease;
-	flex: 0;
+	color: var(--color-text-hard);
+	visibility: hidden;
+}
+
+.active-filter .filter-group-delete {
+	visibility: visible;
+	opacity: 0.5;
+	pointer-events: visible;
+}
+
+.active-filter .filter-group-delete:hover, .active-filter .filter-group-delete:focus {
+	opacity: 1;
+	transform: scale(1.3);
+}
+
+.visible-group {
+	width: 12rem;
+	display: flex;
+	justify-content: center;
+	gap: 0.2rem;
+}
+
+.hidden-input-group > div {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.hidden-input-group select {
+	opacity: 0;
+	transition: opacity 0.5s ease, flex 0.5s ease, width 0.5s ease;
 	width: 0;
 }
 
-.hidden-input-group:hover > select,
-.hidden-input-group > select:focus,
-.hidden-input-group.active-filter > select {
+.hidden-input-group:hover select,
+.hidden-input-group select:focus,
+.hidden-input-group.active-filter select {
 	opacity: 1;
-	flex: 1;
+	width: 12rem;
 }
 
-.hidden-input-group > select:focus,
-.hidden-input-group.active-filter > select {
+.hidden-input-group select:focus,
+.hidden-input-group.active-filter select {
 	border-color: var(--color-strong);
 	outline: 0;
 	box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
@@ -58,7 +94,6 @@
 .station-selector .tab {
 	cursor: pointer;
 	border-bottom: 1px solid hsl(0, 0%, 0%, 0);
-	/*padding: 0 1em;*/
 	justify-self: start;
 	align-self: start;
 	transition: border-color 0.5s ease, transform 0.5s ease, color 0.5s ease;
@@ -83,9 +118,10 @@
 
 .pagination input {
 	width: 4em;
+	text-align: end;
 }
 
-.pagination > button {
+.pagination button {
 	display: flex;
 	align-items: center;
 }

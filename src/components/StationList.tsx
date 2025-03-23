@@ -3,7 +3,7 @@ import "../style/StationList.css"
 import { cut } from "../services/cut.ts"
 import { SvgRadio } from "./SvgRadio.tsx"
 import { getFavoritesList, toggleFavorite } from "../services/storage.ts"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { fetchStations } from "../services/fetchStations"
 
 interface StationListProps {
@@ -33,14 +33,20 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 		onStationSelect(station)
 	}
 
+	const handleFavoriteClick = useCallback((uuid: string) => {
+		const favorites = toggleFavorite(uuid)
+		setFavorites(favorites)
+		console.log(`favorites length: ${favorites.length}`)
+	}, [])
+
 	return (
 		<div className='station-list'>
 			<div className='station-list-wrapper'>
 				{stations.map((station) => (
-					<div
+					<button
+						type='button'
 						key={`station-list-${station.stationuuid}`}
 						className='card'
-						onKeyDown={() => handleStationSelect(station)}
 						onClick={() => handleStationSelect(station)}
 					>
 						{station.favicon ? (
@@ -75,7 +81,6 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 									e.stopPropagation()
 									toggleFavorite(station.stationuuid)
 								}}
-								className={""}
 							>
 								<svg
 									width='24'
@@ -96,10 +101,10 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 
 							<button
 								type='button'
-								className={favorites.includes(station.stationuuid) ? "favorite" : ""}
+								className={favorites.includes(station.stationuuid) ? "isFavorite" : ""}
 								onClick={(e) => {
 									e.stopPropagation()
-									toggleFavorite(station.stationuuid)
+									handleFavoriteClick(station.stationuuid)
 								}}
 							>
 								<svg
@@ -118,7 +123,7 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 								</svg>
 							</button>
 						</div>
-					</div>
+					</button>
 				))}
 			</div>
 		</div>

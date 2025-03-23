@@ -33,7 +33,7 @@ export const useFilters = (): RadioMetadata => {
 				setIsLoading(true)
 
 				// Make all API requests in parallel
-				const [countriesResponse, languagesResponse, tagsResponse] = await Promise.all([
+				const [countriesResponse, tagsResponse, languagesResponse] = await Promise.all([
 					fetch(paths.getCountries()),
 					fetch(paths.getTags()),
 					fetch(paths.getLanguages())
@@ -56,7 +56,7 @@ export const useFilters = (): RadioMetadata => {
 						name: tag.name,
 						stationCount: tag.stationcount
 					}))
-					.filter((tag) => tag.stationcount > 20)
+					.filter((tag: FilterOption) => tag.stationCount > 20)
 
 				setTags(distinctFilterOption(tags))
 
