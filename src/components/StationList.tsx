@@ -30,10 +30,6 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 		setFavorites(getFavoritesList())
 	}, [source, filter])
 
-	const handleStationSelect = (station: RadioStation) => {
-		onStationSelect(station)
-	}
-
 	const handleFavoriteClick = useCallback((uuid: string) => {
 		const favorites = toggleFavorite(uuid)
 		setFavorites(favorites)

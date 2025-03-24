@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 import { type ReactNode, useEffect, useState } from "react"
 import { FavoritesContext } from "../contexts/FavoritesContext"
 
