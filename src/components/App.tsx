@@ -10,14 +10,28 @@ import StationSelector from "./StationSelector.tsx"
 import ServerPicker from "./ServerPicker.tsx"
 import { paths } from "../services/path.service.ts"
 import StationList from "./StationList.tsx"
-import { addLastListened } from "../services/storage.ts"
+import { addLastListened, getLastListenedList, getLastStationSource } from "../services/storage.ts"
+import { fetchStationsByUUIDs } from "../services/fetchStations.ts"
 
 const App: React.FC = () => {
 	const [selectedStation, setSelectedStation] = useState<RadioStation | null>(null)
 	const [autoPlay, setAutoPlay] = useState<boolean>(false)
 	const [selectedServer, setSelectedServer] = useState<Server | null>(null)
 
-	const [stationSelector, setStationSelector] = useState<StationSelector>({ source: "search" })
+	const [source, setSource] = useState<StationSource>(getLastStationSource ?? "search")
+	const [filter, setFilter] = useState<Partial<Filter>>({})
+
+	useEffect(() => {
+		const selectLastListenedStation = async () => {
+			const lastListenedList = getLastListenedList()
+			if (lastListenedList.length === 0) return
+
+			const station = (await fetchStationsByUUIDs([lastListenedList[0]]))[0]
+			setSelectedStation(station)
+		}
+
+		selectLastListenedStation()
+	}, [])
 
 	// Load saved station and server from localStorage on component mount
 	useEffect(() => {
@@ -66,8 +80,9 @@ const App: React.FC = () => {
 		}
 	}
 
-	const handleStationList = useCallback((stationSelector: StationSelector) => {
-		setStationSelector(stationSelector)
+	const handleFilterUpdate = useCallback((filter: Partial<Filter>, merge: boolean) => {
+		if (merge) setFilter((prevFilter) => ({ ...prevFilter, ...filter }))
+		else setFilter(filter)
 	}, [])
 
 	return (
@@ -77,17 +92,18 @@ const App: React.FC = () => {
 			) : (
 				<>
 					<div className='radio-app'>
-						<StationSelector stationsPerPage={24} onStationsUpdate={handleStationList} />
-						<StationList
-							source={stationSelector.source}
-							filter={stationSelector.filter}
-							onStationSelect={handleStationSelect}
+						<StationSelector
+							stationsPerPage={24}
+							filter={filter}
+							setFilter={handleFilterUpdate}
+							source={source}
+							setSource={setSource}
 						/>
+						<StationList source={source} filter={filter} onStationSelect={handleStationSelect} />
 						<RadioPlayer station={selectedStation} autoPlay={autoPlay} />
 					</div>
 				</>
 			)}
-			{/*</ThemeProvider>*/}
 		</>
 	)
 }

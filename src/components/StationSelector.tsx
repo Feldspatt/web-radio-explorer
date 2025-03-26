@@ -1,36 +1,42 @@
 import "../style/StationSelector.css"
 import type React from "react"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { useFilters } from "../hooks/useFilters.ts"
 import { SvgDelete } from "./SvgCancel.tsx"
 import { IconButton } from "./IconButton.tsx"
+import { setLastStationSource } from "../services/storage.ts"
 
 type StationSelectorProps = {
 	stationsPerPage: number
-	onStationsUpdate: (stationSelector: StationSelector) => void
+	source: StationSource
+	setSource: (stationSource: StationSource) => void
+	setFilter: (filter: Partial<Filter>, merge: boolean) => void
+	filter: Partial<Filter>
 }
 
 const getDefaultFilter = (): Partial<Filter> => ({ order: "votes" })
 
-const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, stationsPerPage }) => {
-	const [source, setSource] = useState<StationSource>("search")
-	const [filter, setFilter] = useState<Partial<Filter>>(getDefaultFilter())
+const StationSelector: React.FC<StationSelectorProps> = ({ source, setSource, filter, setFilter, stationsPerPage }) => {
 	const [page, setPage] = useState<number>(1)
 	const { countries, languages, tags } = useFilters()
 
 	const handleSourceChange = useCallback(
 		(newSource: StationSource) => {
-			if (source !== "search") setFilter(getDefaultFilter())
+			if (source !== "search") setFilter(getDefaultFilter(), false)
 			setSource(newSource)
+			setLastStationSource(newSource)
 		},
-		[source]
+		[source, setSource, setFilter]
 	)
 
-	const handleFilterChange = useCallback((newFilter: Partial<Filter>) => {
-		setSource("search")
-		setPage(1)
-		setFilter((prevFilter) => ({ ...prevFilter, ...newFilter, offset: undefined }))
-	}, [])
+	const handleFilterChange = useCallback(
+		(newFilter: Partial<Filter>) => {
+			setSource("search")
+			setPage(1)
+			setFilter({ ...newFilter, offset: undefined }, true)
+		},
+		[setSource, setFilter]
+	)
 
 	const handlePageChange = useCallback(
 		(rawPage: number) => {
@@ -39,19 +45,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({ onStationsUpdate, sta
 
 			setPage(newPage)
 			if (newPage === 1) {
-				filter.offset = undefined
-				setFilter({ ...filter })
+				setFilter({ ...filter, offset: undefined }, false)
 				return
 			}
-			setFilter({ ...filter, offset: ((newPage - 1) * stationsPerPage).toString() })
+			setFilter({ ...filter, offset: ((newPage - 1) * stationsPerPage).toString() }, false)
 		},
-		[stationsPerPage, filter, page]
+		[stationsPerPage, filter, page, setFilter]
 	)
-
-	useEffect(() => {
-		console.log(`station selection updated, source: ${source}, filter: ${JSON.stringify(filter, null, 2)}`)
-		onStationsUpdate({ source, filter: filter })
-	}, [source, filter, onStationsUpdate])
 
 	return (
 		<div className='station-selector'>

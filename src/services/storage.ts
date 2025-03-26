@@ -1,6 +1,7 @@
 export enum LocalStorageKey {
 	FAVORITES = "favorites",
-	LAST_LISTENED = "last_listened"
+	LAST_LISTENED = "last_listened",
+	LAST_TAB = "last_tab"
 }
 
 export function getFavoritesList(): string[] {
@@ -37,4 +38,12 @@ export function addLastListened(stationuuid: string) {
 
 export function storeLastListened(uuids: string[]) {
 	window.localStorage.setItem(LocalStorageKey.LAST_LISTENED, JSON.stringify(uuids))
+}
+
+export function getLastStationSource(): StationSource {
+	return window.localStorage.getItem(LocalStorageKey.LAST_TAB) as StationSource
+}
+
+export function setLastStationSource(source: StationSource) {
+	window.localStorage.setItem(LocalStorageKey.LAST_TAB, source)
 }

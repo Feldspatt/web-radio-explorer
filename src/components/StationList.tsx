@@ -15,12 +15,11 @@ interface StationListProps {
 
 const StationList: React.FC<StationListProps> = ({ source, filter, onStationSelect }) => {
 	const [stations, setStations] = useState<RadioStation[]>([])
-
 	const [favorites, setFavorites] = useState<string[]>([])
 
 	useEffect(() => {
 		const getStations = async () => {
-			console.log("fetching stations list...")
+			console.log(`fetching stations list from ${source}...`)
 			const newStations = await fetchStations({ source, filter })
 			setStations(newStations)
 		}

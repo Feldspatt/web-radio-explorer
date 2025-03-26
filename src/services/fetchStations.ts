@@ -74,7 +74,7 @@ async function fetchStationsByFilter(filter: Partial<Filter>): Promise<RadioStat
 	}
 }
 
-async function fetchStationsByUUIDs(uuids: string[]): Promise<RadioStation[]> {
+export async function fetchStationsByUUIDs(uuids: string[]): Promise<RadioStation[]> {
 	if (uuids.length === 0) {
 		console.info("uuids list is empty, skipping fetch and returning empty array...")
 		return []
