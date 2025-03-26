@@ -2,6 +2,7 @@
 	cursor: pointer;
 	transition: transform 0.3s ease;
 	fill: none;
+	display: flex;
 }
 
 .icon-button:focus, .icon-button:hover {

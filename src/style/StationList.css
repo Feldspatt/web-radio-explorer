@@ -12,8 +12,8 @@
 	align-items: center;
 
 	display: grid;
-	grid-template-columns: repeat(auto-fill, 26em);
-	grid-template-rows: repeat(auto-fill, minmax(min-content, 8em));
+	grid-template-columns: repeat(auto-fill, 28rem);
+	grid-template-rows: repeat(auto-fill, 6em);
 
 	gap: 1.5rem;
 	padding: 1.5rem;
@@ -27,14 +27,18 @@
 	box-shadow: var(--card-box-shadow);
 	display: flex;
 	gap: 0.5em;
-	height: 8em;
-	width: 26em;
+	height: 6em;
+	width: 28em;
 	transition: transform 0.3s ease;
 	overflow: hidden;
 }
 
-.card:hover, .card:focus-within {
+.card:hover {
 	transform: scale(1.05);
+}
+
+.card:focus-within {
+	border: 1px solid var(--color-accent);
 }
 
 .card .station-logo {
@@ -58,31 +62,43 @@
 }
 
 .card-body {
-	flex: 1;
-	padding: 0.5em;
-	display: flex;
-	
+	display:flex;
 	flex-direction: column;
-	justify-content: center;
 	text-wrap: nowrap;
 	overflow: hidden;
+	width: 16rem;
 	text-overflow: ellipsis;
+	justify-content: center;
 }
 
 .card-body > h4 {
 	margin: 0;
 }
 
-.card-title {
-	overflow: hidden;
+.card-button {
+	position: absolute;
+	cursor: pointer;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
 }
 
 .station-list .actions {
+	z-index: 2;
 	display: flex;
-	margin-top: 1em;
+	flex-direction: column;
+	padding: 0.5em;
+	justify-content: center;
+	align-items: center;
 	gap: 0.5em;
 	color: var(--color-text-soft);
 	flex-wrap: wrap;
+	width: 4em;
+}
+
+.card:hover .actions, .card:focus-within .actions {
+	flex: 1;
+	height: unset;
 }
 
 .station-list .icon-button:not(.filled) {
