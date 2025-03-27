@@ -2,10 +2,11 @@ import type React from "react"
 import "../style/StationList.css"
 import { cut } from "../services/cut.ts"
 import { SvgRadio } from "./SvgRadio.tsx"
-import { getFavoritesList, toggleFavorite } from "../services/storage.ts"
+import { getFavoritesList, getVotes, storeVote, toggleFavorite } from "../services/storage.ts"
 import { useCallback, useEffect, useState } from "react"
 import { fetchStations } from "../services/fetchStations"
 import { IconButton } from "./IconButton.tsx"
+import { paths } from "../services/path.service.ts"
 
 interface StationListProps {
 	source: StationSource
@@ -16,6 +17,7 @@ interface StationListProps {
 const StationList: React.FC<StationListProps> = ({ source, filter, onStationSelect }) => {
 	const [stations, setStations] = useState<RadioStation[]>([])
 	const [favorites, setFavorites] = useState<string[]>([])
+	const [votes, setVotes] = useState<string[]>([])
 
 	useEffect(() => {
 		const getStations = async () => {
@@ -27,6 +29,7 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 		getStations().then(() => console.log("stations list fetched."))
 
 		setFavorites(getFavoritesList())
+		setVotes(getVotes())
 	}, [source, filter])
 
 	const handleFavoriteClick = useCallback((uuid: string) => {
@@ -34,6 +37,24 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 		setFavorites(favorites)
 		console.log(`favorites length: ${favorites.length}`)
 	}, [])
+
+	const handleVoteClick = useCallback(
+		async (uuid: string) => {
+			if (votes.includes(uuid)) return
+			try {
+				const voteResponse = await fetch(paths.sendVote(uuid))
+				if (!voteResponse.ok) {
+					console.error(`vote failed: ${await voteResponse.text()}`)
+					return
+				}
+				storeVote(uuid)
+				setVotes(getVotes())
+			} catch (error) {
+				console.error(`vote failed: ${error}`)
+			}
+		},
+		[votes]
+	)
 
 	return (
 		<div className='station-list'>
@@ -68,7 +89,10 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 						<button className='card-button' type='button' onClick={() => onStationSelect(station)} />
 
 						<div className={"actions"}>
-							<IconButton handleClick={() => {}}>
+							<IconButton
+								handleClick={() => handleVoteClick(station.stationuuid)}
+								isFilled={votes.includes(station.stationuuid)}
+							>
 								<svg
 									width='24'
 									height='24'

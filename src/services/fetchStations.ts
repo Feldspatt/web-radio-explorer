@@ -40,7 +40,10 @@ function sortByOrderOfAppearance(stations: RadioStation[], appearance: string[])
 }
 
 const buildFilterRequest = (filter: Partial<Filter>): URLSearchParams => {
+	if (!filter.order) filter.order = "votes"
+
 	const searchParams = new URLSearchParams()
+
 	for (const [key, value] of Object.entries(filter)) {
 		if (value !== undefined) searchParams.set(key, value)
 	}
@@ -59,6 +62,7 @@ function setReverse(order: Order | undefined, value: "true" | "false" | undefine
 }
 
 async function fetchStationsByFilter(filter: Partial<Filter>): Promise<RadioStation[]> {
+	console.log(`fetching stations for filter ${JSON.stringify(filter)}`)
 	try {
 		const searchParams = buildFilterRequest(filter)
 		const response = await fetch(paths.getStationSearch(searchParams))
@@ -80,7 +84,7 @@ export async function fetchStationsByUUIDs(uuids: string[]): Promise<RadioStatio
 		return []
 	}
 
-	const response = await fetch(paths.getByUUID(uuids))
+	const response = await fetch(paths.getStationsByUUID(uuids))
 
 	if (!response.ok) {
 		throw new Error(`Error fetching stations by uuid: ${response.json()}`)

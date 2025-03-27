@@ -11,7 +11,7 @@ const VoteButton: React.FC<VoteButtonProps> = ({ uuid, votes }) => {
 	const handleVote = async (event: React.MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation()
 		try {
-			const response = await fetch(paths.getVote(uuid))
+			const response = await fetch(paths.sendVote(uuid))
 			if (!response.ok) {
 				throw new Error(`Error sending vote`)
 			}

@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react"
-import { selectAServer } from "../services/server.service.ts"
+import { paths } from "../services/path.service.ts"
+import { getRandomServer } from "../services/server.service.ts"
+import "../style/ServerPicker.css"
 
-interface RadioBrowserServerSelectorProps {
-	onServerSelected: (server: Server) => void
+type ServerpickerProp = {
+	onServerLoaded?: () => void
 }
 
-interface Server {
-	name: string
-	stations: number
-}
-
-const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSelectorProps) => {
+const RadioBrowserServerSelector = ({ onServerLoaded }: ServerpickerProp) => {
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -18,21 +15,22 @@ const RadioBrowserServerSelector = ({ onServerSelected }: RadioBrowserServerSele
 		setIsLoading(true)
 		const tryServers = async () => {
 			try {
-				const server = await selectAServer()
-				console.info(`server selected: ${server.name}`)
-				onServerSelected(server)
+				const server = await getRandomServer()
+				console.info(`server selected: ${server}`)
+				paths.setServer(server)
+				onServerLoaded?.()
 			} catch (error) {
-				console.error(`error selectinng a valid server: ${JSON.stringify(error)}`)
+				console.error(`error selecting a valid server: ${error}`)
 				setErrorMessage("Failed to find a valid server!")
 			}
 		}
 
 		tryServers().then(() => setIsLoading(false))
-	}, [onServerSelected])
+	}, [onServerLoaded])
 
 	// Show splash art in all other cases (loading, success)
 	return (
-		<div className='relative'>
+		<div className='server-picker'>
 			<object type='image/svg+xml' data={`${import.meta.env.BASE_URL}splash_art.svg`} className='w-full'>
 				Your browser does not support SVG
 			</object>

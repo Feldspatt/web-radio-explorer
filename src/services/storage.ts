@@ -1,7 +1,8 @@
 export enum LocalStorageKey {
 	FAVORITES = "favorites",
 	LAST_LISTENED = "last_listened",
-	LAST_TAB = "last_tab"
+	LAST_TAB = "last_tab",
+	VOTES = "votes"
 }
 
 export function getFavoritesList(): string[] {
@@ -46,4 +47,27 @@ export function getLastStationSource(): StationSource {
 
 export function setLastStationSource(source: StationSource) {
 	window.localStorage.setItem(LocalStorageKey.LAST_TAB, source)
+}
+
+export function getVotes() {
+	const yesterday = new Date()
+	yesterday.setDate(yesterday.getDate() - 1)
+
+	const votes = JSON.parse(window.localStorage.getItem(LocalStorageKey.VOTES) ?? "[]").filter(
+		(vote: Vote) => new Date(vote.date) > yesterday
+	)
+
+	setVotes(votes)
+
+	return votes.map((vote: Vote) => vote.uuid)
+}
+
+export function setVotes(votes: Vote[]) {
+	window.localStorage.setItem(LocalStorageKey.VOTES, JSON.stringify(votes))
+}
+
+export function storeVote(uuid: string) {
+	const votes = getVotes()
+	votes.push({ date: new Date().toISOString(), uuid })
+	setVotes(votes)
 }
