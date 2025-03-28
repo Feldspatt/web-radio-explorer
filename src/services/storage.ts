@@ -42,7 +42,7 @@ export function storeLastListened(uuids: string[]) {
 }
 
 export function getLastStationSource(): StationSource {
-	return window.localStorage.getItem(LocalStorageKey.LAST_TAB) as StationSource
+	return (window.localStorage.getItem(LocalStorageKey.LAST_TAB) ?? "search") as StationSource
 }
 
 export function setLastStationSource(source: StationSource) {
@@ -50,6 +50,10 @@ export function setLastStationSource(source: StationSource) {
 }
 
 export function getVotes() {
+	return loadVotes().map((vote: Vote) => vote.uuid)
+}
+
+function loadVotes() {
 	const yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 1)
 
@@ -58,8 +62,7 @@ export function getVotes() {
 	)
 
 	setVotes(votes)
-
-	return votes.map((vote: Vote) => vote.uuid)
+	return votes
 }
 
 export function setVotes(votes: Vote[]) {
@@ -67,7 +70,8 @@ export function setVotes(votes: Vote[]) {
 }
 
 export function storeVote(uuid: string) {
-	const votes = getVotes()
+	const votes = loadVotes()
 	votes.push({ date: new Date().toISOString(), uuid })
 	setVotes(votes)
+	return votes.map((vote: Vote) => vote.uuid)
 }

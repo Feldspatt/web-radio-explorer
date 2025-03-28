@@ -47,8 +47,7 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 					console.error(`vote failed: ${await voteResponse.text()}`)
 					return
 				}
-				storeVote(uuid)
-				setVotes(getVotes())
+				setVotes(storeVote(uuid))
 			} catch (error) {
 				console.error(`vote failed: ${error}`)
 			}
@@ -89,6 +88,21 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 						<button className='card-button' type='button' onClick={() => onStationSelect(station)} />
 
 						<div className={"actions"}>
+							<IconButton handleClick={() => {}}>
+								<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'>
+									<title>Detail</title>
+									<path
+										d='M14,3 L5,3 C3.89,3 3,3.89 3,5 L3,19 C3,20.11 3.89,21 5,21 L19,21 C20.11,21 21,20.11 21,19 L21,10 L14,3 Z'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linejoin='round'
+									/>
+									<path d='M14,3 L14,10 L21,10' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round' />
+									<line x1='7' y1='15' x2='17' y2='15' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' />
+									<line x1='7' y1='18' x2='13' y2='18' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' />
+								</svg>
+							</IconButton>
 							<IconButton
 								handleClick={() => handleVoteClick(station.stationuuid)}
 								isFilled={votes.includes(station.stationuuid)}
@@ -107,22 +121,6 @@ const StationList: React.FC<StationListProps> = ({ source, filter, onStationSele
 									<title>Vote</title>
 									<path d='M14 9V5a3 3 0 0 0-3-3L7 11v9h10a3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3h-3z' />
 									<path d='M7 11H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3' />
-								</svg>
-							</IconButton>
-
-							<IconButton handleClick={() => {}}>
-								<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'>
-									<title>Detail</title>
-									<path
-										d='M14,3 L5,3 C3.89,3 3,3.89 3,5 L3,19 C3,20.11 3.89,21 5,21 L19,21 C20.11,21 21,20.11 21,19 L21,10 L14,3 Z'
-										fill='none'
-										stroke='currentColor'
-										stroke-width='2'
-										stroke-linejoin='round'
-									/>
-									<path d='M14,3 L14,10 L21,10' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round' />
-									<line x1='7' y1='15' x2='17' y2='15' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' />
-									<line x1='7' y1='18' x2='13' y2='18' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' />
 								</svg>
 							</IconButton>
 							<IconButton
