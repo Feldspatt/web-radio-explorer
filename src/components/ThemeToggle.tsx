@@ -1,6 +1,6 @@
-import "../style/ThemeToggle.css";
-import {useEffect, useState} from "react";
-import {loadTheme, storeTheme} from "../services/storage.ts";
+import "../style/ThemeToggle.css"
+import { useEffect, useState } from "react"
+import { loadTheme, storeTheme } from "../services/storage.ts"
 
 const themes: Theme[] = [
 	{ name: "Dark", symbol: "🌙", className: "theme-dark" },
@@ -11,34 +11,39 @@ const themes: Theme[] = [
 	{ name: "Light", symbol: "☀️", className: "theme-light" },
 	{ name: "Cahier", symbol: "📜", className: "theme-cahier" },
 	{ name: "Nordic Light", symbol: "❄️", className: "theme-nordic-light" },
-	{ name: "Solarized Light", symbol: "🌵", className: "theme-solarized-light" },
-] as const;
+	{ name: "Solarized Light", symbol: "🌵", className: "theme-solarized-light" }
+] as const
 
 const ThemeToggle = () => {
-	const [themeIndex, setThemeIndex] = useState<number>(Math.max(0, themes.findIndex(theme => theme.name === loadTheme())));
+	const [themeIndex, setThemeIndex] = useState<number>(
+		Math.max(
+			0,
+			themes.findIndex((theme) => theme.name === loadTheme())
+		)
+	)
 
 	useEffect(() => {
-		document.body.classList.remove(...themes.map((t) => t.className));
-		const theme = themes[themeIndex];
-		document.body.classList.add(theme.className);
+		document.body.classList.remove(...themes.map((t) => t.className))
+		const theme = themes[themeIndex]
+		document.body.classList.add(theme.className)
 		storeTheme(theme.name)
-	}, [themeIndex]);
+	}, [themeIndex])
 
 	const switchToNextTheme = () => {
-		setThemeIndex(prevState => (prevState + 1)% themes.length);
-	};
+		setThemeIndex((prevState) => (prevState + 1) % themes.length)
+	}
 
 	return (
 		<button
 			type={"button"}
-			className="theme-toggle"
+			className='theme-toggle'
 			onClick={switchToNextTheme}
 			aria-label={`Switch to ${themes[(themeIndex + 1) % themes.length].name}`}
 			title={`Switch to ${themes[(themeIndex + 1) % themes.length].name}`}
 		>
-			{themes[(themeIndex + 1) % themes.length].symbol}
+			{themes[themeIndex % themes.length].symbol}
 		</button>
-	);
-};
+	)
+}
 
-export default ThemeToggle;
+export default ThemeToggle
