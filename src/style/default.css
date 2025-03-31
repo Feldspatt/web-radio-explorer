@@ -1,68 +1,53 @@
 :root {
-	/* Theme meta information */
-	--theme-name: "Default Theme";
-	--theme-symbol: "🌟";
-
-	/* Main colors */
-	--color-strong: hsl(193.33deg 43.37% 67.45%);
-	--color-accent: hsla(280, 80%, 60%, 1);
-	--color-active: hsla(210, 100%, 40%, 1);
-
-	--color-visualizer-start: hsla(84, 59%, 53%);
-	--color-visualizer-end: hsla(7, 75%, 45%);
-
-	/* Background colors */
-	--color-bg-500: hsla(200, 50%, 15%, 1);
-	--color-bg-600: hsla(0, 50%, 10%, 1);
-	--color-bg-700: hsla(100, 50%, 5%, 1);
-
-	/* Text colors */
-	--color-text-soft: hsla(0, 0%, 45%, 1);
-	--color-text-hard: hsl(0, 0%, 92%);
-	--color-text-inverse: hsla(0, 0%, 100%, 1);
-
-	/* Tags colors */
-	--tags-text: hsla(210, 70%, 30%, 1);
-	--tags-bg: hsla(210, 70%, 95%, 1);
-	--tags-border: hsla(210, 70%, 80%, 1);
-
-	/*--color-action-hover-bg: hsla(210, 70%, 90%, 1);*/
-	--color-action-bg: hsla(0, 0%, 100%, 0.71);
-	--action-playing-text: hsla(150, 70%, 35%, 1);
-	--action-paused-text: hsla(200, 70%, 35%, 1);
-	--action-retry-text: hsla(350, 70%, 40%, 1);
-	--action-loading-text: hsl(41, 52%, 54%);
-
-	/* Typography */
-	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-	--font-secondary: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-
-
-	/* Border radius */
-	--border-radius-input: 25px;
-	--border-radius-general: 8px;
-
-	/* Box shadow */
-	--card-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	--color-focus: hsla(280, 80%, 60%, 1);
+	--color-accent: hsl(193 43.37% 67.45%);
+	--color-text-hard: hsl(0, 0%, 90%);
+	--color-text-soft: hsl(0, 0%, 70%);
+	--color-loading: hsl(41, 52%, 54%);
+	--color-error: hsl(350, 70%, 40%);
+	--color-playing: hsl(118, 65%, 54%);
+	--color-bg-left: hsl(200, 50%, 20%);
+	--color-bg-right: hsl(100, 30%, 10%);
 }
 
-/* Apply theme transitions to all elements */
-* {
-	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
-}
+/*:root {*/
+/*	--color-focus: hsla(280, 80%, 50%, 1);*/
+/*	--color-accent: hsl(193, 43%, 50%);*/
+/*	--color-text-hard: hsl(0, 0%, 10%);*/
+/*	--color-text-soft: hsl(0, 0%, 40%);*/
+/*	--color-loading: hsl(41, 70%, 45%);*/
+/*	--color-error: hsl(350, 70%, 45%);*/
+/*	--color-playing: hsl(118, 65%, 40%);*/
 
-/* Special treatment for interactive elements */
-input,
-button,
-select,
-textarea {
-	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, transform
-		100ms ease;
-}
+/*	--color-bg-left: hsl(200, 50%, 90%);*/
+/*	--color-bg-right: hsl(100, 30%, 95%);*/
+/*	--color-bg-input: hsla(200, 60%, 40%, 0.15);*/
+/*}*/
 
-/* Apply theme to body */
-body {
-	background-color: var(--color-bg-700);
-	color: var(--color-text-hard);
-	font-family: var(--font-primary);
-}
+/*:root {*/
+/*	--color-focus: hsl(268, 50%, 40%);*/
+/*	--color-accent: hsl(193, 43%, 55%);*/
+/*	--color-text-hard: hsl(45, 10%, 20%);*/
+/*	--color-text-soft: hsl(45, 10%, 40%);*/
+/*	--color-loading: hsl(41, 60%, 50%);*/
+/*	--color-error: hsl(350, 70%, 45%);*/
+/*	--color-playing: hsl(118, 50%, 45%);*/
+
+/*	--color-bg-left: hsl(44, 100%, 95%);*/
+/*	--color-bg-right: hsl(42, 87%, 85%);*/
+/*	--color-bg-input: hsla(200, 40%, 40%, 0.15);*/
+/*}*/
+
+/*:root {*/
+/*	--color-focus: hsl(268, 50%, 45%);*/
+/*	--color-accent: hsl(193, 50%, 50%);*/
+/*	--color-text-hard: hsl(220, 20%, 15%);*/
+/*	--color-text-soft: hsl(220, 20%, 35%);*/
+/*	--color-loading: hsl(204, 40%, 55%);*/
+/*	--color-error: hsl(350, 65%, 50%);*/
+/*	--color-playing: hsl(145, 50%, 45%);*/
+
+/*	--color-bg-left: hsl(210, 45%, 92%);*/
+/*	--color-bg-right: hsl(210, 40%, 85%);*/
+/*	--color-bg-input: hsla(220, 40%, 40%, 0.15);*/
+/*}*/

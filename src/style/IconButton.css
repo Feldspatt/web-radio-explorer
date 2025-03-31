@@ -5,7 +5,8 @@
 	display: flex;
 }
 
-.icon-button:focus, .icon-button:hover {
+.icon-button:focus,
+.icon-button:hover {
 	transform: scale(1.2);
 }
 
@@ -18,7 +19,7 @@
 }
 
 .icon-button.filled {
-	color: var(--color-strong);
+	color: var(--color-accent);
 	fill: currentColor;
 }
 

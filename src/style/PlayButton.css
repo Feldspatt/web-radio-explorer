@@ -14,15 +14,17 @@
 
 	color: var(--color-text-hard);
 	border-color: var(--color-text-hard);
-	background-color: var(--color-bg-500);
+	background-color: var(--color-bg-left);
 
-	transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s
+		ease, border-color 0.2s ease;
 }
 
-.play-button:hover, .play-button:focus {
+.play-button:hover,
+.play-button:focus {
 	transform: scale(1.1);
-	color: var(--color-accent);
-	border-color: var(--color-accent);
+	color: var(--color-focus);
+	border-color: var(--color-focus);
 }
 
 .play-button:active {
@@ -37,11 +39,16 @@
 }
 
 .action-retry {
-	color: var(--action-retry-text);
-	border-color: var(--action-retry-text);
+	color: var(--color-error);
+	border-color: var(--color-error);
 }
 
 .action-loading {
-	color: var(--action-loading-text);
-	border-color: var(--action-loading-text);
+	color: var(--color-loading);
+	border-color: var(--color-loading);
+}
+
+.action-playing {
+	color: var(--color-accent);
+	border-color: var(--color-accent);
 }

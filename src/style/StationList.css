@@ -22,9 +22,9 @@
 /* Cards */
 .card {
 	position: relative;
-	background-color: hsla(0, 0%, 80%, 0.1);
+	background-color: hsl(0, 0%, 50%, 0.15);
 	border-radius: var(--border-radius-general);
-	box-shadow: var(--card-box-shadow);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	display: flex;
 	gap: 0.5em;
 	height: 4em;
@@ -38,7 +38,7 @@
 }
 
 .card:focus-within {
-	outline: 1px solid var(--color-accent);
+	outline: 1px solid var(--color-focus);
 }
 
 .card .station-logo {
@@ -62,7 +62,7 @@
 }
 
 .card-body {
-	display:flex;
+	display: flex;
 	flex-direction: column;
 	text-wrap: nowrap;
 	overflow: hidden;
@@ -92,7 +92,7 @@
 	gap: 0.5em;
 	color: var(--color-text-soft);
 }
-.station-list .icon-button{
+.station-list .icon-button {
 	transition: opacity 0.5s ease, transform .5s ease;
 }
 
@@ -100,8 +100,7 @@
 	opacity: 0;
 }
 
-.station-list .actions:focus-within .icon-button, .station-list .card:hover .actions .icon-button {
+.station-list .actions:focus-within .icon-button,
+.station-list .card:hover .actions .icon-button {
 	opacity: 1;
 }
-
-
