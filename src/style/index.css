@@ -16,20 +16,22 @@ select {
 	--border-radius-general: 8px;
 }
 
+
+/* Apply theme transitions to all elements */
+* {
+	transition: background-color 300ms ease, color 300ms ease, border-color
+	300ms ease, box-shadow 300ms ease;
+}
+
 body {
 	font-family: var(--font-primary), serif;
 	color: var(--color-text-hard);
 	line-height: 1.5;
 	margin: 0;
 	padding: 0;
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition: background-color 3s ease, color .3s ease;
 }
 
-/* Apply theme transitions to all elements */
-* {
-	transition: background-color 300ms ease, color 300ms ease, border-color
-		300ms ease, box-shadow 300ms ease;
-}
 
 /* Special treatment for interactive elements */
 input,

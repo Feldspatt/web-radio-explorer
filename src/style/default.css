@@ -1,27 +1,28 @@
 .theme-dark {
 	--color-focus: hsla(280, 80%, 60%, 1);
-	--color-accent: hsl(193 43.37% 67.45%);
+	--color-accent: hsl(193, 50%, 65%);
 	--color-text-hard: hsl(0, 0%, 90%);
-	--color-text-soft: hsl(0, 0%, 70%);
+	--color-text-soft: hsl(0, 0%, 65%);
 	--color-loading: hsl(41, 52%, 54%);
-	--color-error: hsl(350, 70%, 40%);
-	--color-playing: hsl(118, 65%, 54%);
-	--color-bg-left: hsl(200, 50%, 20%);
-	--color-bg-right: hsl(100, 30%, 10%);
+	--color-error: hsl(350, 75%, 45%);
+	--color-playing: hsl(118, 70%, 50%);
+
+	--color-bg-left: hsl(200, 45%, 14%);
+	--color-bg-right: hsl(100, 25%, 7%);
 }
 
 .theme-light {
-	--color-focus: hsla(280, 80%, 50%, 1);
-	--color-accent: hsl(193, 43%, 50%);
-	--color-text-hard: hsl(0, 0%, 10%);
-	--color-text-soft: hsl(0, 0%, 40%);
-	--color-loading: hsl(41, 70%, 45%);
-	--color-error: hsl(350, 70%, 45%);
-	--color-playing: hsl(118, 65%, 40%);
+	--color-focus: hsl(220, 90%, 55%); /* Clean blue */
+	--color-accent: hsl(330, 70%, 50%); /* Soft magenta */
+	--color-text-hard: hsl(0, 0%, 15%); /* Dark gray (for strong contrast) */
+	--color-text-soft: hsl(0, 0%, 40%); /* Medium gray (for secondary text) */
+	--color-loading: hsl(50, 90%, 60%); /* Warm yellow */
+	--color-error: hsl(0, 75%, 50%); /* Red */
+	--color-playing: hsl(140, 60%, 45%); /* Green */
 
-	--color-bg-left: hsl(200, 50%, 90%);
-	--color-bg-right: hsl(100, 30%, 95%);
-	--color-bg-input: hsla(200, 60%, 40%, 0.15);
+	--color-bg-left: hsl(0, 0%, 98%); /* Almost white */
+	--color-bg-right: hsl(0, 0%, 96%); /* Subtle difference for depth */
+	--color-bg-input: hsla(0, 0%, 85%, 0.3); /* Light gray for input fields */
 }
 
 .theme-solarized-light {
@@ -50,4 +51,74 @@
 	--color-bg-left: hsl(210, 45%, 92%);
 	--color-bg-right: hsl(210, 40%, 85%);
 	--color-bg-input: hsla(220, 40%, 40%, 0.15);
+}
+
+.theme-neon-light {
+	--color-focus: hsl(320, 100%, 60%);
+	--color-accent: hsl(180, 100%, 55%);
+	--color-text-hard: hsl(0, 0%, 95%);
+	--color-text-soft: hsl(0, 0%, 70%);
+	--color-loading: hsl(50, 100%, 50%);
+	--color-error: hsl(0, 85%, 50%);
+	--color-playing: hsl(200, 100%, 55%);
+
+	--color-bg-left: hsl(250, 50%, 10%);
+	--color-bg-right: hsl(220, 50%, 15%);
+	--color-bg-input: hsla(280, 90%, 50%, 0.2);
+}
+
+.theme-groovbox {
+	--color-focus: hsl(40, 100%, 65%); /* Warm yellow */
+	--color-accent: hsl(150, 50%, 50%); /* Muted green */
+	--color-text-hard: hsl(40, 40%, 85%); /* Warm off-white */
+	--color-text-soft: hsl(40, 30%, 65%); /* Softer beige */
+	--color-loading: hsl(200, 50%, 50%); /* Muted cyan */
+	--color-error: hsl(0, 65%, 45%); /* Deep red */
+	--color-playing: hsl(35, 80%, 55%); /* Golden orange */
+
+	--color-bg-left: hsl(30, 25%, 15%); /* Dark brownish */
+	--color-bg-right: hsl(20, 20%, 12%); /* Slightly darker */
+	--color-bg-input: hsla(40, 50%, 30%, 0.2); /* Muted brown */
+}
+
+.theme-monokai {
+	--color-focus: hsl(80, 100%, 60%); /* Neon green */
+	--color-accent: hsl(330, 100%, 70%); /* Vibrant pink */
+	--color-text-hard: hsl(60, 30%, 85%); /* Soft yellowish white */
+	--color-text-soft: hsl(60, 20%, 65%); /* Muted beige */
+	--color-loading: hsl(200, 80%, 55%); /* Bright cyan */
+	--color-error: hsl(5, 80%, 50%); /* Strong red */
+	--color-playing: hsl(45, 100%, 55%); /* Golden yellow */
+
+	--color-bg-left: hsl(260, 25%, 12%); /* Deep purple */
+	--color-bg-right: hsl(270, 20%, 10%); /* Almost black */
+	--color-bg-input: hsla(280, 50%, 30%, 0.2); /* Dark purple tint */
+}
+
+.theme-atom {
+	--color-focus: hsl(220, 100%, 66%); /* Frank Blue */
+	--color-accent: hsl(355, 80%, 65%); /* Vibrant Red */
+	--color-text-hard: hsl(210, 15%, 85%); /* Soft white */
+	--color-text-soft: hsl(210, 10%, 65%); /* Muted gray */
+	--color-loading: hsl(45, 100%, 55%); /* Warm Yellow */
+	--color-error: hsl(0, 75%, 50%); /* Atom Red */
+	--color-playing: hsl(180, 90%, 50%); /* Bright Cyan */
+
+	--color-bg-left: hsl(230, 15%, 12%); /* Deep cool gray */
+	--color-bg-right: hsl(230, 20%, 10%); /* Darker background */
+	--color-bg-input: hsla(220, 60%, 40%, 0.2); /* Frank Blue tint */
+}
+
+.theme-cahier {
+	--color-focus: hsl(210, 80%, 40%); /* Ink Blue */
+	--color-accent: hsl(30, 70%, 50%); /* Warm Orange */
+	--color-text-hard: hsl(0, 0%, 20%); /* Dark Gray (Ink) */
+	--color-text-soft: hsl(0, 0%, 40%); /* Softer Graphite Gray */
+	--color-loading: hsl(50, 80%, 60%); /* Light Yellow (Highlighter) */
+	--color-error: hsl(0, 70%, 50%); /* Red (Warning/Corrections) */
+	--color-playing: hsl(120, 50%, 40%); /* Soft Green (Checked Tasks) */
+
+	--color-bg-left: hsl(40, 40%, 92%); /* Off-white Paper */
+	--color-bg-right: hsl(50, 45%, 96%); /* Lighter Paper */
+	--color-bg-input: hsla(50, 30%, 85%, 0.3); /* Transparent Beige (Soft Shadows) */
 }

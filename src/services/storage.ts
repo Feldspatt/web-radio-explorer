@@ -2,7 +2,8 @@ export enum LocalStorageKey {
 	FAVORITES = "favorites",
 	LAST_LISTENED = "last_listened",
 	LAST_TAB = "last_tab",
-	VOTES = "votes"
+	VOTES = "votes",
+	THEME = "theme",
 }
 
 export function getFavoritesList(): string[] {
@@ -74,4 +75,16 @@ export function storeVote(uuid: string) {
 	votes.push({ date: new Date().toISOString(), uuid })
 	setVotes(votes)
 	return votes.map((vote: Vote) => vote.uuid)
+}
+
+
+export function storeTheme(theme: string){
+	return window.localStorage.setItem(LocalStorageKey.THEME, theme)
+}
+
+export function loadTheme(): string {
+	const theme = localStorage.getItem(LocalStorageKey.THEME)
+	console.log(theme)
+	return theme ?? ''
+	// return window.localStorage.getItem(LocalStorageKey.THEME) ?? ''
 }
