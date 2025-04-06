@@ -8,19 +8,15 @@ select {
 
 :root {
 	/* Typography */
-	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-		sans-serif;
-	--font-secondary: "Montserrat", system-ui, -apple-system,
-		BlinkMacSystemFont, sans-serif;
+	--font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+	--font-secondary: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 	--border-radius-input: 25px;
 	--border-radius-general: 8px;
 }
 
-
 /* Apply theme transitions to all elements */
 * {
-	transition: background-color 300ms ease, color 300ms ease, border-color
-	300ms ease, box-shadow 300ms ease;
+	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
 
 body {
@@ -30,26 +26,27 @@ body {
 	margin: 0;
 	padding: 0;
 	transition: background-color 3s ease, color .3s ease;
+	width: 100vw;
+	height: 100vh;
 }
 
+#root {
+	width: 100%;
+	height: 100%;
+}
 
 /* Special treatment for interactive elements */
 input,
 button,
 select,
 textarea {
-	transition:
-		background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, transform
+	transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, transform
 		100ms ease;
 }
 
 /* Apply theme to body */
 body {
-	background: linear-gradient(
-		45deg,
-		var(--color-bg-right),
-		var(--color-bg-left)
-	);
+	background: linear-gradient(45deg, var(--color-bg-right), var(--color-bg-left));
 	color: var(--color-text-hard);
 	font-family: var(--font-primary);
 }

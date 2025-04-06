@@ -31,21 +31,16 @@ const RadioBrowserServerSelector = ({ onServerLoaded }: ServerpickerProp) => {
 	// Show splash art in all other cases (loading, success)
 	return (
 		<div className='server-picker'>
-			<object type='image/svg+xml' data={`${import.meta.env.BASE_URL}splash_art.svg`} className='w-full'>
-				Your browser does not support SVG
-			</object>
-
 			{isLoading && (
-				<div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-75 px-3 py-1 rounded'>
-					Connecting to radio servers...
-				</div>
+				<>
+					<object type='image/svg+xml' data={`${import.meta.env.BASE_URL}splash_art.svg`} className='w-full'>
+						Your browser does not support SVG
+					</object>
+					<h4>Connecting to radio servers...</h4>
+				</>
 			)}
 
-			{errorMessage && (
-				<div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-75 px-3 py-1 rounded text-yellow-700'>
-					Warning: {errorMessage}
-				</div>
-			)}
+			{errorMessage && <h4>Warning: {errorMessage}</h4>}
 		</div>
 	)
 }
